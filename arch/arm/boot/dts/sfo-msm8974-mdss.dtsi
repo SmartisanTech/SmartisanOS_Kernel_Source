@@ -1,0 +1,77 @@
+/* Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	mdss_mdp: qcom,mdss_mdp@fd900000 {
+		mdss_fb0: qcom,mdss_fb_primary {
+			qcom,memory-reservation-size = <0x1100000>;
+		};
+	};
+
+	mdss_dsi0: qcom,mdss_dsi@fd922800 {
+		vddh-supply = <&pm8941_l10>;  /* Analog Power Supply Voltage for TP 3.1V±0.1 V */
+		vddi-supply = <&pm8941_lvs1>;  /* Degital Power Supply Voltage for LCD 1.8v±0.1v */
+		vddio-supply = <&pm8941_l12>;
+		vdda-supply = <&pm8941_l2>;
+		qcom,platform-reset-gpio = <&pm8941_gpios 19 0>;
+		qcom,platform-enn-enable-gpio = <&msmgpio 14 0>;    /* LGD_DCDC_ENN */
+		qcom,platform-enp-enable-gpio = <&msmgpio 16 0>;    /* LGD_DCDC_ENP */
+
+		qcom,platform-te-gpio = <&msmgpio 12 0>;
+		qcom,platform-supply-entry1 {
+				qcom,supply-name = "vddh";
+				qcom,supply-min-voltage = <3100000>;
+				qcom,supply-max-voltage = <3100000>;
+				qcom,supply-enable-load = <100000>;
+				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-on-sleep = <0>;
+				qcom,supply-post-on-sleep = <2>;
+				qcom,supply-pre-off-sleep = <2>;
+				qcom,supply-post-off-sleep = <0>;
+		};
+		qcom,platform-supply-entry2 {
+				qcom,supply-name = "vddi";
+				qcom,supply-min-voltage = <1800000>;
+				qcom,supply-max-voltage = <1800000>;
+				qcom,supply-enable-load = <100000>;
+				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-on-sleep = <0>;
+				qcom,supply-post-on-sleep = <3>;
+				qcom,supply-pre-off-sleep = <2>;
+				qcom,supply-post-off-sleep = <0>;
+		};
+		qcom,platform-supply-entry3 {
+				qcom,supply-name = "vddio";
+				qcom,supply-min-voltage = <1800000>;
+				qcom,supply-max-voltage = <1800000>;
+				qcom,supply-enable-load = <100000>;
+				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-on-sleep = <0>;
+				qcom,supply-post-on-sleep = <20>;
+				qcom,supply-pre-off-sleep = <0>;
+				qcom,supply-post-off-sleep = <0>;
+		};
+		qcom,platform-supply-entry4 {
+				qcom,supply-name = "vdda";
+				qcom,supply-min-voltage = <1200000>;
+				qcom,supply-max-voltage = <1200000>;
+				qcom,supply-enable-load = <100000>;
+				qcom,supply-disable-load = <100>;
+				qcom,supply-pre-on-sleep = <0>;
+				qcom,supply-post-on-sleep = <10>;
+				qcom,supply-pre-off-sleep = <0>;
+				qcom,supply-post-off-sleep = <0>;
+		};
+	};
+};
+
+/include/ "dsi-panel-jdi-1080p-cmd.dtsi"

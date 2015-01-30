@@ -1,0 +1,48 @@
+/* Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	i2c@f9967000 {
+		cirrus_asrc@10 {
+			compatible = "cirrus,cs8422src";
+			reg = <0x10>;
+		/* TODO: read voltage and current value from dts */
+			vdd_ana-supply = <&pm8941_l22>;
+			qcom,vdd_ana-voltage = <3300000 3300000>;
+			qcom,vdd_ana-current = <18900>;
+			vdd_log1-supply = <&pm8941_lvs2>;
+			qcom,vdd_log1-voltage = <1800000 1800000>;
+			qcom,vdd_log1-current = <3100>;
+			vdd_log2-supply = <&pm8941_lvs3>;
+			qcom,vdd_log2-voltage = <1800000 1800000>;
+			qcom,vdd_log2-current = <3100>;
+			cirrus,src-reset-gpio = <&msmgpio 8 0x00>;
+			cirrus,dac-reset-gpio = <&msmgpio 23 0x00>;
+		};
+
+		cirrus_dac@4c {
+			compatible = "cirrus,cs4398dac";
+			reg = <0x4c>;
+		/* TODO: read voltage and current value from dts */
+			vdd_ana-supply = <&pm8941_boost>;
+			qcom,vdd_ana-voltage = <5000000 5000000>;
+			qcom,vdd_ana-current = <25000>;
+			vdd_dig-supply = <&pm8941_l22>;
+			qcom,vdd_dig-current = <18000>;
+			vdd_ctl-supply = <&pm8941_lvs2>;
+			qcom,vdd_ctl-current = <2>;
+			vdd_ser-supply = <&pm8941_lvs3>;
+			qcom,vdd_ser-current = <80>;
+			cirrus,dac-reset-gpio = <&msmgpio 23 0x00>;
+		};
+	};
+};
