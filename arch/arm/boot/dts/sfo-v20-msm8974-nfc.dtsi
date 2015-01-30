@@ -1,0 +1,31 @@
+/* Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc{
+	i2c_6: i2c@f9928000 { /* BLSP#6 */
+		nfc-nci@77 {
+			compatible = "brcm,bcm2079x";
+			reg = <0x77>;
+			interrupt-parent = <&msmgpio>;
+			interrupts = <57 0>;
+			brcm,wak-gpio = <&msmgpio 59 0x00>;
+			brcm,pwr-gpio = <&msmgpio 54 0x00>;
+			brcm,irq-gpio = <&msmgpio 57 0x00>;
+			//brcm,clk-src = "BBCLK2";
+			//brcm,clk-en-gpio = <&msmgpio 0 0x00>;
+			//brcm,clk-gpio = <&pm8941_gpios 34 0>;
+			//vcc_i2c-supply = <&pm8941_s3>;
+			//bcm,vcc_i2c-voltage-level = <1800000 1800000>;
+			//bcm,vcc_i2c-current-level = <500 500000>;
+			};
+	};
+};

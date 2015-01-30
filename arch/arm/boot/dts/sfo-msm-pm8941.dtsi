@@ -1,0 +1,114 @@
+/* Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&pm8941_lsid0 {
+
+	qcom,power-on@800 {
+		qcom,pon_2 {
+			linux,code = <172>;  /* KEY_HOMEPAGE on SFO */
+		};
+	};
+
+	pm8941_chg: qcom,charger {
+		spmi-dev-container;
+		compatible = "qcom,qpnp-charger";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		status = "disabled";
+
+		qcom,vddmax-mv = <4350>;
+		qcom,vddsafe-mv = <4430>;
+		qcom,vinmin-mv = <4450>;
+		qcom,ibatmax-ma = <1500>;
+		qcom,ibatterm-ma = <125>;
+		qcom,ibatsafe-ma = <1500>;
+		qcom,thermal-mitigation = <1500 700 600 325>;
+		qcom,cool-bat-decidegc = <100>;
+		qcom,cool-bat-mv = <4200>;
+		qcom,ibatmax-warm-ma = <450>;
+		qcom,warm-bat-decidegc = <450>;
+		qcom,batt-hot-percentage = <25>;
+		qcom,batt-cold-percentage = <80>;
+		qcom,warm-bat-mv = <4200>;
+		qcom,ibatmax-cool-ma = <350>;
+		qcom,vbatdet-delta-mv = <150>;
+		qcom,resume-soc = <99>;
+		qcom,tchg-mins = <360>;
+		qcom,chg-vadc = <&pm8941_vadc>;
+		qcom,chg-iadc = <&pm8941_iadc>;
+		qcom,chg-adc_tm = <&pm8941_adc_tm>;
+		qcom,ibat-calibration-enabled;
+	};
+
+	pm8941_gpios: gpios {
+		gpio@e100 {
+			qcom,mode = <0>; /* In */
+			qcom,src-sel = <0>; /* XO_OUT_A1_EN */
+			qcom,vin-sel = <2>; /* S3 */
+			qcom,pull = <5>; /* NP */
+			qcom,master-en = <1>; /* Enable */
+		};
+	};
+};
+
+&pm8941_lsid1 {
+	pwm@b500 {
+		compatible = "qcom,qpnp-pwm";
+		reg = <0xb500 0x100>,
+		      <0xb042 0x7e>;
+		reg-names = "qpnp-lpg-channel-base", "qpnp-lpg-lut-base";
+		qcom,channel-id = <4>;
+		qcom,force-pwm-size = <9>;
+		qcom,ramp-step-duration = <50>;
+		qcom,lpg-lut-pause-hi = <5>;
+		qcom,lpg-lut-pause-lo = <5>;
+		qcom,lpg-lut-ramp-direction = <1>;
+		qcom,lpg-lut-pattern-repeat = <1>;
+		qcom,lpg-lut-ramp-toggle = <1>;
+		qcom,lpg-lut-enable-pause-hi = <1>;
+		qcom,lpg-lut-enable-pause-lo = <1>;
+	};
+
+	pwm@b600 {
+		compatible = "qcom,qpnp-pwm";
+		reg = <0xb600 0x100>,
+		      <0xb042 0x7e>;
+		reg-names = "qpnp-lpg-channel-base", "qpnp-lpg-lut-base";
+		qcom,channel-id = <5>;
+		qcom,force-pwm-size = <9>;
+		qcom,ramp-step-duration = <50>;
+		qcom,lpg-lut-pause-hi = <5>;
+		qcom,lpg-lut-pause-lo = <5>;
+		qcom,lpg-lut-ramp-direction = <1>;
+		qcom,lpg-lut-pattern-repeat = <1>;
+		qcom,lpg-lut-ramp-toggle = <1>;
+		qcom,lpg-lut-enable-pause-hi = <1>;
+		qcom,lpg-lut-enable-pause-lo = <1>;
+	};
+
+	pwm@b700 {
+		compatible = "qcom,qpnp-pwm";
+		reg = <0xb700 0x100>,
+		      <0xb042 0x7e>;
+		reg-names = "qpnp-lpg-channel-base", "qpnp-lpg-lut-base";
+		qcom,channel-id = <6>;
+		qcom,force-pwm-size = <9>;
+		qcom,ramp-step-duration = <50>;
+		qcom,lpg-lut-pause-hi = <5>;
+		qcom,lpg-lut-pause-lo = <5>;
+		qcom,lpg-lut-ramp-direction = <1>;
+		qcom,lpg-lut-pattern-repeat = <1>;
+		qcom,lpg-lut-ramp-toggle = <1>;
+		qcom,lpg-lut-enable-pause-hi = <1>;
+		qcom,lpg-lut-enable-pause-lo = <1>;
+	};
+};

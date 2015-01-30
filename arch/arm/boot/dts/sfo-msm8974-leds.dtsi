@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&pm8941_lsid1 {
+	qcom,leds@d000 {
+		status = "okay";
+		qcom,rgb_0 {
+			label = "rgb";
+			linux,name = "red";
+			qcom,mode = "pwm";
+			qcom,pwm-channel = <6>;
+			qcom,use-blink;
+			qcom,pwm-us = <1000>;
+			qcom,max-current = <12>;
+			qcom,default-state = "off";
+			qcom,id = <3>;
+			qcom,start-idx = <1>;
+			qcom,idx-len = <48>;
+			qcom,ramp-step-ms = <83>;
+			qcom,duty-pcts = [64 5A 4F 47 3F 37 2F 27 1F 17 0F 07
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 07 0F 17 1F 27 2F 37 3F 47 4F 5A 64];
+			linux,default-trigger =
+				"battery-charging";
+		};
+
+		qcom,rgb_1 {
+			label = "rgb";
+			linux,name = "green";
+			qcom,mode = "pwm";
+			qcom,pwm-channel = <5>;
+			qcom,use-blink;
+			qcom,pwm-us = <1000>;
+			qcom,max-current = <12>;
+			qcom,default-state = "off";
+			qcom,id = <4>;
+			qcom,start-idx = <1>;
+			qcom,idx-len = <48>;
+			qcom,ramp-step-ms = <83>;
+			qcom,duty-pcts = [64 5A 4F 47 3F 37 2F 27 1F 17 0F 07
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 07 0F 17 1F 27 2F 37 3F 47 4F 5A 64];
+			linux,default-trigger = "battery-full";
+		};
+
+		qcom,rgb_2 {
+			label = "rgb";
+			linux,name = "blue";
+			qcom,mode = "pwm";
+			qcom,pwm-channel = <4>;
+			qcom,use-blink;
+			qcom,pwm-us = <1000>;
+			qcom,max-current = <12>;
+			qcom,id = <5>;
+			qcom,start-idx = <1>;
+			qcom,idx-len = <48>;
+			qcom,ramp-step-ms = <83>;
+			qcom,duty-pcts = [64 5A 4F 47 3F 37 2F 27 1F 17 0F 07
+				00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+				00 00 00 07 0F 17 1F 27 2F 37 3F 47 4F 5A 64];
+			status = "disabled";
+		};
+	};
+};
