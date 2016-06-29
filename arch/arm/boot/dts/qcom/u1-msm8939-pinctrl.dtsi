@@ -1,0 +1,100 @@
+/* Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&tlmm_pinmux {
+	pmx_i2c_3 {
+		/* CLK, DATA */
+		qcom,pins = <&gp 11>, <&gp 10>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <2>;
+		label = "pmx_i2c_3";
+
+		i2c_3_active: i2c_3_active {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;         /* No PULL */
+		};
+		i2c_3_sleep: i2c_3_sleep {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable;	      /* No PULL */
+		};
+   };
+
+    tmd27723_int_pin {
+        qcom,pins = <&gp 113>;
+        qcom,pin-func = <0>;
+        qcom,num-grp-pins = <1>;
+        label = "tmd27723-irq";
+        tmd27723_default: tmd27723_default {
+            drive-strength = <6>;
+            bias-pull-up;
+        };
+        tmd27723_sleep: tmd27723_sleep {
+            drive-strength = <2>;
+            bias-pull-down;
+        };
+    };
+
+	pmx_i2c_1 {
+		/* CLK, DATA */
+		qcom,pins = <&gp 2>, <&gp 3>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <3>;
+		label = "pmx_i2c_1";
+		/* active state */
+		i2c_1_active: i2c_1_active{
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+		/* suspended state */
+		i2c_1_sleep: i2c_1_sleep {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+			//bias-pull-up; /* pull up the pin */
+		};
+	};
+
+	blsp1_uart1_active {
+		qcom,pins = <&gp 0>, <&gp 1>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <2>;
+		label = "blsp1_uart1_active";
+
+		hsuart_active: default {
+				drive-strength = <16>;
+				bias-disable;
+		};
+	};
+
+	blsp1_uart1_sleep {
+		qcom,pins = <&gp 0>, <&gp 1>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <0>;
+		label = "blsp1_uart1_sleep";
+
+		hsuart_sleep: sleep {
+				drive-strength = <2>;
+				bias-disable;
+		};
+	};
+
+	color_gpio {
+		qcom,pins = <&gp 117>, <&gp 120>, <&gp 121>;
+		qcom,num-grp-pins = <3>;
+		qcom,pin-func = <0>;
+		label = "color_gpio";
+
+		color_gpio: default {
+		drive-strength = <2>;
+		bias-disable;
+		};
+	};
+};

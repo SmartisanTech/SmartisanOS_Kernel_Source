@@ -1,0 +1,8 @@
+#include "u1-msm8939-common.dtsi"
+#include "u1-msm8939-qrd-skuk.dtsi"
+#include "u1-msm8939-qrd.dtsi"
+#include "u1-msm8939-pinctrl.dtsi"
+#include "u1-msm8939-battery.dtsi"
+#include "u1-msm8939-nfc-nxp-p1.dtsi"
+#include "u1-msm8939-led-p1.dtsi"
+#include "u1-msm8939-memory.dtsi"

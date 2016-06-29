@@ -1,0 +1,44 @@
+/* Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+
+&pm8916_chg {
+	status = "ok";
+	qcom,vddmax-mv = <4400>;
+	qcom,vddsafe-mv = <4500>;
+	qcom,vinmin-mv = <4508>;
+	qcom,cool-bat-decidegc = <100>;
+	qcom,warm-bat-decidegc = <450>;
+	qcom,resume-soc = <99>;
+	/*qcom,use-external-charger;*/
+	/*qcom,use-default-batt-values;*/
+};
+
+/ {
+	qrd_batterydata: qcom,battery-data {
+		qcom,rpull-up-kohm = <100>;
+		qcom,vref-batt-therm = <1800000>;
+		#include "batterydata-smartisan-2930mah.dtsi"
+	};
+};
+
+&pm8916_bms {
+	status = "ok";
+	qcom,max-voltage-uv = <4400000>;
+	qcom,shutdown-soc-valid-limit = <20>;
+	qcom,s1-sample-interval-ms = <50>;
+	qcom,s2-sample-interval-ms = <40>;
+	/*qcom,disable-bms;*/
+	qcom,battery-data = <&qrd_batterydata>;
+};
+
+

@@ -1,0 +1,102 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "fsm9010.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. FSM9010 Rumi";
+	compatible = "qcom,fsm9010-rumi", "qcom,fsm9010", "qcom,rumi";
+	qcom,board-id = <15 0>;
+};
+
+&soc {
+	serial@f991f000 {
+		status = "ok";
+	};
+
+	dummy_vreg: dummy_vreg {
+		compatible = "regulator-fixed";
+		status = "ok";
+		regulator-name = "dummy_vreg";
+		regulator-always-on;
+	};
+
+	qcom,qfpfuse@fc4b8000 {
+		status = "ok";
+		vdd-blow-supply = <&dummy_vreg>;
+	};
+
+	pcie0: qcom,pcie@fc520000 {
+		status = "disabled";
+	};
+
+	pcie1: qcom,pcie@fc528000 {
+		status = "disabled";
+	};
+
+	gdsc_pcie_0:gdsc_pcie_0 {
+		compatible = "qcom,stub-regulator";
+		regulator-name = "gdsc_pcie_0";
+		status = "ok";
+	};
+
+	gdsc_pcie_1:gdsc_pcie_1 {
+		compatible = "qcom,stub-regulator";
+		regulator-name = "gdsc_pcie_1";
+		status = "ok";
+	};
+};
+
+&sdhc_1 {
+	vdd-supply = <&dummy_vreg>;
+	qcom,vdd-voltage-level = <2950000 2950000>;
+	qcom,vdd-current-level = <200 500000>;
+
+	vdd-io-supply = <&dummy_vreg>;
+	qcom,vdd-io-always-on;
+	qcom,vdd-io-voltage-level = <1800000 1800000>;
+	qcom,vdd-io-current-level = <200 154000>;
+
+	qcom,clk-rates = <400000>;
+	qcom,bus-speed-mode = "";
+	qcom,nonremovable;
+
+	status = "ok";
+};
+
+/* Stub Regulator */
+/ {
+	/* PCIE1/2_0P9_VDDA; */
+	summit_l3: summit_l3 {
+		compatible = "qcom,stub-regulator";
+		regulator-name = "summit_l3";
+		regulator-min-microvolt = <950000>;
+		regulator-max-microvolt = <950000>;
+		qcom,enable-time = <200>;
+		qcom,pull-down-enable = <1>;
+		status = "okay";
+	};
+
+	/* pcie LDO12 */
+	summit_l12: summit_l12 {
+		compatible = "qcom,stub-regulator";
+		regulator-name = "summit_l12";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		qcom,enable-time = <500>;
+		qcom,pull-down-enable = <1>;
+		regulator-always-on;
+		status = "okay";
+	};
+};

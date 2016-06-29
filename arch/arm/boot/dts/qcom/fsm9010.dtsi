@@ -1,0 +1,261 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "skeleton.dtsi"
+#include <dt-bindings/clock/fsm-clocks-9010.h>
+/ {
+	model = "Qualcomm Technologies, Inc. FSM9010";
+	compatible = "qcom,fsm9010";
+	qcom,msm-id = <254 0>,
+		      <255 0>,
+		      <256 0>,
+		      <257 0>;
+	interrupt-parent = <&intc>;
+
+	aliases {
+		sdhc1 = &sdhc_1; /* SDC1 eMMC slot */
+	};
+
+	soc: soc { };
+};
+
+#include "fsm9010-pinctrl.dtsi"
+
+&soc {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	ranges;
+
+	intc: interrupt-controller@f9000000 {
+		compatible = "qcom,msm-qgic2";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		reg = <0xf9000000 0x1000>,
+		      <0xf9002000 0x1000>;
+	};
+
+	timer {
+		compatible = "arm,armv7-timer";
+		interrupts = <1 2 0xf08>,
+			     <1 3 0xf08>,
+			     <1 4 0xf08>,
+			     <1 1 0xf08>;
+		clock-frequency = <19200000>;
+	};
+
+	clock_gcc: qcom,gcc@1800000 {
+		compatible = "qcom,dummycc";
+		#clock-cells = <1>;
+	};
+
+	clock_rpm: qcom,rpmcc@1800000 {
+		compatible = "qcom,dummycc";
+		#clock-cells = <1>;
+	};
+
+	serial@f991f000 {
+		compatible = "qcom,msm-lsuart-v14";
+		reg = <0xf991f000 0x1000>;
+		clocks = <&clock_gcc clk_gcc_blsp1_uart1_apps_clk>,
+		<&clock_gcc clk_gcc_blsp1_ahb_clk>;
+		clock-names = "core_clk", "iface_clk";
+		status = "disabled";
+		interrupts = <0 95 0>;
+	};
+
+	qcom,smem@fa00000 {
+		compatible = "qcom,smem";
+		reg = <0x0fa00000 0x200000>,
+			<0xf9011000 0x1000>;
+		reg-names = "smem", "irq-reg-base";
+	};
+
+	sdhc_1: sdhci@f9824900 {
+		qcom,bus-width = <8>;
+		compatible = "qcom,sdhci-msm";
+		reg = <0xf9824900 0x11c>, <0xf9824000 0x800>;
+		reg-names = "hc_mem", "core_mem";
+		interrupts = <0 123 0>, <0 138 0>;
+		interrupt-names = "hc_irq", "pwr_irq";
+		qcom,bus-speed-mode = "HS200_1p8v", "DDR_1p8v";
+		qcom,cpu-dma-latency-us = <200>;
+
+		qcom,msm-bus,name = "sdhc1";
+		qcom,msm-bus,num-cases = <8>;
+		qcom,msm-bus,num-paths = <1>;
+		qcom,msm-bus,vectors-KBps = <78 512 0 0>, /* No vote */
+			<78 512 1600 3200>,    /* 400 KB/s*/
+			<78 512 80000 160000>, /* 20 MB/s */
+			<78 512 100000 200000>, /* 25 MB/s */
+			<78 512 200000 400000>, /* 50 MB/s */
+			<78 512 400000 800000>, /* 100 MB/s */
+			<78 512 800000 1600000>, /* 200 MB/s */
+			<78 512 2048000 4096000>; /* Max. bandwidth */
+		qcom,bus-bw-vectors-bps = <0 400000 20000000 25000000 50000000 100000000 200000000 4294967295>;
+		clock-names = "iface_clk", "core_clk";
+		clocks = <&clock_gcc clk_gcc_sdcc1_ahb_clk>,
+		         <&clock_gcc clk_gcc_sdcc1_apps_clk>;
+		status = "disable";
+	};
+
+	qcom,msm-rng@f9bff000 {
+		compatible = "qcom,msm-rng";
+		reg = <0xf9bff000 0x140>;
+		qcom,msm-rng-iface-clk;
+		clocks = <&clock_gcc clk_gcc_prng_ahb_clk>;
+		clock-names = "iface_clk";
+	};
+
+	qcom,qfpfuse@fc4b8000 {
+		compatible = "qcom,qfp-fuse";
+		reg = <0xfc4b8000 0x7000>;
+		qcom,blow-status-offset = <0x2048>;
+		status = "disabled";
+	};
+
+	pcie0: qcom,pcie@fc520000 {
+		compatible = "qcom,pci-msm";
+		cell-index = <0>;
+		qcom,ctrl-amt = <1>;
+
+		reg = <0xfc520000 0x4000>,
+		      <0xfc526000 0x1000>,
+		      <0xff800000 0x0f20>,
+		      <0xff800f20 0x100>,
+		      <0xff870000 0x1000>,
+		      <0xff880000 0x80000>,
+		      <0xff900000 0x700000>;
+
+		reg-names = "parf", "phy", "dm_core", "elbi",
+				"conf", "io", "bars";
+
+		#address-cells = <0>;
+		interrupt-parent = <&pcie0>;
+		interrupts = <0 1 2 3 4 5 6 7 8 9 10 11 12>;
+		#interrupt-cells = <1>;
+		interrupt-map-mask = <0xffffffff>;
+		interrupt-map = <0 &intc 0 141 0
+				1 &intc 0 142 0
+				2 &intc 0 143 0
+				3 &intc 0 144 0
+				4 &intc 0 145 0
+				5 &intc 0 146 0
+				6 &intc 0 147 0
+				7 &intc 0 148 0
+				8 &intc 0 149 0
+				9 &intc 0 150 0
+				10 &intc 0 151 0
+				11 &intc 0 152 0 >;
+		interrupt-names = "int_msi", "int_a", "int_b", "int_c", "int_d",
+				"int_pls_pme", "int_pme_legacy", "int_pls_err",
+				"int_aer_legacy", "int_pls_link_up",
+				"int_pls_link_down", "int_bridge_flush_n";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pcie0_clkreq_default &pcie0_perst_default &pcie0_wake_default>;
+
+		perst-gpio = <&msm_gpio 44 0>;
+		wake-gpio = <&msm_gpio 46 0>;
+		clkreq-gpio = <&msm_gpio 88 0>;
+
+		gdsc-vdd-supply = <&gdsc_pcie_0>;
+		vreg-1.8-supply = <&summit_l12>;
+		vreg-0.9-supply = <&summit_l3>;
+		qcom,vreg-0.9-voltage-level = <950000 950000 24000>;
+
+		clocks = <&clock_gcc clk_gcc_pcie_0_pipe_clk>,
+			<&clock_rpm clk_ln_bb_clk>,
+			<&clock_gcc clk_gcc_pcie_0_aux_clk>,
+			<&clock_gcc clk_gcc_pcie_0_cfg_ahb_clk>,
+			<&clock_gcc clk_gcc_pcie_0_mstr_axi_clk>,
+			<&clock_gcc clk_gcc_pcie_0_slv_axi_clk>,
+			<&clock_gcc clk_pcie_0_phy_ldo>,
+			<&clock_gcc clk_gcc_pcie_phy_0_reset>;
+
+		clock-names = "pcie_0_pipe_clk", "pcie_0_ref_clk_src",
+				"pcie_0_aux_clk", "pcie_0_cfg_ahb_clk",
+				"pcie_0_mstr_axi_clk", "pcie_0_slv_axi_clk",
+				"pcie_0_ldo", "pcie_0_phy_reset";
+		max-clock-frequency-hz = <125000000>, <0>, <1010000>,
+						<0>, <0>, <0>, <0>, <0>;
+		qcom,ep-latency = <1000>;
+		status = "disabled";
+	};
+
+	pcie1: qcom,pcie@fc528000 {
+		compatible = "qcom,pci-msm";
+		cell-index = <1>;
+		qcom,ctrl-amt = <1>;
+
+		reg = <0xfc528000 0x2000>,
+		      <0xfc52e000 0x1000>,
+		      <0xff000000 0xf20>,
+		      <0xff000f20 0x100>,
+		      <0xff070000 0x1000>,
+		      <0xff080000 0x80000>,
+		      <0xff100000 0x700000>;
+
+		reg-names = "parf", "phy", "dm_core", "elbi",
+				"conf", "io", "bars";
+
+		#address-cells = <0>;
+		interrupt-parent = <&pcie1>;
+		interrupts = <0 1 2 3 4 5 6 7 8 9 10 11 12>;
+		#interrupt-cells = <1>;
+		interrupt-map-mask = <0xffffffff>;
+		interrupt-map = <0 &intc 0 81 0
+				1 &intc 0 82 0
+				2 &intc 0 83 0
+				3 &intc 0 84 0
+				4 &intc 0 85 0
+				5 &intc 0 86 0
+				6 &intc 0 87 0
+				7 &intc 0 88 0
+				8 &intc 0 89 0
+				9 &intc 0 90 0
+				10 &intc 0 91 0
+				11 &intc 0 92 0>;
+		interrupt-names = "int_msi", "int_a", "int_b", "int_c", "int_d",
+				"int_pls_pme", "int_pme_legacy", "int_pls_err",
+				"int_aer_legacy", "int_pls_link_up",
+				"int_pls_link_down", "int_bridge_flush_n";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pcie1_clkreq_default &pcie1_perst_default &pcie1_wake_default>;
+
+		perst-gpio = <&msm_gpio 72 0>;
+		wake-gpio = <&msm_gpio 82 0>;
+		clkreq-gpio = <&msm_gpio 86 0>;
+
+		gdsc-vdd-supply = <&gdsc_pcie_1>;
+		vreg-1.8-supply = <&summit_l12>;
+		vreg-0.9-supply = <&summit_l3>;
+		qcom,vreg-0.9-voltage-level = <950000 950000 24000>;
+
+		clocks = <&clock_gcc clk_gcc_pcie_1_pipe_clk>,
+			<&clock_rpm clk_ln_bb_clk>,
+			<&clock_gcc clk_gcc_pcie_1_aux_clk>,
+			<&clock_gcc clk_gcc_pcie_1_cfg_ahb_clk>,
+			<&clock_gcc clk_gcc_pcie_1_mstr_axi_clk>,
+			<&clock_gcc clk_gcc_pcie_1_slv_axi_clk>,
+			<&clock_gcc clk_pcie_1_phy_ldo>,
+			<&clock_gcc clk_gcc_pcie_phy_1_reset>;
+		clock-names = "pcie_1_pipe_clk", "pcie_1_ref_clk_src",
+				"pcie_1_aux_clk", "pcie_1_cfg_ahb_clk",
+				"pcie_1_mstr_axi_clk", "pcie_1_slv_axi_clk",
+				"pcie_1_ldo", "pcie_1_phy_reset";
+		max-clock-frequency-hz = <125000000>, <0>, <1010000>,
+						<0>, <0>, <0>, <0>,  <0>;
+		qcom,ep-latency = <1000>;
+		status = "disabled";
+	};
+};

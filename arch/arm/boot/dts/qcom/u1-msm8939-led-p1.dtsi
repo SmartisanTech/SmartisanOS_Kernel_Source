@@ -1,0 +1,81 @@
+/* Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	i2c@78b5000 {
+		  ktd202x@30 {
+			  compatible = "ktd202x";
+			  reg = <0x30>;
+			  vcc_i2c-supply = <&pm8916_l5>;
+		  };
+	};
+};
+
+&spmi_bus {
+	qcom,pm8916@0 {
+		qcom,leds_red {
+			status = "okay";
+			compatible = "qcom,leds-qpnp";
+			qcom,led_ktd202x {
+				label = "ktd202x";
+				linux,name = "red";
+				linux,default-trigger = "battery-charging";
+				qcom,default-state = "off";
+				qcom,trickle-gpio = <&msm_gpio 118 0x00>;
+				qcom,max-current = <0xC0>;//24mA
+				qcom,current-setting = <5>;
+				ramp-time = <768>;
+				flash-period = <3000>;
+				scaling = <1>;
+				ontime = <1000>;
+				qcom,id = <10>;
+			};
+		};
+
+		qcom,leds_green {
+			status = "okay";
+			compatible = "qcom,leds-qpnp";
+			qcom,led_ktd202x {
+				label = "ktd202x";
+				linux,name = "green";
+				linux,default-trigger = "battery-charging";
+				qcom,leds_gpio = <&msm_gpio 101 0>;
+				qcom,default-state = "off";
+				qcom,max-current = <0xC0>;//24mA
+				qcom,current-setting = <5>;
+				ramp-time = <768>;
+				flash-period = <3000>;
+				scaling = <1>;
+				ontime = <1000>;
+				qcom,id = <10>;
+			};
+		};
+
+		qcom,leds_blue {
+			status = "okay";
+			compatible = "qcom,leds-qpnp";
+			qcom,led_ktd202x {
+				label = "ktd202x";
+				linux,name = "blue";
+				linux,default-trigger = "battery-charging";
+				qcom,default-state = "off";
+				qcom,max-current = <0xC0>;//24mA
+				qcom,current-setting = <5>;
+				ramp-time = <768>;
+				flash-period = <3000>;
+				scaling = <1>;
+				ontime = <1000>;
+				qcom,id = <10>;
+			};
+		};
+	};
+};
