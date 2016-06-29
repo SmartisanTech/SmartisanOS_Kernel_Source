@@ -1,0 +1,223 @@
+&tlmm_pinmux {
+	pinctrl-names = "default";
+	pinctrl-0  = <&icesky_pmx_hog_default &speaker_id_default &lcd_id_default>;
+
+	no_connect_pmx_icesky {
+		qcom,pins = <&gp 0>, <&gp 1>, <&gp 2>, <&gp 3>, <&gp 8>, <&gp 10>, <&gp 11>, <&gp 26>, <&gp 31>, <&gp 32>, <&gp 33>, <&gp 38>, <&gp 40>, <&gp 49>, <&gp 50>, <&gp 51>,
+ <&gp 55>, <&gp 59>, <&gp 60>, <&gp 61>, <&gp 69>, <&gp 85>, <&gp 86>, <&gp 87>, <&gp 88>, <&gp 89>, <&gp 90>, <&gp 95>, <&gp 110>;
+		qcom,num-grp-pins = <29>;
+		qcom,pin-func = <0>;
+		label = "icesky_pmx_hog_default";
+
+		icesky_pmx_hog_default: icesky_pmx_hog_def {
+			drive-strength = <2>;
+			bias-pull-down;
+			input-enable;
+		};
+	};
+
+	lcd_id {
+		qcom,pins = <&gp 54>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "lcd_id";
+
+		lcd_id_default: lcd_id_def {
+			drive-strength = <2>;
+			bias-pull-up;
+			input-enable;
+		};
+	};
+
+	pmx_nfc_wake_reg{
+		qcom,pins = <&gp 9>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "pmx_nfc_wak";
+
+		nfc_wake_active: active {
+			drive-strength = <6>;
+			bias-pull-up;
+			output-low;
+		};
+
+		nfc_wake_suspend: suspend {
+			drive-strength = <6>;
+			bias-pull-down; /* pull down */
+			output-low;
+		};
+	};
+
+	speaker_id {
+		qcom,pins = <&gp 39>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "speaker_id";
+
+		speaker_id_default: speaker_id_def {
+			drive-strength = <2>;
+			bias-pull-up;
+			input-enable;
+		};
+	};
+
+	pmx_pri_mi2s_sd1_sleep {
+		qcom,pins = <&gp 68>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "pri_mi2s_sd1_sleep";
+		pri_mi2s_sd1_sleep: pri_mi2s_sd1_sleep {
+			drive-strength = <2>;   /* 2 mA */
+			bias-pull-down;         /* PULL DOWN */
+			input-enable;
+		};
+	};
+
+	pmx_pri_mi2s_sd1_active {
+		qcom,pins = <&gp 68>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <1>;
+		label = "pri_mi2s_sd1_active";
+		pri_mi2s_sd1_active: pri_mi2s_sd1_active {
+			drive-strength = <2>;   /* 2 mA */
+			bias-disable;           /* NO PULL */
+		};
+	};
+
+	sm_pa_rst_tfa9890 {
+		qcom,pins = <&gp 52>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "sm_pa_rst_tfa9890";
+
+		rst_tfa9890_active: rst_tfa9890_active {
+			drive-strength = <8>;
+			bias-disable;
+			output-high;
+		};
+
+		rst_tfa9890_suspend: rst_tfa9890_suspend {
+			drive-strength = <2>;
+			bias-disable;
+			output-high;
+		};
+	};
+
+	sm_pa_intr_tfa9890 {
+		qcom,pins = <&gp 74>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <1>;
+		label = "sm_pa_intr_tfa9890";
+
+		intr_tfa9890_active: intr_tfa9890_active {
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+
+		intr_tfa9890_suspend: intr_tfa9890_suspend {
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+
+};
+
+&tlmm_pinmux {
+	wlan_enable {
+		qcom,pins = <&gp 113>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "wlan_enable";
+		wlan_enable_default: default {
+			drive-strength = <16>;
+			bias-pull-down;
+		};
+	};
+
+	bt_enable {
+		qcom,pins = <&gp 130>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "bt_enable";
+		bt_enable_default: default {
+			drive-strength = <16>;
+			bias-pull-down;
+		};
+	};
+
+	bt_bluesleep {
+		qcom,pins = <&gp 108>, <&gp 109>;
+		qcom,num-grp-pins = <2>;
+		qcom,pin-func = <0>;
+		label = "bt_bluesleep";
+		bt_bluesleep_default: default {
+			drive-strength = <16>;
+			bias-pull-up;
+	  };
+	};
+};
+
+&tlmm_pinmux {
+	pmx_ts {
+		qcom,pins = <&gp 62>, <&gp 34>;
+		qcom,pin-func = <0>;
+		qcom,num-grp-pins = <2>;
+		label = "pmx_ts";
+
+		ts_active: ts_active {
+			drive-strength = <16>;
+			bias-pull-up;
+		};
+
+		ts_suspend: ts_suspend {
+			drive-strength = <16>;
+			bias-disable;
+		};
+	};
+};
+
+&tlmm_pinmux {
+	cam_sensor_flash {
+	        /* FLASH ENABLE */
+		qcom,pins = <&gp 75>;
+		qcom,num-grp-pins = <1>;
+		qcom,pin-func = <0>;
+		label = "cam_sensor_flash";
+		/* active state */
+		cam_sensor_flash_default: default {
+			drive-strength = <2>; /* 2 MA */
+			bias-disable; /* No PULL */
+		};
+		/*suspended state*/
+		cam_sensor_flash_sleep: sleep {
+			drive-strength = <2>; /* 2 MA */
+			bias-pull-down = <0>; /* PULL DOWN*/
+		};
+	};
+
+	cam_sensor_rear_active {
+		/* RESET, STANDBYi, CUSTOM1 */
+		qcom,pins = <&gp 92>, <&gp 91>, <&gp 102>;
+		qcom,num-grp-pins = <3>;
+	};
+
+	cam_sensor_rear_suspend {
+		/* RESET, STANDBY, CUSTOM1 */
+		qcom,pins = <&gp 92>, <&gp 91>, <&gp 102>;
+		qcom,num-grp-pins = <3>;
+	};
+
+	cam_sensor_front_active {
+		/* RESET, STANDBY, CUSTOM1 */
+		qcom,pins = <&gp 104>, <&gp 105>, <&gp 77>;
+		qcom,num-grp-pins = <3>;
+	};
+
+	cam_sensor_front_suspend {
+		/* RESET, STANDBY, CUSTOM1 */
+		qcom,pins = <&gp 104>, <&gp 105>, <&gp 77>;
+		qcom,num-grp-pins = <3>;
+	};
+
+
+};

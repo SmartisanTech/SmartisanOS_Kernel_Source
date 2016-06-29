@@ -1,0 +1,60 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+qcom,smartisan_icesky_2690mah {
+	/* #1971061_Smartisan_IceSky_2690mAh_averaged_MasterSlave_Apr15th2015*/
+	qcom,max-voltage-uv = <4350000>;
+	qcom,nom-batt-capacity-mah = <2690>;
+	qcom,batt-id-kohm = <20>;
+	qcom,battery-beta = <3900>;
+	qcom,battery-type = "smartisan_icesky_2690mah";
+	qcom,chg-rslow-comp-c1 = <2194718>;
+	qcom,chg-rslow-comp-c2 = <1644872>;
+	qcom,chg-rs-to-rslow = <1100653>;
+	qcom,chg-rslow-comp-thr = <0x99>;
+	qcom,checksum = <0xA5BB>;
+	qcom,gui-version = "PMI8994GUI - 2.1.6.4";
+	qcom,fg-profile-data = [
+		 FB 83 D0 7D 
+		 AE 81 35 7C 
+		 3D 83 CA 6B 
+		 32 70 7D 7E 
+		 C7 81 A9 9A 
+		 BF BC 85 C8 
+		 64 17 9D 82 
+		 E9 79 A0 7C 
+		 BD 71 30 83 
+		 10 79 1D 85 
+		 09 80 9B 82 
+		 A4 90 78 AC 
+		 95 B1 7D 17 
+		 F2 0A 1D 5B 
+		 CE 6E 9E FE 
+		 7A 44 37 45 
+		 C2 43 00 00 
+		 D6 4C 2D 48 
+		 3F 21 00 00 
+		 00 00 00 00 
+		 00 00 00 00 
+		 4A 71 D2 6B 
+		 CF 6C 3B 82 
+		 26 76 11 69 
+		 48 4D AF 7B 
+		 B9 74 56 61 
+		 B0 58 8E B0 
+		 24 2E 61 90 
+		 5D A0 71 0C 
+		 28 00 FF 36 
+		 F0 11 30 03 
+		 00 00 00 00 
+	];
+};

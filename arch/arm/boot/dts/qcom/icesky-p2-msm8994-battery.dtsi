@@ -1,0 +1,34 @@
+/* Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/{
+	smartisan_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "batterydata-smartisan-2690mah.dtsi"
+	};
+};
+
+&pmi8994_fg {
+	qcom,battery-data = <&smartisan_batterydata>;
+    qcom,resume-soc = <99>;
+    qcom,warm-bat-decidegc = <450>;
+    qcom,cool-bat-decidegc = <100>;
+    qcom,hot-bat-decidegc = <650>;
+    qcom,cold-bat-decidegc = <0>;
+    qcom,thermal-coefficients = [1D 86 13 4B 15 36];
+};
+
+&pmi8994_charger {
+    qcom,bmd-pin-src = "bpd_thm";
+	qcom,fastchg-current-ma = <1500>;
+    qcom,resume-delta-mv = <50>;
+};

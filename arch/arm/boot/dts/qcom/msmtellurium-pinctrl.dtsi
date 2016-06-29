@@ -1,0 +1,424 @@
+/*
+ * Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	tlmm_pinmux: pinctrl@1000000 {
+		compatible = "qcom,msm-tlmm-8916";
+		reg = <0x1000000 0x300000>;
+		interrupts = <0 208 0>;
+
+		/*General purpose pins*/
+		gp: gp {
+			qcom,num-pins = <134>;
+			#qcom,pin-cells = <1>;
+			msm_gpio: msm_gpio {
+				compatible = "qcom,msm-tlmm-gp";
+				gpio-controller;
+				#gpio-cells = <2>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				num_irqs = <134>;
+			};
+		};
+
+		pmx-uartconsole {
+			qcom,pins = <&gp 4>, <&gp 5>;
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "uart-console";
+			uart_console_sleep: uart-console {
+				drive-strength = <2>;
+				bias-pull-down;
+			};
+		};
+
+		sdhc2_cd_pin {
+			qcom,pins = <&gp 67>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <0>;
+			label = "cd-gpio";
+			sdc2_cd_on: cd_on {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+			sdc2_cd_off: cd_off {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+
+		/* SDC pin type */
+		sdc: sdc {
+			/*
+			 * 0-2 for sdc1
+			 * 4-6 for sdc2
+			 */
+			qcom,num-pins = <7>;
+			/*
+			 * Order of pins:
+			 * SDC1: CLK -> 0, CMD -> 1, DATA -> 2
+			 * SDC2: CLK -> 4, CMD -> 5, DATA -> 6
+			 */
+			#qcom,pin-cells = <1>;
+		};
+
+		pmx_sdc1_clk {
+			qcom,pins = <&sdc 0>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc1-clk";
+			sdc1_clk_on: clk_on {
+				bias-disable; /* NO pull */
+				drive-strength = <16>; /* 16 MA */
+			};
+			sdc1_clk_off: clk_off {
+				bias-disable; /* NO pull */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		pmx_sdc1_cmd {
+			qcom,pins = <&sdc 1>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc1-cmd";
+			sdc1_cmd_on: cmd_on {
+				bias-pull-up; /* pull up */
+				drive-strength = <10>; /* 10 MA */
+			};
+			sdc1_cmd_off: cmd_off {
+				bias-pull-up; /* pull up */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		pmx_sdc1_data {
+			qcom,pins = <&sdc 2>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc1-data";
+			sdc1_data_on: data_on {
+				bias-pull-up; /* pull up */
+				drive-strength = <10>; /* 10 MA */
+			};
+			sdc1_data_off: data_off {
+				bias-pull-up; /* pull up */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		pmx_sdc2_clk {
+			qcom,pins = <&sdc 4>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc2-clk";
+			sdc2_clk_on: clk_on {
+				bias-disable; /* NO pull */
+				drive-strength = <16>; /* 16 MA */
+			};
+			sdc2_clk_off: clk_off {
+				bias-disable; /* NO pull */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		pmx_sdc2_cmd {
+			qcom,pins = <&sdc 5>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc2-cmd";
+			sdc2_cmd_on: cmd_on {
+				bias-pull-up; /* pull up */
+				drive-strength = <10>; /* 10 MA */
+			};
+			sdc2_cmd_off: cmd_off {
+				bias-pull-up; /* pull up */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		pmx_sdc2_data {
+			qcom,pins = <&sdc 6>;
+			qcom,num-grp-pins = <1>;
+			label = "sdc2-data";
+			sdc2_data_on: data_on {
+				bias-pull-up; /* pull up */
+				drive-strength = <10>; /* 10 MA */
+			};
+			sdc2_data_off: data_off {
+				bias-pull-up; /* pull up */
+				drive-strength = <2>; /* 2 MA */
+			};
+		};
+
+		spi0_active {
+			/* MOSI, MISO, CLK */
+			qcom,pins = <&gp 0>, <&gp 1>, <&gp 3>;
+			qcom,num-grp-pins = <3>;
+			qcom,pin-func = <1>;
+			label = "spi0-active";
+			/* active state */
+			spi0_default: spi0_default {
+				drive-strength = <12>; /* 12 MA */
+				bias-disable = <0>; /* No PULL */
+			};
+		};
+
+		spi0_suspend {
+			/* MOSI, MISO, CLK */
+			qcom,pins = <&gp 0>, <&gp 1>, <&gp 3>;
+			qcom,num-grp-pins = <3>;
+			qcom,pin-func = <0>;
+			label = "spi0-suspend";
+			/* suspended state */
+			spi0_sleep: spi0_sleep {
+				drive-strength = <2>; /* 2 MA */
+				bias-pull-down; /* PULL Down */
+			};
+		};
+
+		spi0_cs0_active {
+			/* CS */
+			qcom,pins = <&gp 2>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <1>;
+			label = "spi0-cs0-active";
+			spi0_cs0_active: cs0_active {
+				drive-strength = <2>;
+				bias-disable = <0>;
+			};
+		};
+
+		spi0_cs0_suspend {
+			/* CS */
+			qcom,pins = <&gp 2>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <0>;
+			label = "spi0-cs0-suspend";
+			spi0_cs0_sleep: cs0_sleep {
+				drive-strength = <2>;
+				bias-disable = <0>;
+			};
+		};
+
+		/* QDSD pin type */
+		qdsd: qdsd {
+			/* 0-> clk, 1 -> cmd, 2->data0, 3->data1, 4->data2, 5->data3 */
+			qcom,num-pins = <6>;
+
+			#qcom,pin-cells = <1>;
+		};
+
+		pmx_qdsd_clk {
+			qcom,pins = <&qdsd 0>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-clk";
+			qdsd_clk_sdcard: clk_sdcard {
+				bias-disable; /* NO pull */
+				drive-strength = <7>; /* 7 MA */
+			};
+			qdsd_clk_trace: clk_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_clk_swdtrc: clk_swdtrc {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_clk_spmi: clk_spmi {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+		};
+
+		pmx_qdsd_cmd {
+			qcom,pins = <&qdsd 1>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-cmd";
+			qdsd_cmd_sdcard: cmd_sdcard {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_cmd_trace: cmd_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_cmd_swduart: cmd_uart {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_cmd_swdtrc: cmd_swdtrc {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_cmd_jtag: cmd_jtag {
+				bias-disable; /* NO pull */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_cmd_spmi: cmd_spmi {
+				bias-pull-down; /* pull down */
+				drive-strength = <4>; /* 4 MA */
+			};
+		};
+
+		pmx_qdsd_data0 {
+			qcom,pins = <&qdsd 2>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-data0";
+			qdsd_data0_sdcard: data0_sdcard {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data0_trace: data0_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data0_swduart: data0_uart {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data0_swdtrc: data0_swdtrc {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data0_jtag: data0_jtag {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data0_spmi: data0_spmi {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+		};
+
+		pmx_qdsd_data1 {
+			qcom,pins = <&qdsd 3>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-data1";
+			qdsd_data1_sdcard: data1_sdcard {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data1_trace: data1_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data1_swduart: data1_uart {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data1_swdtrc: data1_swdtrc {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data1_jtag: data1_jtag {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+		};
+
+		pmx_qdsd_data2 {
+			qcom,pins = <&qdsd 4>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-data2";
+			qdsd_data2_sdcard: data2_sdcard {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data2_trace: data2_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data2_swduart: data2_uart {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data2_swdtrc: data2_swdtrc {
+				bias-pull-down; /* pull down */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data2_jtag: data2_jtag {
+				bias-pull-up; /* pull up */
+				drive-strength = <3>; /* 3 MA */
+			};
+		};
+
+		pmx_qdsd_data3 {
+			qcom,pins = <&qdsd 5>;
+			qcom,num-grp-pins = <1>;
+			label = "qdsd-data3";
+			qdsd_data3_sdcard: data3_sdcard {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data3_trace: data3_trace {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+			qdsd_data3_swduart: data3_uart {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data3_swdtrc: data3_swdtrc {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data3_jtag: data3_jtag {
+				bias-pull-up; /* pull up */
+				drive-strength = <0>; /* 0 MA */
+			};
+			qdsd_data3_spmi: data3_spmi {
+				bias-pull-down; /* pull down */
+				drive-strength = <3>; /* 3 MA */
+			};
+		};
+
+		uicc-active {
+			qcom,pins = <&gp 59>, <&gp 60>;
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "uicc-active-pins";
+
+			uicc_active: active {
+				drive-strength = <8>;
+				bias-disable;
+			};
+		};
+
+		uicc-sleep {
+			qcom,pins = <&gp 59>, <&gp 60>;
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <0>;
+			label = "uicc-sleep-pins";
+
+			uicc_sleep: sleep {
+				drive-strength = <2>;
+				bias-pull-down;
+			};
+		};
+
+		pmx_i2c_2 {
+			/* CLK, DATA */
+			qcom,pins = <&gp 6>, <&gp 7>;
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <3>;
+			label = "pmx_i2c_2";
+			/* active state */
+			i2c_2_active: i2c_2_active{
+				drive-strength = <2>; /* 2 MA */
+				bias-disable; /* No PULL */
+			};
+			/* suspended state */
+			i2c_2_sleep: i2c_2_sleep {
+				drive-strength = <2>; /* 2 MA */
+				bias-disable; /* No PULL */
+			};
+		};
+	};
+};

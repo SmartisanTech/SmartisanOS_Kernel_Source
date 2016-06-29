@@ -1,0 +1,8 @@
+&soc {
+	qcom,msm-thermal {
+		qcom,hotplug-temp = <85>;
+		qcom,hotplug-temp-hysteresis = <25>;
+		qcom,freq-mitigation-temp = <70>;
+		qcom,freq-mitigation-value = <384000>;
+		};
+};

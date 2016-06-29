@@ -1,0 +1,29 @@
+&soc {
+	bcmdhd {
+		compatible = "android,bcmdhd_wlan";
+		wlpower_on = <&msm_gpio 113 0>;         /* wifi reg_on pin */
+		gpios = <&msm_gpio 114 0>;              /* wifi oob pin */
+		pinctrl-names = "default";
+		pinctrl-0 = <&wlan_enable_default>;
+	};
+};
+
+/ {
+	bt_power {
+		compatible = "bcm,bcm_bluepower";
+		gpio-bt-reset = <&msm_gpio 130 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_enable_default>;
+	};
+
+	bt_lpm {
+		compatible = "bcm,bcm_bluesleep";
+		host-wake-gpio = <&msm_gpio 108 0>;
+		ext-wake-gpio = <&msm_gpio 109 0>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <108 0>;
+		interrupt-names = "host_wake";
+		pinctrl-names = "default";
+		pinctrl-0 = <&bt_bluesleep_default>;
+	};
+};

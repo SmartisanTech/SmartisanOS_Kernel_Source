@@ -1,0 +1,188 @@
+#include "icesky-msm8994-regulator.dtsi"
+#include "icesky-p1-msm-pmi8994.dtsi"
+#include "icesky-p1-msm8992-mdss.dtsi"
+#include "dsi-panel-jdi-1080p-cmd.dtsi"
+#include "icesky-dsi-panel-sharp-1080p-cmd.dtsi"
+
+&pmx_mdss_te {
+	qcom,num-grp-pins = <1>;
+	qcom,pins = <&gp 12>;
+};
+
+&mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_jdi_1080_cmd>;
+	qcom,dsi-pref-second-pan = <&dsi_sharp_1080p_cmd>;
+	pinctrl-names = "mdss_default", "mdss_sleep";
+	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
+	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
+	qcom,dsi-panel-bias-vreg;
+	qcom,platform-reset-gpio = <&msm_gpio 78 0>;
+	//qcom,platform-enable-gpio = <&pm8994_gpios 14 0>;
+	qcom,dsi-panel-id-gpio = <&msm_gpio 54 0x00>;
+};
+
+&mdss_dsi1 {
+	//qcom,dsi-pref-prim-pan = <&dsi_dual_sharp_video_1>;
+};
+
+&dsi_jdi_1080_cmd {
+	qcom,cont-splash-enabled;
+};
+
+&dsi_sharp_1080p_cmd {
+	qcom,cont-splash-enabled;
+};
+
+&slim_msm {
+	tomtom_codec {
+		qcom,cdc-micbias1-ext-cap;
+		qcom,cdc-micbias3-ext-cap;
+		#qcom,cdc-micbias4-ext-cap;
+		qcom,cdc-reset-gpio = <&msm_gpio 53 0>;
+
+		qcom,external-pa-switch = <&msm_gpio 25 0>;
+		qcom,external-pa-enable = <&msm_gpio 57 0>;
+	};
+};
+
+&soc {
+	i2c@f9924000 {
+		synaptics@70 {
+			compatible = "synaptics,dsx";
+			reg = <0x70>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <34 0x2008>;
+			vcc-supply = <&pm8994_l14>;
+			vcc_i2c-supply = <&pm8994_l22>;
+			pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+			pinctrl-0 = <&ts_active>;
+			pinctrl-1 = <&ts_suspend>;
+			//synaptics,i2c-pull-up;
+			synaptics,disable-gpios;
+			synaptics,reset-gpio = <&msm_gpio 62 0x00>;
+			synaptics,irq-gpio = <&msm_gpio 34 0x2008>;
+			synaptics,x-flip = <0>;
+			synaptics,y-flip = <0>;
+			synaptics,power-on-status = <1>;
+			synaptics,reset-on-status = <0>;
+			synaptics,power-delay-ms = <160>;
+			synaptics,reset-delay-ms = <10>;
+			synaptics,reset-active-ms = <90>;
+			//synaptics,reg-en;
+			synaptics,id-gpio = <&msm_gpio 54 0x00>;
+		};
+
+		shtsc@18 {
+			compatible = "sharp,shtsc_i2c";
+			reg = <0x18>;
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <34 0x4>;// high-level trigger. but hard coded in the source.
+			vdd-supply = <&pm8994_l14>;
+			vcc_i2c-supply = <&pm8994_l22>;
+			pinctrl-names = "pmx_ts_active", "pmx_ts_suspend";
+			pinctrl-0 = <&ts_active>;
+			pinctrl-1 = <&ts_suspend>;
+			sharp,reset-gpio = <&msm_gpio 62 0x00>;
+			sharp,irq-gpio = <&msm_gpio 34 0x4>;
+			sharp,panel-coords = <0 0 1079 1919>; // depends on an LCD resolution (0 0 Xmax-1 Ymax-1)
+			sharp,display-coords = <0 0 1079 1919>; // depends on an LCD resolution (0 0 Xmax-1 Ymax-1)
+			sharp,i2c-pull-up;
+			sharp,disable-gpios;
+			ts_touch_num_max = <10>;
+			ts_pressure_max = <65535>;
+			ts_flip_x = <0>;
+			ts_flip_y = <0>;
+			ts_swap_xy = <0>;
+			sharp,id-gpio = <&msm_gpio 54 0x00>;
+		};
+	};
+
+	sound {
+		compatible = "qcom,msm8994-asoc-snd";
+		qcom,model = "msm8994-tomtom-snd-card";
+		reg = <0xfe034000 0x4>,
+		      <0xfe035000 0x4>,
+		      <0xfe036000 0x4>,
+		      <0xfe037000 0x4>;
+		reg-names = "lpaif_pri_mode_muxsel",
+			    "lpaif_sec_mode_muxsel",
+			    "lpaif_tert_mode_muxsel",
+			    "lpaif_quat_mode_muxsel";
+
+		qcom,audio-routing =
+			"AIF4 VI", "MCLK",
+			"RX_BIAS", "MCLK",
+			"LDO_H", "MCLK",
+			"MADINPUT", "MCLK",
+			"AMIC1", "MIC BIAS1 External",
+			"MIC BIAS1 External", "Primary Mic",
+			"AMIC2", "MIC BIAS2 External",
+			"MIC BIAS2 External", "Headset Mic",
+			"AMIC3", "MIC BIAS3 External",
+			"MIC BIAS3 External", "Secondary Mic",
+			"DMIC1", "MIC BIAS1 External",
+			"MIC BIAS1 External", "Digital Mic1",
+			"DMIC2", "MIC BIAS1 External",
+			"MIC BIAS1 External", "Digital Mic2",
+			"DMIC3", "MIC BIAS3 External",
+			"MIC BIAS3 External", "Digital Mic3",
+			"DMIC4", "MIC BIAS3 External",
+			"MIC BIAS3 External", "Digital Mic4",
+			"DMIC5", "MIC BIAS4 External",
+			"MIC BIAS4 External", "Digital Mic5",
+			"DMIC6", "MIC BIAS4 External",
+			"MIC BIAS4 External", "Digital Mic6";
+
+		clock-names = "osr_clk";
+		clocks = <&clock_rpm clk_div_clk1>;
+		qcom,cdc-mclk-gpios = <&pm8994_gpios 15 0>;
+		qcom,tomtom-mclk-clk-freq = <9600000>;
+		pinctrl-names = "sleep",
+				"auxpcm-active",
+				"pri-mi2s-active",
+				"active";
+		pinctrl-0 = <&pri_mi2s_sleep>, <&pri_mi2s_sd0_sleep>, <&pri_mi2s_sd1_sleep>,
+				<&sec_aux_pcm_sleep>, <&sec_aux_pcm_din_sleep>;
+		pinctrl-1 = <&pri_mi2s_sleep>, <&pri_mi2s_sd0_sleep>, <&pri_mi2s_sd1_sleep>,
+				<&sec_aux_pcm_active>, <&sec_aux_pcm_din_active>;
+		pinctrl-2 = <&pri_mi2s_active>, <&pri_mi2s_sd0_active>, <&pri_mi2s_sd1_active>,
+				<&sec_aux_pcm_sleep>, <&sec_aux_pcm_din_sleep>;
+		pinctrl-3 = <&pri_mi2s_active>, <&pri_mi2s_sd0_active>, <&pri_mi2s_sd1_active>,
+				<&sec_aux_pcm_active>, <&sec_aux_pcm_din_active>;
+		asoc-platform = <&pcm0>, <&pcm1>, <&pcm2>, <&voip>, <&voice>,
+				<&loopback>, <&compress>, <&hostless>,
+				<&afe>, <&lsm>, <&routing>, <&cpe>, <&compr>;
+		asoc-platform-names = "msm-pcm-dsp.0", "msm-pcm-dsp.1", "msm-pcm-dsp.2",
+				"msm-voip-dsp", "msm-pcm-voice", "msm-pcm-loopback",
+				"msm-compress-dsp", "msm-pcm-hostless", "msm-pcm-afe",
+				"msm-lsm-client", "msm-pcm-routing", "msm-cpe-lsm",
+				"msm-compr-dsp";
+		asoc-cpu = <&dai_pri_auxpcm>, <&dai_sec_auxpcm>, <&dai_hdmi>, <&dai_mi2s>,
+				<&sb_0_rx>, <&sb_0_tx>, <&sb_1_rx>, <&sb_1_tx>,
+				<&sb_2_rx>, <&sb_2_tx>, <&sb_3_rx>, <&sb_3_tx>,
+				<&sb_4_rx>, <&sb_4_tx>, <&sb_5_tx>, <&bt_sco_rx>,
+				<&bt_sco_tx>, <&int_fm_rx>, <&int_fm_tx>, <&afe_pcm_rx>,
+				<&afe_pcm_tx>, <&afe_proxy_rx>, <&afe_proxy_tx>,
+				<&incall_record_rx>, <&incall_record_tx>, <&incall_music_rx>,
+				<&incall_music2_rx>;
+		asoc-cpu-names = "msm-dai-q6-auxpcm.1", "msm-dai-q6-auxpcm.2",
+				"msm-dai-q6-hdmi.8", "msm-dai-q6-mi2s.0",
+				"msm-dai-q6-dev.16384", "msm-dai-q6-dev.16385",
+				"msm-dai-q6-dev.16386", "msm-dai-q6-dev.16387",
+				"msm-dai-q6-dev.16388", "msm-dai-q6-dev.16389",
+				"msm-dai-q6-dev.16390", "msm-dai-q6-dev.16391",
+				"msm-dai-q6-dev.16392", "msm-dai-q6-dev.16393",
+				"msm-dai-q6-dev.16395", "msm-dai-q6-dev.12288",
+				"msm-dai-q6-dev.12289", "msm-dai-q6-dev.12292",
+				"msm-dai-q6-dev.12293", "msm-dai-q6-dev.224",
+				"msm-dai-q6-dev.225", "msm-dai-q6-dev.241",
+				"msm-dai-q6-dev.240", "msm-dai-q6-dev.32771",
+				"msm-dai-q6-dev.32772", "msm-dai-q6-dev.32773",
+				"msm-dai-q6-dev.32770";
+
+		qcom,cdc-micbias2-headset-only;
+		qcom,mbhc-audio-jack-type = "4-pole-jack";
+		asoc-codec = <&stub_codec>;
+		asoc-codec-names = "msm-stub-codec.1";
+	};
+};
