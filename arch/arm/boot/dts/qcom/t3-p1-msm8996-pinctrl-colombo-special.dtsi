@@ -1,0 +1,32 @@
+/* It inherits from t3-p1-msm8996-special-colombo.dtsi */
+
+&tlmm{
+    pmx_nfc_reset { /*for NXP nfc*/
+        nfc_disable_active: active {
+        mux { 
+            pins = "gpio86";
+            function = "gpio";
+        };
+
+        config {
+            pins = "gpio86";
+            drive-strength = <6>;
+            bias-pull-up;
+        };
+        };
+
+        nfc_disable_suspend: suspend { /*for NXP nfc */
+        mux {
+            pins = "gpio86";
+            function = "gpio";
+        };
+
+        config {
+            pins = "gpio86";
+            drive-strength = <6>;
+            bias-disable;
+        };
+        };
+    };
+
+};

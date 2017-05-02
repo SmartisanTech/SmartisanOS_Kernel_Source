@@ -1,0 +1,23 @@
+&soc {
+   i2c@75b6000 { /* BLSP1 QUP6 */
+       status = "ok";
+       nfc-nci@76 {
+           compatible = "brcm,bcm2079x";
+           reg = <0x76>;
+
+           qcom,wake-gpio = <&tlmm 1 0x00>;
+           qcom,en-gpio = <&tlmm 12 0x00>;
+           qcom,irq-gpio = <&tlmm 9 0x00>;
+
+           qcom,clk-src = "BBCLK2";
+           interrupt-parent = <&tlmm>;
+           interrupts = <9 0>;
+           interrupt-names = "nfc_irq";
+           pinctrl-names = "nfc_active","nfc_suspend";
+           pinctrl-0 = <&nfc_int_active &nfc_disable_active &nfc_wake_active>;
+           pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend &nfc_wake_suspend>;
+           clocks = <&clock_gcc clk_bb_clk2_pin>;
+           clock-names = "brcm_nfc_clk";
+       };
+   };
+};

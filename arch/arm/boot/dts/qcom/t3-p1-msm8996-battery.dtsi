@@ -1,0 +1,46 @@
+/{
+	smartisan_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "batterydata-surabaya-3000mah.dtsi"
+	};
+};
+
+&pmi8994_fg {
+	qcom,battery-data = <&smartisan_batterydata>;
+	qcom,ext-sense-type;
+};
+
+
+&pmi8994_charger {
+		qcom,float-voltage-mv = <4400>;
+		qcom,resume-delta-mv = <100>;
+		qcom,bmd-pin-src = "bpd_thm";
+		qcom,fastchg-current-ma = <4500>;
+		qcom,fastchg-current-comp = <1100>;
+		qcom,float-voltage-comp = <0>;
+		qcom,thermal-mitigation = <1500 1500 800 300 0>;
+		qcom,chg-inhibit-en;
+};
+
+&pmi8994_fg {
+		qcom,fg-iterm-ma = <450>;
+		qcom,resume-soc-raw = <0xfe>;
+		qcom,fg-chg-iterm-ma = <150>;
+		qcom,fg-cc-cv-threshold-mv = <4400>;
+		qcom,fg-cutoff-voltage-mv = <3400>;
+		qcom,warm-bat-decidegc = <450>;
+		qcom,cool-bat-decidegc = <150>;
+		qcom,hot-bat-decidegc = <550>;
+		qcom,cold-bat-decidegc = <0>;
+		qcom,thermal-coefficients = [c8 86 c1 50 d3 37];
+		qcom,hold-soc-while-full;
+		qcom,vbat-estimate-diff-mv = <200>;
+};
+
+&soc {
+qcom,bcl {
+		qcom,ibat-monitor {
+		qcom,soc-low-threshold = <1>;
+		};
+	};
+};

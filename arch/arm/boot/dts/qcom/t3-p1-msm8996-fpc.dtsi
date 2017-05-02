@@ -1,0 +1,94 @@
+&soc {
+	fpc1020 {
+		compatible = "fpc,fpc1020";
+
+		interrupt-parent = <&tlmm>;
+		interrupts = <91 0x0>;
+
+		fpc,gpio_rst    = <&tlmm 63 0>;
+		fpc,gpio_irq    = <&tlmm 91 0>;
+
+		vcc_spi-supply  = <&pm8994_l6>;
+		vdd_ana-supply  = <&pm8994_l6>;
+		vdd_io-supply   = <&pm8994_l6>;
+
+		fpc,enable-on-boot;
+		/delete-property/
+		fpc,enable-wakeup;
+
+		fpc,spi-max-frequency = <4800000>;
+
+		/* Only for SPI Clock Handled by Linux */
+		clock-names = "iface_clk", "core_clk";
+		clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+			<&clock_gcc clk_gcc_blsp1_qup1_spi_apps_clk>;
+
+		pinctrl-names = "fpc1020_spi_active",
+				"fpc1020_reset_reset",
+				"fpc1020_reset_active",
+				"fpc1020_irq_active";
+
+		pinctrl-0 = <&fpc_spi_active>;
+		pinctrl-1 = <&fpc_reset_reset>;
+		pinctrl-2 = <&fpc_reset_active>;
+		pinctrl-3 = <&fpc_irq_active>;
+	};
+};
+
+&tlmm {
+
+	fpc_spi_active: fpc_spi_active {
+		mux {
+			pins = "gpio58", "gpio59", "gpio60", "gpio61";
+			function = "blsp_spi11";
+		};
+		config {
+			pins = "gpio58", "gpio59", "gpio60", "gpio61";
+			drive-strength = <2>;
+			bias-disable = <0>;
+		};
+	};
+
+	fpc_reset_reset: fpc_reset_reset {
+		mux {
+			pins = "gpio63";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio63";
+			drive-strength = <2>;
+			bias-disable;
+			output-low;
+		};
+
+	};
+
+	fpc_reset_active: fpc_reset_active {
+		mux {
+			pins = "gpio63";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio63";
+			drive-strength = <2>;
+			bias-disable;
+			output-high;
+		};
+
+	};
+
+
+	fpc_irq_active: fpc_irq_active {
+		mux {
+			pins = "gpio91";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio91";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+
+};

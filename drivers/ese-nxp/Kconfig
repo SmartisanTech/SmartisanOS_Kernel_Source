@@ -1,0 +1,25 @@
+#
+# NXP P61 Devices
+#
+
+menu "NXP Secure Element devices"
+    depends on P61
+
+config P61_NFC
+    tristate "P61 SPI driver"
+    depends on SPI
+    select CRC_CCITT
+    default n
+    ---help---
+      Say yes if you want P61 secure element driver.
+      This is for spi connected version. If unsure, say N here.
+
+      To compile this driver as a module, choose m here. The module will
+      be called p61.
+
+endmenu
+config P61_NFC
+    tristate "P61 SPI driver"
+    depends on SPI
+    select CRC_CCITT
+    help

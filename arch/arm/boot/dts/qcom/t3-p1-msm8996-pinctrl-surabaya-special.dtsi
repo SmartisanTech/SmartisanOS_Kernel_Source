@@ -1,0 +1,60 @@
+/* It inherits from t3-p1-msm8996-special-surabaya.dtsi */
+
+&tlmm{
+	pmx_nfc_wake_reg{ /*for BRCM nfc */
+	    nfc_wake_active: active {
+		mux {
+			pins = "gpio1";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio1";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	     };
+
+	    nfc_wake_suspend: suspend {
+		mux {
+			pins = "gpio1";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio1";
+			drive-strength = <6>;
+			bias-pull-up; /* pull down */
+		};
+	    };
+	};
+
+    pmx_nfc_reset { /*for BRCM nfc*/
+        nfc_disable_active: active {
+        mux {
+            pins = "gpio12";
+            function = "gpio";
+        };
+
+        config {
+            pins = "gpio12";
+            drive-strength = <6>;
+            bias-pull-up;
+        };
+        };
+
+        nfc_disable_suspend: suspend {
+        mux {
+            pins = "gpio12";
+            function = "gpio";
+        };
+
+        config {
+            pins = "gpio12";
+            drive-strength = <6>;
+            bias-disable;
+        };
+        };
+    };
+
+};

@@ -1,0 +1,61 @@
+/* Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+qcom,smartisan-3000mah {
+/* #2404713_Smartisan_DC901ATL_3000mAh_averaged_MasterSlave_May9th2016*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,nom-batt-capacity-mah = <3000>;
+	qcom,battery-type = "smartisan_3000mah";
+	qcom,v-cutoff-uv = <3400000>;
+	qcom,batt-id-kohm = <10>;
+	qcom,battery-beta = <3435>;
+	qcom,chg-rslow-comp-c1 = <2713719>;
+	qcom,chg-rslow-comp-c2 = <3286813>;
+	qcom,chg-rs-to-rslow = <1094962>;
+	qcom,chg-rslow-comp-thr = <0x99>;
+	qcom,checksum = <0xB33F>;
+	qcom,gui-version = "PMI8996GUI - 1.1.0.0";
+	qcom,fg-profile-data = [
+		 F6 83 B1 7D 
+		 E0 81 71 7C 
+		 5C 83 4C 66 
+		 A2 82 2E 8D 
+		 2E 82 60 99 
+		 1A BC 3E C8 
+		 5B 0F 05 88 
+		 05 7E 0F 82 
+		 99 7C 55 83 
+		 9D 68 B4 7A 
+		 68 87 36 82 
+		 12 9A 5A BD 
+		 80 CA 5A 0E 
+		 67 0C 1A 59 
+		 14 70 B2 FD 
+		 D7 3F 08 3E 
+		 8E 3A 00 00 
+		 35 46 6F 30 
+		 FE 12 00 00 
+		 00 00 00 00 
+		 00 00 00 00 
+		 BC 70 0B 70 
+		 32 6A 73 81 
+		 D4 6D 89 5A 
+		 78 5B 06 7A 
+		 56 6D ED 5B 
+		 D8 5A 25 A2 
+		 17 10 63 99 
+		 64 A0 71 0C 
+		 28 00 FF 36 
+		 F0 11 30 03 
+		 00 00 00 0C 
+	];
+};

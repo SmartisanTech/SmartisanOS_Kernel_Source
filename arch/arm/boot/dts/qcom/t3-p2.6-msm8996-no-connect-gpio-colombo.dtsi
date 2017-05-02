@@ -1,0 +1,21 @@
+&tlmm {
+	pinctrl-names = "default";
+	pinctrl-0 = <&colombo_pmx_no_connect_def>;
+
+	no_connect_pmx_colombo {
+		colombo_pmx_no_connect_def: no_connect_def {
+			mux {
+				pins = "gpio2", "gpio74";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio2", "gpio74";
+				drive-strength = <2>;
+				bias-pull-down;
+				input-enable;
+			};
+		};
+	};
+
+};

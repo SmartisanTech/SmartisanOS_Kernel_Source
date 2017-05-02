@@ -1,0 +1,71 @@
+&soc {
+	sound-9335 {
+		asoc-cpu = <&dai_pri_auxpcm>, <&dai_sec_auxpcm>,
+				<&dai_hdmi>, <&dai_sec_mi2s>,
+				<&dai_tert_mi2s>,
+				<&sb_0_rx>, <&sb_0_tx>, <&sb_1_rx>, <&sb_1_tx>,
+				<&sb_2_rx>, <&sb_2_tx>, <&sb_3_rx>, <&sb_3_tx>,
+				<&sb_4_rx>, <&sb_4_tx>, <&sb_5_tx>, <&afe_pcm_rx>,
+				<&afe_pcm_tx>, <&afe_proxy_rx>, <&afe_proxy_tx>,
+				<&incall_record_rx>, <&incall_record_tx>,
+				<&incall_music_rx>, <&incall_music2_rx>,
+				<&sb_5_rx>, <&sb_6_rx>;
+		asoc-cpu-names = "msm-dai-q6-auxpcm.1", "msm-dai-q6-auxpcm.2",
+				"msm-dai-q6-hdmi.8", "msm-dai-q6-mi2s.1",
+				"msm-dai-q6-mi2s.2",
+				"msm-dai-q6-dev.16384", "msm-dai-q6-dev.16385",
+				"msm-dai-q6-dev.16386", "msm-dai-q6-dev.16387",
+				"msm-dai-q6-dev.16388", "msm-dai-q6-dev.16389",
+				"msm-dai-q6-dev.16390", "msm-dai-q6-dev.16391",
+				"msm-dai-q6-dev.16392", "msm-dai-q6-dev.16393",
+				"msm-dai-q6-dev.16395", "msm-dai-q6-dev.224",
+				"msm-dai-q6-dev.225", "msm-dai-q6-dev.241",
+				"msm-dai-q6-dev.240", "msm-dai-q6-dev.32771",
+				"msm-dai-q6-dev.32772", "msm-dai-q6-dev.32773",
+				"msm-dai-q6-dev.32770", "msm-dai-q6-dev.16394",
+				"msm-dai-q6-dev.16396";
+
+		asoc-codec = <&stub_codec>, <&tfa98xx_codec>, <&cs4398_codec>;
+		asoc-codec-names = "msm-stub-codec.1", "tfa98xx.5-0034", "cs4398-004c";
+	};
+
+	qcom,msm-dai-mi2s {
+		dai_tert_mi2s: qcom,msm-dai-q6-mi2s-tert {
+			compatible = "qcom,msm-dai-q6-mi2s";
+			qcom,msm-dai-q6-mi2s-dev-id = <2>;
+			qcom,msm-mi2s-rx-lines = <1>;
+			qcom,msm-mi2s-tx-lines = <0>;
+			qcom,msm-mi2s-slave = <1>;
+			qcom,msm-mi2s-ext-mclk = <0>;
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&tert_mi2s_active &tert_mi2s_sd0_active>;
+			pinctrl-1 = <&tert_mi2s_sleep &tert_mi2s_sd0_sleep>;
+		};
+
+	};
+};
+
+&i2c_9 {
+	cs4398_codec: cs4398@4c {
+		compatible = "cirrus,cs4398";
+		reg = <0x4c>;
+		ti,tlv-reg = <0x18>;
+		cs,reset-gpio = <&tlmm 16 0>;
+		ti,reset-gpio = <&tlmm 85 0>;
+		hifi-ldo-en = <&tlmm 95 0>;
+		cs,va-enable = <&tlmm 29 0>;
+		cs,hifi_headset_sel = <&tlmm 49 0>;
+		qcom,pll-ref-clk-gpio = <&pm8994_gpios 17 0>;
+		clock-names = "pll_ref_clk";
+		clocks = <&clock_gcc clk_div_clk3>;
+		qcom,node_has_rpm_clock;
+	};
+
+//	tlv320@18 {
+//		compatible = "ti,tlv320adc3001";
+//		reg = <0x18>;
+//		ti,reset-gpio = <&tlmm 85 0>;
+//		hifi-ldo-en = <&tlmm 95 0>;
+//		cs,va-enable = <&tlmm 29 0>;
+//	};
+};

@@ -1,0 +1,95 @@
+/*rewrite msm8996-mtp.dtsi*/
+
+
+/*rewrite msm-pm8994.dtsi*/
+&spmi_bus {
+	qcom,pm8994@0 {
+		qcom,power-on@800 {
+			qcom,pon_2 {
+				qcom,pon-type = <1>;
+				qcom,pull-up = <1>;
+				linux,code = <2>;
+			};
+
+		};
+	};
+};
+
+
+&pm8994_gpios {
+	gpio@c000 { /* GPIO 1 */
+		qcom,mode = <0>;
+		qcom,pull = <0>;
+		qcom,vin-sel = <2>;
+		qcom,src-sel = <0>;
+		status = "okay";
+	};
+
+
+	gpio@c500 { /* GPIO 6 */
+		qcom,mode = <0>;
+		qcom,pull = <0>;
+		qcom,vin-sel = <2>;
+		qcom,src-sel = <0>;
+		status = "okay";
+	};
+
+};
+
+
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		input-name = "gpio-keys";
+
+		key_menu {
+			label = "key_menu";
+			gpios = <&pm8994_gpios 2 0x1>;
+			linux,input-type = <1>;
+			linux,code = <158>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+                key_back {
+			label = "key_back";
+			gpios = <&pm8994_gpios 1 0x1>;
+			linux,input-type = <1>;
+			linux,code = <139>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+                vol_dn_r {
+			label = "volume_down_right";
+			gpios = <&pm8994_gpios 4 0x1>;
+			linux,input-type = <1>;
+			linux,code = <114>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+		vol_up_l {
+			label = "volume_up_left";
+			gpios = <&pm8994_gpios 5 0x1>;
+			linux,input-type = <1>;
+			linux,code = <3>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+                vol_up_r {
+			label = "volume_up_right";
+			gpios = <&pm8994_gpios 6 0x1>;
+			linux,input-type = <1>;
+			linux,code = <115>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+        };
+
+};
+
+
+
