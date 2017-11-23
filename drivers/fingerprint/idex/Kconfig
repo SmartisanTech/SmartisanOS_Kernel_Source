@@ -1,0 +1,17 @@
+#
+# Fingerprints driver configuration
+#
+menuconfig INPUT_FINGERPRINT
+	bool "FingerPrints"
+	help
+	  Say Y here, and a list of supported fingerprints will be displayed.
+	  This option doesn't affect the kernel.
+
+	  If unsure, say Y.
+
+if INPUT_FINGERPRINT
+config INPUT_IX_BTP
+       tristate "IX fingerprint sensor support"
+       depends on SPI_MASTER
+
+endif

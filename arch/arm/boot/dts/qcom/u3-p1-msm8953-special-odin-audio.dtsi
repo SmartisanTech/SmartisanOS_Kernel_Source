@@ -1,0 +1,157 @@
+
+&ext_codec {
+	status = "disabled";
+};
+
+&slim_msm {
+	status = "disabled";
+};
+
+&dai_slim {
+	status = "disabled";
+};
+
+&wcd9xxx_intc {
+	status = "disabled";
+};
+
+&clock_audio {
+	status = "disabled";
+};
+
+&wcd9335 {
+	status = "disabled";
+};
+
+&wcd_rst_gpio {
+	status = "disabled";
+};
+
+&pm8953_diangu_analog {
+	status = "ok";
+};
+
+&int_codec {
+	status = "ok";
+	qcom,msm-mbhc-hphl-swh = <1>;
+	qcom,msm-hs-micbias-type = "external";
+	qcom,cdc-us-euro-gpios = <&tlmm 128 0>;
+	qcom,msm-micbias2-ext-cap;
+
+	pinctrl-0 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_sus &cross_conn_det_sus>;
+	pinctrl-1 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_act &cross_conn_det_sus>;
+	pinctrl-2 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_sus &cross_conn_det_act>;
+	pinctrl-3 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_act &cross_conn_det_act>;
+	pinctrl-4 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_sus &cross_conn_det_sus>;
+	pinctrl-5 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_act &cross_conn_det_sus>;
+	pinctrl-6 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_sus &cross_conn_det_act>;
+	pinctrl-7 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_sus
+		&cdc_pdm_lines_2_act &cross_conn_det_act>;
+	pinctrl-8 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_sus &cross_conn_det_sus>;
+	pinctrl-9 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_act &cross_conn_det_sus>;
+	pinctrl-10 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_sus &cross_conn_det_act>;
+	pinctrl-11 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_act &cross_conn_det_act>;
+	pinctrl-12 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_sus &cross_conn_det_sus>;
+	pinctrl-13 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_act &cross_conn_det_sus>;
+	pinctrl-14 = <&cdc_pdm_lines_sus &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_sus &cross_conn_det_act>;
+	pinctrl-15 = <&cdc_pdm_lines_act &cdc_pdm_comp_lines_act
+		&cdc_pdm_lines_2_act &cross_conn_det_act>;
+};
+
+&pm8953_diangu_dig {
+	status = "ok";
+	qcom,cdc-micbias-cfilt-mv = <2700000>; /* set micbias2 to 2.7v default */
+	qcom,ext-pa-enable = <&tlmm 132  0>;
+	qcom,speaker-id = <&tlmm 93 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&ext_pa_en_default &speaker_id_default>;
+};
+
+&cross_conn_det_act {
+	mux {
+		pins = "gpio128";
+	};
+	config {
+		pins = "gpio128";
+	};
+};
+
+&cross_conn_det_sus {
+	mux {
+		pins = "gpio128";
+	};
+	config {
+		pins = "gpio128";
+	};
+};
+
+&tlmm {
+	ext_pa_en_default: ext_pa_en_default {
+		mux {
+			pins = "gpio132";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio132";
+			drive-strength = <8>;
+			output-low;
+			bias-disable;
+		};
+	};
+
+	speaker_id_default: speaker_id_default {
+		mux {
+			pins = "gpio93";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio93";
+			bias-pull-up; /* pull up */
+			input-enable;
+		};
+	};
+
+	usb_switch_default: usb_switch_default{
+		mux {
+			pins = "gpio33";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio33";
+			drive-strength = <8>;
+			output-low; // select usb default
+			bias-disable;
+		};
+	};
+
+	hs_det_default: hs_det_default{
+		mux {
+			pins = "gpio25";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio25";
+			drive-strength = <8>;
+			output-high;
+			bias-disable;
+		};
+	};
+};

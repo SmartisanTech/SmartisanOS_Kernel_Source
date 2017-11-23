@@ -1,0 +1,62 @@
+/* Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+qcom,smartisan_odinatl_3500mah {
+	/* #2725911_Smartisan_Odinatl_3500mAh_averaged_MasterSlave_Dec28th2016*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,nom-batt-capacity-mah = <3500>;
+	qcom,batt-id-kohm = <10>;
+	qcom,cool-fastchg-current-comp = <700>;
+	qcom,thermal-coefficients = [C2 86 BB 50 CF 37];
+	qcom,battery-beta = <3435>;
+	qcom,battery-type = "smartisan_atl_3500mAh";
+	qcom,chg-rslow-comp-c1 = <3133810>;
+	qcom,chg-rslow-comp-c2 = <4036960>;
+	qcom,chg-rs-to-rslow = <1090649>;
+	qcom,chg-rslow-comp-thr = <0x9C>;
+	qcom,checksum = <0x2903>;
+	qcom,gui-version = "PMI8950GUI - 2.0.0.16";
+	qcom,fg-profile-data = [
+		 DE 83 C0 7C
+		 0C 81 28 77
+		 58 83 A2 65
+		 5E 83 6A 8E
+		 7D 82 CC 92
+		 6F B4 CB BB
+		 52 16 05 88
+		 EA 7D CF 81
+		 3A 7C 51 83
+		 A3 6A 76 78
+		 FB 85 4C 82
+		 B0 99 FB BC
+		 EC C9 59 0D
+		 8E 0D 1D 59
+		 14 70 50 FD
+		 AA 36 08 44
+		 77 39 00 00
+		 35 46 34 30
+		 FE 12 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 6E 70 33 6B
+		 0D 71 22 89
+		 AE 74 17 68
+		 8C 5E 59 79
+		 B7 6E BD 60
+		 8B 76 5B A3
+		 1D 6C 68 17
+		 66 A0 71 0C
+		 28 00 FF 36
+		 F0 11 30 03
+		 00 00 00 0C
+	];
+};

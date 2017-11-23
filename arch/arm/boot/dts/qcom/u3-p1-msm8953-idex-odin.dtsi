@@ -1,0 +1,66 @@
+&soc {
+	ix_btp {
+	compatible = "ix,btp";
+	spi-max-frequency = <1000000>;
+	input-device-name = "cb_fingerprint";
+	interrupt-parent = <&tlmm>;
+	interrupts = <36 0x0>;
+
+	ix,gpio_reset    = <&tlmm 140 0>;
+	ix,gpio_irq      = <&tlmm 36 0>;
+
+	clock-names = "iface_clk", "core_clk";
+	clocks = <&clock_gcc clk_gcc_blsp2_ahb_clk>,
+	<&clock_gcc clk_gcc_blsp2_qup3_spi_apps_clk>;
+
+	//pinctrl-names = "ixfp_spi_active",
+//			"ixfp_reset_reset",
+//			"ixfp_reset_active",
+//			"ixfp_irq_active";
+
+//	pinctrl-0 = <&ix_spi_active>;
+//	pinctrl-1 = <&ix_reset_reset>;
+//	pinctrl-2 = <&ix_reset_active>;
+//	pinctrl-3 = <&ix_irq_active>;
+	};
+};
+
+&tlmm {
+	goodix_reset_reset: goodix_reset_reset{
+		mux {
+			pins = "gpio140";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio140";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+	goodix_reset_active: goodix_reset_active{
+		mux {
+			pins = "gpio140";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio140";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-high;
+		};
+	};
+
+	goodix_irq_active: goodix_irq_active {
+		mux {
+			pins = "gpio36";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio36";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+};

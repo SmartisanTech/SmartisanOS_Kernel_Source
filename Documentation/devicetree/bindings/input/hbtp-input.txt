@@ -1,0 +1,60 @@
+Platform device for Host Based Touch Processing (HBTP)
+
+hbtp_input is a kernel driver that provides functionality needed by
+Host Based Touch Processing (HBTP) from the kernel. One of the
+functionality is to manage the power source for touch Analog Front
+End (AFE).
+
+Required properties:
+
+ - compatible		: should be "qcom,hbtp-input"
+
+Optional properties:
+
+ - vcc_ana-supply	: Analog power supply needed to power device
+ - qcom,afe-load	: AFE/Analog supply load in uA
+ - qcom,afe-vtg-min	: AFE/Analog minimum voltage in uV
+ - qcom,afe-vtg-max	: AFE/Analog maximum voltage in uV
+ - qcom,dig-load	: Digital supply load in uA
+ - qcom,dig-vtg-min	: Digital supply minimum voltage in uV
+ - qcom,dig-vtg-max	: Digital supply maximum voltage in uV
+ - qcom,display-resolution	: Display resolution - maxX, maxY
+ - qcom,use-scale	: boolean, enables the scaling for touch coordinates
+
+Optional properties if qcom,use-scale DT property is defined:
+ - qcom,def-maxx	: default X-resolution of the touch panel.
+ - qcom,def-maxy	: default Y-resolution of the touch panel.
+			(Above two properties should be defined in pairs only)
+ - qcom,des-maxx	: desired X-resolution of the touch panel.
+ - qcom,des-maxy	: desired Y-resolution of the touch panel.
+			(Above two properties should be defined in pairs only)
+
+Optional properties if secure touch is enabled for hbtp input driver
+ - interrupt-parent	: Parent of interrupt
+ - interrupts		: Touch sample interrupt to indicate presense or release
+			  of fingers on the panel.
+ - hbtp,irq-gpio	: GPIO used for interrupt.
+
+Example:
+	&soc {
+		hbtp {
+			compatible = "qcom,hbtp-input";
+			vcc_ana-supply = <&pm8941_l17>;
+			vcc_dig-supply = <&pm8950_l16>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <65 0>;
+			hbtp,irq-gpio = <&tlmm 65 0x00>;
+			qcom,afe-load = <50000>;
+			qcom,afe-vtg-min = <2850000>;
+			qcom,afe-vtg-max = <2850000>;
+			qcom,dig-load = <15000>;
+			qcom,dig-vtg-min = <1800000>;
+			qcom,dig-vtg-max = <1800000>;
+			qcom,display-resolution = <719 1279>;
+			qcom,use-scale;
+			qcom,default-max-x = <1080>;
+			qcom,default-max-y = <1920>;
+			qcom,desired-max-x = <720>;
+			qcom,desired-max-y = <1280>;
+		};
+	};

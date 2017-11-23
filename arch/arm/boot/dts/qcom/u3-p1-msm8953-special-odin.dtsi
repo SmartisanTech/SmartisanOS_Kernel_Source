@@ -1,0 +1,9 @@
+/* include smartisan specific periphery */
+#include "u3-p1-msm8953-charging.dtsi"
+#include "u3-p1-msm8953-goodix-odin.dtsi"
+#include "u3-p1-msm8953-special-odin-audio.dtsi"
+#include "u3-p1-msm8953-haptics.dtsi"
+#include "u3-p1-msm8953-key-odin.dtsi"
+#include "u3-p1-msm8953-idex-odin.dtsi"
+#include "u3-p1-msm8953-leds-odin.dtsi"
+

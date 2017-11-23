@@ -1,0 +1,827 @@
+#
+# QCOM Soc drivers
+#
+config QCOM_GSBI
+        tristate "QCOM General Serial Bus Interface"
+        depends on ARCH_QCOM
+        help
+          Say y here to enable GSBI support.  The GSBI provides control
+          functions for connecting the underlying serial UART, SPI, and I2C
+          devices to the output pins.
+
+if ARCH_MSM
+
+config CP_ACCESS64
+	depends on ARM64
+        tristate "CP 64-bit register access tool"
+        help
+          Provide support for AARCH64 CP register access using /sys
+          interface. Read and write to CP registers from userspace
+          through sysfs interface. A sys file (cp_rw) will be created under
+          /sys/devices/cpaccess/cpaccess0.
+
+          If unsure, say N.
+
+config MSM_INRUSH_CURRENT_MITIGATION
+        bool "Inrush-current mitigation Driver"
+        help
+         This driver helps in mitigating in-rush current on MSM
+         chipsets which has voltage droop issues due to sudden
+         huge load on a rail. This driver introduces an intermediate
+         load to mitigate the in-rush current.
+
+config MSM_QDSP6_APRV2
+        bool "Audio QDSP6 APRv2 support"
+        depends on MSM_SMD
+        help
+          Enable APRv2 IPC protocol support between
+          application processor and QDSP6. APR is
+          used by audio driver to configure QDSP6's
+          ASM, ADM and AFE.
+
+config MSM_GLADIATOR_ERP
+	tristate "GLADIATOR coherency interconnect error reporting driver"
+	help
+	  Support dumping debug information for the GLADIATOR
+	  cache interconnect in the error interrupt handler.
+	  Meant to be used for debug scenarios only.
+
+	  If unsure, say N.
+
+config PANIC_ON_GLADIATOR_ERROR
+	depends on MSM_GLADIATOR_ERP
+	bool "Panic on GLADIATOR error report"
+	help
+	  Panic upon detection of an Gladiator coherency interconnect error
+	  in order to support dumping debug information.
+	  Meant to be used for debug scenarios only.
+
+	  If unsure, say N.
+
+config MSM_GLADIATOR_ERP_V2
+	tristate "GLADIATOR coherency interconnect error reporting driver v2"
+	help
+	  Support dumping debug information for the GLADIATOR
+	  cache interconnect in the error interrupt handler.
+	  Meant to be used for debug scenarios only.
+
+	  If unsure, say N.
+
+config PANIC_ON_GLADIATOR_ERROR_V2
+	depends on MSM_GLADIATOR_ERP_V2
+	bool "Panic on GLADIATOR error report v2"
+	help
+	  Panic upon detection of an Gladiator coherency interconnect error
+	  in order to support dumping debug information.
+	  Meant to be used for debug scenarios only.
+
+	  If unsure, say N.
+
+config MSM_QDSP6_APRV3
+	bool "Audio QDSP6 APRv3 support"
+	depends on MSM_SMD
+	help
+	  Enable APRv3 IPC protocol support between
+	  application processor and QDSP6. APR is
+	  used by audio driver to configure QDSP6v2's
+	  ASM, ADM and AFE.
+
+config MSM_QDSP6_APRV2_GLINK
+	bool "Audio QDSP6 APRv2 over Glink support"
+	depends on MSM_GLINK
+	help
+	  Enable APRv2 IPC protocol support over
+	  Glink between application processor and
+	  QDSP6. APR is used by audio driver to
+	  configure QDSP6's ASM, ADM and AFE.
+
+config MSM_QDSP6_APRV3_GLINK
+	bool "Audio QDSP6 APRv3 over Glink support"
+	depends on MSM_GLINK
+	help
+	  Enable APRv3 IPC protocol support over
+	  Glink between application processor and
+	  QDSP6. APR is used by audio driver to
+	  configure QDSP6v2's ASM, ADM and AFE.
+
+config MSM_ADSP_LOADER
+	tristate "ADSP loader support"
+	select SND_SOC_MSM_APRV2_INTF
+	depends on MSM_QDSP6_APRV2 || MSM_QDSP6_APRV3 || \
+		MSM_QDSP6_APRV2_GLINK || MSM_QDSP6_APRV3_GLINK
+	help
+	  Enable ADSP image loader.
+	  The ADSP loader brings ADSP out of reset
+	  for the platforms that use APRv2.
+	  Say M if you want to enable this module.
+
+config MSM_MEMORY_DUMP
+	bool "MSM Memory Dump Support"
+	help
+	  This enables memory dump feature. It allows various client
+	  subsystems to register respective dump regions. At the time
+	  of deadlocks or cpu hangs these dump regions are captured to
+	  give a snapshot of the system at the time of the crash.
+
+config MSM_MEMORY_DUMP_V2
+	bool "MSM Memory Dump V2 Support"
+	help
+	  This enables memory dump feature. It allows various client
+	  subsystems to register respective dump regions. At the time
+	  of deadlocks or cpu hangs these dump regions are captured to
+	  give a snapshot of the system at the time of the crash.
+
+config MSM_DEBUG_LAR_UNLOCK
+	bool "MSM Debug LAR Unlock Support"
+	depends on MSM_MEMORY_DUMP_V2
+	help
+	 This allows unlocking Core Debug lock to allow capture
+	 of upper 32 bits of program counter at the time of
+	 system crash. This is useful in getting correct crash
+	 location.
+
+config MSM_JTAG
+	bool "Debug and ETM trace support across power collapse"
+	help
+	  Enables support for debugging (specifically breakpoints) and ETM
+	  processor tracing across power collapse both for JTag and OS hosted
+	  software running on the target. Enabling this will ensure debug
+	  and ETM registers are saved and restored across power collapse.
+
+	  If unsure, say 'N' here to avoid potential power, performance and
+	  memory penalty.
+
+config MSM_JTAG_MM
+	bool "Debug and ETM trace support across power collapse using memory mapped access"
+	help
+	  Enables support for debugging (specifically breakpoints) and ETM
+	  processor tracing across power collapse both for JTag and OS hosted
+	  software running on the target. Enabling this will ensure debug
+	  and ETM registers are saved and restored across power collapse.
+
+	  Required on targets on which cp14 access to debug and ETM registers is
+	  not permitted and so memory mapped access is necessary.
+
+	  If unsure, say 'N' here to avoid potential power, performance and
+	  memory penalty.
+
+config MSM_JTAGV8
+	bool "Debug and ETM trace support across power collapse for ARMv8"
+	help
+	  Enables support for debugging (specifically breakpoints) and ETM
+	  processor tracing across power collapse both for JTag and OS hosted
+	  software running on ARMv8 target. Enabling this will ensure debug
+	  and ETM registers are saved and restored across power collapse.
+
+	  If unsure, say 'N' here to avoid potential power, performance and
+	  memory penalty.
+
+config MSM_BOOT_STATS
+	bool "Use MSM boot stats reporting"
+	help
+	 Use this to report msm boot stats such as bootloader throughput,
+	 display init, total boot time.
+	 This figures are reported in mpm sleep clock cycles and have a
+	 resolution of 31 bits as 1 bit is used as an overflow check.
+
+config MSM_BOOT_TIME_MARKER
+	bool "Use MSM boot time marker reporting"
+	depends on MSM_BOOT_STATS
+	help
+	 Use this to mark msm boot kpi for measurement.
+	 An instrumentation for boot time measurement.
+	 To create an entry, call "place_marker" function.
+	 At userspace, write marker name to "/sys/kernel/debug/bootkpi/kpi_values"
+	 If unsure, say N
+
+config MSM_CPUSS_DUMP
+	bool "CPU Subsystem Dumping support"
+	help
+	 Add support to dump various hardware entities such as the instruction
+	 and data tlb's as well as the unified tlb, which are a part of the
+	 cpu subsystem to an allocated buffer. This allows for analysis of the
+	 the entities if corruption is suspected.
+	 If unsure, say N
+
+config MSM_COMMON_LOG
+	bool "MSM Common Log Support"
+	help
+	 Use this to export symbols of some log address and variables
+	 that need to parse crash dump files to a memory dump table. This
+	 table can be used by post analysis tools to extract information
+	 from memory when device crashes.
+
+config MSM_DDR_HEALTH
+	bool "MSM DDR Health Driver"
+	default n
+	help
+	  This option enables a driver which allocates DDR buffer of requested
+	  size and sends it's locatoin to RPM sub system. RPM subsystem can
+	  make use of this buffer to monitor DDR health.
+
+config MSM_HYP_DEBUG
+	bool "MSM Hypervisor Debug Driver"
+	help
+	  This enables the Hypervisor Debug driver. It allows the mapping and
+	  and unmapping of user defined memory range from stage 2. It also
+	  supports mapping and unmapping PIL image load memory range from
+	  stage 2 depending upon the PIL image state.
+
+config MSM_WATCHDOG_V2
+	bool "MSM Watchdog Support"
+	help
+	  This enables the watchdog module. It causes kernel panic if the
+	  watchdog times out. It allows for detection of cpu hangs and
+	  deadlocks. It does not run during the bootup process, so it will
+	  not catch any early lockups.
+
+config MSM_FORCE_WDOG_BITE_ON_PANIC
+	bool "MSM force watchdog bite"
+	depends on MSM_WATCHDOG_V2
+	help
+	  This forces a watchdog bite when the device restarts due to a
+	  kernel panic. On certain MSM SoCs, this provides us
+	  additional debugging information.
+
+config MSM_CORE_HANG_DETECT
+	tristate "MSM Core Hang Detection Support"
+	help
+	  This enables the core hang detection module. It causes SoC
+	  reset on core hang detection and collects the core context
+	  for hang.
+
+config MSM_GLADIATOR_HANG_DETECT
+	tristate "MSM Gladiator Hang Detection Support"
+	help
+	  This enables the gladiator hang detection module.
+	  If the configured threshold is reached, it causes SoC reset on
+	  gladiator hang detection and collects the context for the
+	  gladiator hang.
+
+config MSM_CPU_PWR_CTL
+	bool "Cpu subsystem power control"
+	depends on SMP && (ARM || ARM64)
+	default y
+	help
+	Provides routines to power on cpu rails and l2 cache
+	controller during coldboot.
+
+config MSM_CACHE_M4M_ERP64
+       bool "Cache and M4M error report"
+       depends on ARCH_MSM8996
+       help
+         Say 'Y' here to enable reporting of cache and M4M errors to the kernel
+         log. The kernel log contains collected error syndrome and address
+         registers. These register dumps can be used as useful information
+         to find out possible hardware problems.
+
+config MSM_CACHE_M4M_ERP64_PANIC_ON_CE
+       bool "Panic on correctable cache/M4M errors"
+       depends on MSM_CACHE_M4M_ERP64
+       help
+         Say 'Y' here to cause kernel panic when correctable cache/M4M errors
+         are detected.  Enabling this is useful when you want to dump memory
+         and system state close to the time when the error occured.
+
+          If unsure, say N.
+
+config MSM_CACHE_M4M_ERP64_PANIC_ON_UE
+       bool "Panic on uncorrectable cache/M4M errors"
+       depends on MSM_CACHE_M4M_ERP64
+       help
+         Say 'Y' here to cause kernel panic when uncorrectable cache/M4M errors
+         are detected.
+
+config MSM_RPM_SMD
+	bool "RPM driver using SMD protocol"
+	help
+	  RPM is the dedicated hardware engine for managing shared SoC
+	  resources. This config adds driver support for using SMD as a
+	  transport layer communication with RPM hardware. It also selects
+	  the MSM_MPM config that programs the MPM module to monitor interrupts
+	  during sleep modes.
+
+config MSM_RPM_RBCPR_STATS_V2_LOG
+	tristate "MSM Resource Power Manager RPBCPR Stat Driver"
+	depends on DEBUG_FS
+	help
+	  This option enables v2 of the rpmrbcpr_stats driver which reads RPM
+	  memory for statistics pertaining to RPM's RBCPR(Rapid Bridge Core
+	  Power Reduction) driver. The drivers outputs the message via a
+	  debugfs node.
+
+config MSM_RPM_LOG
+	tristate "MSM Resource Power Manager Log Driver"
+	depends on DEBUG_FS
+	depends on MSM_RPM_SMD
+	default n
+	help
+          This option enables a driver which can read from a circular buffer
+          of messages produced by the RPM. These messages provide diagnostic
+          information about RPM operation. The driver outputs the messages
+          via a debugfs node.
+
+config MSM_RPM_STATS_LOG
+        tristate "MSM Resource Power Manager Stat Driver"
+        depends on DEBUG_FS
+        depends on MSM_RPM_SMD
+        default n
+          help
+          This option enables a driver which reads RPM messages from a shared
+          memory location. These messages provide statistical information about
+          the low power modes that RPM enters. The drivers outputs the message
+          via a debugfs node.
+
+config MSM_RUN_QUEUE_STATS
+	bool "Enable collection and exporting of MSM Run Queue stats to userspace"
+	help
+	 This option enables the driver to periodically collecting the statistics
+	 of kernel run queue information and calculate the load of the system.
+	 This information is exported to usespace via sysfs entries and userspace
+	 algorithms uses info and decide when to turn on/off the cpu cores.
+
+config MSM_SCM
+       bool "Secure Channel Manager (SCM) support"
+       default n
+
+menuconfig MSM_SCM_XPU
+	bool "MSM XPU configuration driver"
+	depends on MSM_SCM
+
+if MSM_SCM_XPU
+
+choice
+	prompt "XPU Violation Behavior"
+	default MSM_XPU_ERR_FATAL
+
+config MSM_XPU_ERR_FATAL
+	bool "Configure XPU violations as fatal errors"
+	help
+	 Select if XPU violations have to be configured as fatal errors.
+
+config MSM_XPU_ERR_NONFATAL
+	bool "Configure XPU violations as non-fatal errors"
+	help
+	 Select if XPU violations have to be configured as non-fatal errors.
+
+endchoice
+
+endif
+
+config MSM_SCM_ERRATA
+	depends on DEBUG_FS
+	depends on MSM_SCM
+	bool "Support for enabling/disabling errata workarounds via debugfs"
+	help
+	  Exposes a debugfs interface intended for advanced system debugging
+	  where it may be desirable to enable or disable certain hardware
+	  errata workarounds at runtime.
+
+	  If unsure, say N.
+
+config MSM_PFE_WA
+	depends on HW_PERF_EVENTS
+	bool "Enable a H/W PFE WA"
+	help
+	  Sometimes the PFTLB entries get stuck in the invalid state and new
+	  prefetches get dropped. For a workaround, count L1 prefeches dropped
+	  due to PFTLB miss and reset H/W PFE when a overflow happens.
+
+	  If unsure, say N.
+
+config MSM_MPM_OF
+       bool "Modem Power Manager"
+       depends on OF
+       help
+        MPM is a dedicated hardware resource responsible for entering and
+        waking up from a system wide low power mode. The MPM driver tracks
+        the wakeup interrupts and configures the MPM to monitor the wakeup
+        interrupts when going to a system wide sleep mode. This config option
+        enables the MPM driver that supports initialization from a device
+        tree
+
+config MSM_SMEM
+	depends on REMOTE_SPINLOCK_MSM
+	bool "MSM Shared Memory (SMEM)"
+	help
+	  Support for the shared memory interface between the various
+	  processors in the System on a Chip (SoC) which allows basic
+	  inter-processor communication.
+
+config MSM_SMD
+	depends on MSM_SMEM
+	bool "MSM Shared Memory Driver (SMD)"
+	help
+	  Support for the shared memory interprocessor communication protocol
+	  which provides virual point to point serial channels between processes
+	  on the apps processor and processes on other processors in the SoC.
+	  Also includes support for the Shared Memory State Machine (SMSM)
+	  protocol which provides a mechanism to publish single bit state
+	  information to one or more processors in the SoC.
+
+config MSM_SMD_DEBUG
+	depends on MSM_SMD
+	bool "MSM SMD debug support"
+	help
+	  Support for debugging SMD and SMSM communication between apps and
+	  other processors in the SoC. Debug support primarily consists of
+	  logs consisting of information such as what interrupts were processed,
+	  what channels caused interrupt activity, and when internal state
+	  change events occur.
+
+config MSM_GLINK
+	bool "Generic Link (G-Link)"
+	help
+	  G-Link is a generic link transport that replaces SMD.  It is used
+	  within a System-on-Chip (SoC) for communication between both internal
+	  processors and external peripherals.  The actual physical transport
+	  is handled by transport plug-ins that can be individually enabled and
+	  configured separately.
+
+config MSM_GLINK_LOOPBACK_SERVER
+	bool "Generic Link (G-Link) Loopback Server"
+	help
+	  G-Link Loopback Server that enable loopback test framework to test
+	  and validate the G-Link protocol stack. It support both local and
+	  remote clients to configure the loopback server and echo back the
+	  data received from the clients.
+
+config MSM_GLINK_SMD_XPRT
+	depends on MSM_SMD
+	depends on MSM_GLINK
+	bool "Generic Link (G-Link) SMD Transport"
+	help
+	  G-Link SMD Transport is a G-Link Transport plug-in.  It allows G-Link
+	  communication to remote entities through a SMD physical transport
+	  channel.  The remote side is assumed to be pure SMD.  The nature of
+	  SMD limits this G-Link transport to only connecting with entities
+	  internal to the System-on-Chip.
+
+config MSM_GLINK_SMEM_NATIVE_XPRT
+	depends on MSM_SMEM
+	depends on MSM_GLINK
+	bool "Generic Link (G-Link) SMEM Native Transport"
+	help
+	  G-Link SMEM Native Transport is a G-Link Transport plug-in.  It allows
+	  G-Link communication to remote entities through a shared memory
+	  physical transport.  The nature of shared memory limits this G-Link
+	  transport to only connecting with entities internal to the
+	  System-on-Chip.
+
+config MSM_SPCOM
+	depends on MSM_GLINK
+	bool "Secure Processor Communication over GLINK"
+	help
+	  spcom driver allows loading Secure Processor Applications and
+	  sending messages to Secure Processor Applications.
+	  spcom provides interface to both user space app and kernel driver.
+	  It is using glink as the transport layer, which provides multiple
+	  logical channels over signle physical channel.
+	  The physical layer is based on shared memory and interrupts.
+	  spcom provides clients/server API, although currently only one client
+	  or server is allowed per logical channel.
+
+config MSM_SMEM_LOGGING
+	depends on MSM_SMEM
+	bool "MSM Shared Memory Logger"
+	help
+	  Enable the shared memory logging to log the events between
+	  the various processors in the system. This option exposes
+	  the shared memory logger at /dev/smem_log and a debugfs node
+	  named smem_log.
+
+config MSM_SMP2P
+	bool "SMSM Point-to-Point (SMP2P)"
+	depends on MSM_SMEM
+	help
+	  Provide point-to-point remote signaling support.
+	  SMP2P enables transferring 32-bit values between
+	  the local and a remote system using shared
+	  memory and interrupts. A client can open multiple
+	  32-bit values by specifying a unique string and
+	  remote processor ID.
+
+config MSM_SMP2P_TEST
+	bool "SMSM Point-to-Point Test"
+	depends on MSM_SMP2P
+	help
+	  Enables loopback and unit testing support for
+	  SMP2P. Loopback support is used by other
+	  processors to do unit testing. Unit tests
+	  are used to verify the local and remote
+	  implementations.
+
+config MSM_SPM
+	bool "Driver support for SPM Version 2"
+	help
+	  Enables the support for Version 2 of the SPM driver. SPM hardware is
+	  used to manage the processor power during sleep. The driver allows
+	  configuring SPM to allow different low power modes for both core and
+	  L2.
+
+config MSM_L2_SPM
+	bool "SPM support for L2 cache"
+	help
+	  Enable SPM driver support for L2 cache. Some MSM chipsets allow
+	  control of L2 cache low power mode with a Subsystem Power manager.
+	  Enabling this driver allows configuring L2 SPM for low power modes
+	  on supported chipsets
+
+config MSM_QMI_INTERFACE
+	depends on IPC_ROUTER
+	depends on QMI_ENCDEC
+	bool "MSM QMI Interface Library"
+	help
+	  Library to send and receive QMI messages over IPC Router.
+	  This library provides interface functions to the kernel drivers
+	  to perform QMI message marshaling and transport them over IPC
+	  Router.
+
+config MSM_DCC
+	bool "MSM Data Capture and Compare enigne support"
+	help
+	  This option enables driver for Data Capture and Compare engine. DCC
+	  driver provides interface to configure DCC block and read back
+	  captured data from DCC's internal SRAM.
+
+config MSM_HVC
+	bool "MSM Hypervisor Call Support"
+	help
+	  This enables the Hypervisor Call module. It provides apis to call
+	  into the hypervisor thereby allowing access to services exposed by
+	  the hypervisor. It is primarily intended to be used for Silicon
+	  Partner/Manufacturer function identifier subrange but supports other
+	  service call subranges as well.
+
+config MSM_IPC_ROUTER_SMD_XPRT
+	depends on MSM_SMD
+	depends on IPC_ROUTER
+	bool "MSM SMD XPRT Layer"
+	help
+	  SMD Transport Layer that enables IPC Router communication within
+	  a System-on-Chip(SoC). When the SMD channels become available,
+	  this layer registers a transport with IPC Router and enable
+	  message exchange.
+
+config MSM_EVENT_TIMER
+	bool "Event timer"
+	help
+	  This option enables a modules that manages a list of event timers that
+	  need to be monitored by the PM. The enables the PM code to monitor
+	  events that require the core to be awake and ready to handle the
+	  event.
+
+config MSM_IPC_ROUTER_HSIC_XPRT
+	depends on USB_QCOM_IPC_BRIDGE
+	depends on IPC_ROUTER
+	bool "MSM HSIC XPRT Layer"
+	help
+	  HSIC Transport Layer that enables off-chip communication of
+	  IPC Router. When the HSIC endpoint becomes available, this layer
+	  registers the transport with IPC Router and enable message
+	  exchange.
+
+config MSM_SYSMON_GLINK_COMM
+	bool "MSM System Monitor communication support using GLINK transport"
+	depends on MSM_GLINK && MSM_SUBSYSTEM_RESTART
+	help
+	  This option adds support for MSM System Monitor APIs using the GLINK
+	  transport layer. The APIs provided may be used for notifying
+	  subsystems within the SoC about other subsystems' power-up/down
+	  state-changes.
+
+config MSM_IPC_ROUTER_GLINK_XPRT
+	depends on MSM_GLINK
+	depends on IPC_ROUTER
+	bool "MSM GLINK XPRT Layer"
+	help
+	  GLINK Transport Layer that enables IPC Router communication within
+	  a System-on-Chip(SoC). When the GLINK channels become available,
+	  this layer registers a transport with IPC Router and enable
+	  message exchange.
+
+config MSM_SYSTEM_HEALTH_MONITOR
+	bool "System Health Monitor"
+	depends on MSM_QMI_INTERFACE && MSM_SUBSYSTEM_RESTART
+	help
+	  System Health Monitor (SHM) passively monitors the health of the
+	  peripherals connected to the application processor. Software
+	  components in the application processor that experience
+	  communication failure can request the SHM to perform a system-wide
+	  health check. If any failures are detected during the health-check,
+	  then a subsystem restart will be triggered for the failed subsystem.
+
+config MSM_GLINK_PKT
+	bool "Enable device interface for GLINK packet channels"
+	depends on MSM_GLINK
+	help
+	  G-link packet driver provides the interface for the userspace
+	  clients to communicate over G-Link via deivce nodes.
+	  This enable the usersapce clients to read and write to
+	  some glink packets channel.
+
+config MSM_TZ_SMMU
+	bool "Helper functions for SMMU configuration through TZ"
+	depends on ARCH_MSMTHULIUM || ARCH_MSM8953
+	help
+	  Say 'Y' here for targets that need to call into TZ to configure
+	  SMMUs for any reason (for example, for errata workarounds or
+	  configuration of SMMU virtualization).
+
+	  If unsure, say N.
+
+config MSM_SUBSYSTEM_RESTART
+	bool "MSM Subsystem Restart"
+	help
+	  This option enables the MSM subsystem restart framework.
+
+	  The MSM subsystem restart framework provides support to boot,
+	  shutdown, and restart subsystems with a reference counted API.
+	  It also notifies userspace of transitions between these states via
+	  sysfs.
+
+config MSM_SYSMON_COMM
+	bool "MSM System Monitor communication support"
+	depends on MSM_SMD && MSM_SUBSYSTEM_RESTART
+	help
+	  This option adds support for MSM System Monitor library, which
+	  provides an API that may be used for notifying subsystems within
+	  the SoC about other subsystems' power-up/down state-changes.
+
+config MSM_PIL
+	bool "Peripheral image loading"
+	select FW_LOADER
+	default n
+	help
+	  Some peripherals need to be loaded into memory before they can be
+	  brought out of reset.
+
+	  Say yes to support these devices.
+
+config MSM_PIL_SSR_GENERIC
+	tristate "MSM Subsystem Boot Support"
+	depends on MSM_PIL && MSM_SUBSYSTEM_RESTART
+	help
+	  Support for booting and shutting down MSM Subsystem processors.
+	  This driver also monitors the SMSM status bits and the watchdog
+	  interrupt for the subsystem and restarts it on a watchdog bite
+	  or a fatal error. Subsystems include LPASS, Venus, VPU, WCNSS and
+	  BCSS.
+
+config MSM_PIL_MSS_QDSP6V5
+	tristate "MSS QDSP6v5 (Hexagon) Boot Support"
+	depends on MSM_PIL && MSM_SUBSYSTEM_RESTART
+	help
+	  Support for booting and shutting down QDSP6v5 (Hexagon) processors
+	  in modem subsystems. If you would like to make or receive phone
+	  calls then say Y here.
+
+	  If unsure, say N.
+
+config MSM_SHARED_HEAP_ACCESS
+	bool "Shared Heap access"
+	help
+	 Enable support to provide access to clients to certain HLOS regions
+	 which are protected by the secure environment.
+
+config TRACER_PKT
+	bool "Tracer Packet"
+	help
+	  Tracer Packet helps in profiling the performance of inter-
+	  processor communication protocols. The profiling information
+	  can be logged into the tracer packet itself.
+
+config MSM_SECURE_BUFFER
+	bool "Helper functions for securing buffers through TZ"
+	help
+	 Say 'Y' here for targets that need to call into TZ to secure
+	 memory buffers. This ensures that only the correct clients can
+	 use this memory and no unauthorized access is made to the
+	 buffer
+
+config ICNSS
+	tristate "Platform driver for Q6 integrated connectivity"
+	---help---
+	  This module adds support for Q6 integrated WLAN connectivity
+	  subsystem. This module is responsible for communicating WLAN on/off
+	  control messages to FW over QMI channel. It is also responsible for
+	  handling WLAN PD restart notifications.
+
+config MSM_BAM_DMUX
+	bool "BAM Data Mux Driver"
+	depends on SPS
+	help
+	  Support Muxed Data Channels over BAM interface.
+	  BAM has a limited number of pipes.  This driver
+	  provides a means to support more logical channels
+	  via muxing than BAM could without muxing.
+
+config MSM_PERFORMANCE
+	tristate "Core control driver to support userspace hotplug requests"
+	help
+	  This driver is used to provide CPU hotplug support to userspace.
+	  It ensures that no more than a user specified number of CPUs stay
+	  online at any given point in time.
+
+config MSM_PERFORMANCE_HOTPLUG_ON
+	bool "Hotplug functionality through msm_performance turned on"
+	depends on MSM_PERFORMANCE
+	default y
+	help
+	  If some other core-control driver is present turn off the core-control
+	  capability of msm_performance driver. Setting this flag to false will
+	  compile out the nodes needed for core-control functionality through
+	  msm_performance.
+
+config MSM_POWER
+	tristate "Power driver to manage system resources"
+	help
+	  This driver monitors and manages system resources for better
+	  power efficiency. It keeps track of the current frequency of
+	  several resources (e.g. CPU and GPU) to manage other system
+	  resources (e.g. DDR frequency) more efficiently.
+
+config MSM_SERVICE_LOCATOR
+	bool "Service Locator"
+	depends on MSM_QMI_INTERFACE
+	help
+	  The Service Locator provides a library to retrieve location
+	  information given a service identifier. Location here translates
+	  to what process domain exports the service, and which subsystem
+	  that process domain will execute in.
+
+config MSM_SERVICE_NOTIFIER
+	bool "Service Notifier"
+	depends on MSM_SERVICE_LOCATOR && MSM_SUBSYSTEM_RESTART
+	help
+	  The Service Notifier provides a library for a kernel client to
+	  register for state change notifications regarding a remote service.
+	  A remote service here refers to a process providing certain services
+	  like audio, the identifier for which is provided by the service
+	  locator.
+
+config MSM_QBT1000
+	bool "QBT1000 Ultrasonic Fingerprint Sensor"
+	help
+	  This driver is used to enable clocks and marshal buffers for trusted
+	  applications running in the trusted execution environment.
+
+config MSM_PACMAN
+	tristate "Enable the Peripheral Access Control Manager (PACMan)"
+	help
+	  Add support for the Peripheral Access Control Manager (PACMan). This
+	  driver allows reconfiguration of the Bus Access Manager Low Speed
+	  peripheral (BLSP) ownership.
+
+config MSM_KERNEL_PROTECT
+	bool "Protect kernel text by removing write permissions"
+        depends on !FUNCTION_TRACER
+        help
+          On hypervisor-enabled targets, this option will make a call into
+          the hypervisor to request that the kernel text be remapped
+          without write permissions.  This protects against malicious
+          devices rewriting kernel code.
+
+          Note that this will BREAK any runtime patching of the kernel text
+          (i.e. anything that uses apply_alternatives,
+          aarch64_insn_patch_text_nosync, etc. including the various CPU
+          errata workarounds in arch/arm64/kernel/cpu_errata.c).
+
+	  For MPU based protection-enabled targets please refer to
+	  MSM_KERNEL_PROTECT_MPU
+
+config MSM_KERNEL_PROTECT_MPU
+	bool "Protect kernel text from other masters by MPU"
+	depends on MSM_KERNEL_PROTECT
+	help
+	  On MPU based protection enabled targets, this option will make a call
+	  into TrustZone to request that the kernel text be ptotected for any
+	  write access from external bus masters. This protects against
+	  malicious devices rewriting kernel code.
+
+config MSM_KERNEL_PROTECT_TEST
+	bool "Bootup test of kernel protection (INTENTIONAL CRASH)"
+        depends on MSM_KERNEL_PROTECT
+        help
+          Attempts to write to the kernel text after making the kernel text
+          read-only.  This test is FATAL whether it passes or fails!
+          Success is signaled by a stage-2 fault.
+
+config MSM_REMOTEQDSS
+	bool "Allow debug tools to enable events on other processors"
+	depends on MSM_SCM && DEBUG_FS
+	help
+	  Other onchip processors/execution environments may support debug
+	  events. Provide a sysfs interface for debug tools to dynamically
+	  enable/disable these events. Interface located in
+	  /sys/class/remoteqdss.
+
+config QCOM_SMCINVOKE
+	bool "Secure QSEE Support"
+	help
+	  Enable SMCInvoke driver which supports capability based secure
+	  communication between QSEE and HLOS.
+
+source "drivers/soc/qcom/memshare/Kconfig"
+
+endif # ARCH_MSM
