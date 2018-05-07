@@ -1,0 +1,41 @@
+
+&i2c_2 {
+	status = "okay";
+	smb1351-charger@1d {
+		compatible = "qcom,smb1351-charger";
+		reg = <0x1d>;
+		qcom,parallel-charger;
+		qcom,float-voltage-mv = <4400>;
+		qcom,recharge-mv = <100>;
+		qcom,parallel-en-pin-polarity = <1>;
+	};
+};
+
+
+&pm660_fg {
+	qcom,fg-cutoff-voltage = <3400>;
+	qcom,fg-chg-term-current = <150>;
+	qcom,fg-sys-term-current = <(-180)>;
+	qcom,fg-jeita-thresholds = <0 15 45 60>;
+	qcom,hold-soc-while-full;
+	qcom,battery-thermal-coefficients = [a1 50 ff];
+	qcom,fg-recharge-voltage = <4395>;
+	qcom,fg-recharge-soc-thr = <99>;
+	qcom,fg-auto-recharge-soc;
+};
+
+&pm660_charger {
+	qcom,fcc-max-ua = <3400000>;
+	qcom,usb-icl-ua = <3000000>;
+	qcom,fv-max-uv = <4402500>;
+	qcom,float-option = <2>; /* treat as sdp */
+	qcom,auto-recharge-soc;
+	qcom,thermal-mitigation = <3400 3200 2800 2400 2000 1500 1000 500>;
+	qcom,thermal-mitigation-usb-5v = <2800 2600 2400 2200 2000 1800 1600 1400 1200 1000 0>;
+	qcom,thermal-mitigation-usb-6v = <2300 2200 2000 1800 1700 1500 1300 1200 1000 850 0>;
+	qcom,thermal-mitigation-usb-7v = <2000 1900 1700 1600 1400 1300 1100 1000 875 725 0>;
+	qcom,thermal-mitigation-usb-8v = <1800 1600 1500 1400 1300 1100 1000 900 750 625 0>;
+	qcom,thermal-mitigation-usb-9v = <1500 1400 1300 1200 1100 1000 900 800 675 550 0>;
+	/*qcom,step-soc-thresholds = <60 70 80 90>;
+	  qcom,step-current-deltas = <500000 250000 150000 0 (-150000)>;*/
+};

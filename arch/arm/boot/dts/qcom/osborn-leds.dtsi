@@ -1,0 +1,31 @@
+/* Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+
+&pm660l_pwm_3 {
+	/delete-property/ qcom,period;
+	/delete-node/ qcom,lpg;
+};
+
+&blue_led {
+	qcom,mode = "lpg";
+	qcom,start-idx = <0>;
+	qcom,idx-len = <48>;
+	qcom,duty-pcts =
+		[00 00 00 00 00 00 00 01 02 03 04 05
+		06 08 0a 0c 0d 0f 14 18 1c 1f 24 28
+		2c 2f 34 38 3c 3f 45 4a 4f 55 5a 5f
+		67 6f 77 7f 8f 9f af bf cf df ef ff];
+	qcom,lut-flags = <5>;
+	qcom,ramp-step-ms = <34>;
+	qcom,use-blink;
+};

@@ -1,0 +1,22 @@
+&tlmm {
+        pinctrl-names = "default";
+        pinctrl-0 = <&no_connect_def>;
+
+        no_connect_gpio {
+                no_connect_def: no_connect_def {
+                        mux {
+                                pins = "gpio21", "gpio56";
+                                function = "gpio";
+                        };
+
+                        config {
+                                pins = "gpio21", "gpio56";
+                                drive-strength = <2>;
+                                bias-disable;
+                                input-enable;
+                        };
+                };
+        };
+
+};
+

@@ -1,0 +1,362 @@
+/* Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/*#include "msm-pm660a.dtsi"*/
+#include "sdm660-pinctrl.dtsi"
+#include "oscar-camera.dtsi"
+#include "oscar-charging.dtsi"
+#include "osborn-unused-gpio.dtsi"
+
+&i2c_2 {
+	status = "okay";
+	smb138x: qcom,smb138x@8 {
+		compatible = "qcom,i2c-pmic";
+		reg = <0x8>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <21 0x0>;
+		interrupt_names = "smb138x";
+		interrupt-controller;
+		#interrupt-cells = <3>;
+		qcom,periph-map = <0x10 0x11 0x12 0x13 0x14 0x16 0x36>;
+
+		smb138x_revid: qcom,revid@100 {
+			compatible = "qcom,qpnp-revid";
+			reg = <0x100 0x100>;
+		};
+
+		smb138x_tadc: qcom,tadc@3600 {
+			compatible = "qcom,tadc";
+			reg = <0x3600 0x100>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			#io-channel-cells = <1>;
+			interrupt-parent = <&smb138x>;
+			interrupts = <0x36 0x0 IRQ_TYPE_EDGE_BOTH>;
+			interrupt-names = "eoc";
+
+			batt_temp@0 {
+				reg = <0>;
+				qcom,rbias = <68100>;
+				qcom,rtherm-at-25degc = <68000>;
+				qcom,beta-coefficient = <3450>;
+			};
+
+			skin_temp@1 {
+				reg = <1>;
+				qcom,rbias = <33000>;
+				qcom,rtherm-at-25degc = <68000>;
+				qcom,beta-coefficient = <3450>;
+			};
+
+			die_temp@2 {
+				reg = <2>;
+				qcom,scale = <(-1306)>;
+				qcom,offset = <397904>;
+			};
+
+			batt_i@3 {
+				reg = <3>;
+				qcom,channel = <3>;
+				qcom,scale = <(-20000000)>;
+			};
+
+			batt_v@4 {
+				reg = <4>;
+				qcom,scale = <5000000>;
+			};
+
+			input_i@5 {
+				reg = <5>;
+				qcom,scale = <14285714>;
+			};
+
+			input_v@6 {
+				reg = <6>;
+				qcom,scale = <25000000>;
+			};
+
+			otg_i@7 {
+				reg = <7>;
+				qcom,scale = <5714286>;
+			};
+		};
+
+		smb138x_parallel_slave: qcom,smb138x-parallel-slave@1000 {
+			compatible = "qcom,smb138x-parallel-slave";
+			qcom,pmic-revid = <&smb138x_revid>;
+			reg = <0x1000 0x700>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			interrupt-parent = <&smb138x>;
+			io-channels =
+				<&smb138x_tadc 1>,
+				<&smb138x_tadc 2>,
+				<&smb138x_tadc 3>,
+				<&smb138x_tadc 14>,
+				<&smb138x_tadc 15>,
+				<&smb138x_tadc 16>,
+				<&smb138x_tadc 17>;
+			io-channel-names =
+				"connector_temp",
+				"charger_temp",
+				"batt_i",
+				"connector_temp_thr1",
+				"connector_temp_thr2",
+				"connector_temp_thr3",
+				"charger_temp_max";
+
+			qcom,chgr@1000 {
+				reg = <0x1000 0x100>;
+				interrupts = <0x10 0x1 IRQ_TYPE_EDGE_RISING>;
+				interrupt-names = "chg-state-change";
+			};
+
+			qcom,chgr-misc@1600 {
+				reg = <0x1600 0x100>;
+				interrupts = <0x16 0x1 IRQ_TYPE_EDGE_RISING>,
+					     <0x16 0x6 IRQ_TYPE_EDGE_RISING>;
+				interrupt-names = "wdog-bark",
+						  "temperature-change";
+			};
+		};
+	};
+};
+
+&tlmm {
+	smb_int_default: smb_int_default {
+		mux {
+			pins = "gpio21";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio21";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+};
+
+/ {
+	qrd_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+
+		#include "fg-gen3-batterydata-oscar-scud-3500mah.dtsi"
+		#include "fg-gen3-batterydata-oscar-atl-3500mah.dtsi"
+	};
+};
+
+&pm660_fg {
+	qcom,battery-data = <&qrd_batterydata>;
+	qcom,fg-jeita-thresholds = <0 15 45 60>;
+	qcom,battery-thermal-coefficients = [9d 50 ff];
+	qcom,fg-force-load-profile;
+};
+
+&uartblsp1dm1 {
+	status = "ok";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart_console_active>;
+};
+
+/*
+&ufsphy1 {
+	vdda-phy-supply = <&pm660l_l1>;
+	vdda-pll-supply = <&pm660_l10>;
+	vddp-ref-clk-supply = <&pm660_l1>;
+	vdda-phy-max-microamp = <51400>;
+	vdda-pll-max-microamp = <14200>;
+	vddp-ref-clk-max-microamp = <100>;
+	vddp-ref-clk-always-on;
+	status = "ok";
+};
+
+&ufs1 {
+	vdd-hba-supply = <&gdsc_ufs>;
+	vdd-hba-fixed-regulator;
+	vcc-supply = <&pm660l_l4>;
+	vccq2-supply = <&pm660_l8>;
+	vcc-max-microamp = <500000>;
+	vccq2-max-microamp = <600000>;
+	status = "ok";
+};
+*/
+
+&sdhc_1 {
+	/* device core power supply */
+	vdd-supply = <&pm660l_l4>;
+	qcom,vdd-voltage-level = <2950000 2950000>;
+	qcom,vdd-current-level = <200 570000>;
+
+	/* device communication power supply */
+	vdd-io-supply = <&pm660_l8>;
+	qcom,vdd-io-always-on;
+	qcom,vdd-io-lpm-sup;
+	qcom,vdd-io-voltage-level = <1800000 1800000>;
+	qcom,vdd-io-current-level = <200 325000>;
+
+	pinctrl-names = "active", "sleep";
+	pinctrl-0 = <&sdc1_clk_on &sdc1_cmd_on &sdc1_data_on &sdc1_rclk_on>;
+	pinctrl-1 = <&sdc1_clk_off &sdc1_cmd_off &sdc1_data_off &sdc1_rclk_off>;
+
+	qcom,clk-rates = <400000 20000000 25000000 50000000 100000000 192000000
+								384000000>;
+
+	qcom,nonremovable;
+	qcom,bus-speed-mode = "HS400_1p8v", "HS200_1p8v", "DDR_1p8v";
+
+	status = "ok";
+};
+
+&sdhc_2 {
+	/* device core power supply */
+	vdd-supply = <&pm660l_l5>;
+	qcom,vdd-voltage-level = <2950000 2950000>;
+	qcom,vdd-current-level = <15000 800000>;
+
+	/* device communication power supply */
+	vdd-io-supply = <&pm660l_l2>;
+	qcom,vdd-io-always-on;
+	qcom,vdd-io-lpm-sup;
+	qcom,vdd-io-voltage-level = <1800000 1800000>;
+	qcom,vdd-io-current-level = <200 325000>;
+
+	pinctrl-names = "active", "sleep";
+	pinctrl-0 = <&sdc2_rst_on &sdc2_vcc_on &sdc2_vccq_on &sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
+	pinctrl-1 = <&sdc2_rst_off &sdc2_vcc_off &sdc2_vccq_off &sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
+
+	/*#address-cells = <0>;
+	interrupt-parent = <&sdhc_2>;
+	interrupts = <0 1 2>;
+	#interrupt-cells = <1>;
+	interrupt-map-mask = <0xffffffff>;
+	interrupt-map = <0 &intc 0 0 125 0
+			1 &intc 0 0 221 0
+			2 &tlmm 54 0>;
+	interrupt-names = "hc_irq", "pwr_irq", "status_irq";
+	cd-gpios = <&tlmm 54 0x0>; */
+
+	qcom,clk-rates = <400000 20000000 25000000 50000000 100000000 192000000
+								384000000>;
+	qcom,nonremovable;
+	qcom,bus-speed-mode = "HS400_1p8v", "HS200_1p8v", "DDR_1p8v";
+
+	status = "disabled";
+};
+
+&pm660l_gpios {
+	/* GPIO 7 for VOL_UP */
+	gpio@c600 {
+		status = "ok";
+		qcom,mode = <0>;
+		qcom,pull = <0>;
+		qcom,vin-sel = <1>;
+		qcom,src-sel = <0>;
+		qcom,out-strength = <1>;
+	};
+};
+
+&pm660_gpios {
+	/* GPIO 4 (NFC_CLK_REQ) */
+	gpio@c300 {
+		qcom,mode = <0>;
+		qcom,vin-sel = <1>;
+		qcom,src-sel = <0>;
+		qcom,master-en = <1>;
+		status = "okay";
+	};
+};
+
+&i2c_6 { /* BLSP1 QUP6 (NFC) */
+	status = "okay";
+	nq@28 {
+		compatible = "qcom,nq-nci";
+		reg = <0x28>;
+		qcom,nq-irq = <&tlmm 28 0x00>;
+		qcom,nq-ven = <&tlmm 29 0x00>;
+		qcom,nq-firm = <&tlmm 30 0x00>;
+		qcom,nq-clkreq = <&pm660_gpios 4 0x00>;
+		qcom,nq-esepwr = <&tlmm 31 0x00>;
+		interrupt-parent = <&tlmm>;
+		qcom,clk-src = "BBCLK3";
+		interrupts = <28 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_enable_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		clocks = <&clock_rpmcc RPM_LN_BB_CLK3_PIN>;
+		clock-names = "ref_clk";
+	};
+};
+
+&ssphy {
+	fpc-redrive-supply = <&pm660_l11>;
+	qcom,redrive-voltage-level = <0 1800000 1950000>;
+	qcom,redrive-load = <105000>;
+};
+
+&soc {
+	qcom,msm-ssc-sensors {
+		compatible = "qcom,msm-ssc-sensors";
+	};
+
+	rf_cable {
+               compatible = "rf_cable, plug_detection";
+               rf_cable,int-gpio = <&tlmm 61 0>;
+               pinctrl-names = "default";
+               pinctrl-0 = <&rf_cable_int_default>;
+       };
+
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		input-name = "gpio-keys";
+		status = "ok";
+
+	};
+
+	i2c@c178000 { /* BLSP1 QUP3 */
+		status = "okay";
+
+		synaptics_dsx@4b {
+			compatible = "synaptics,dsx-i2c";
+			reg = <0x4b>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <67 0x2008>;
+			synaptics,irq-gpio = <&tlmm 67 0x2008>; /* IRQF_ONESHOT | IRQF_TRIGGER_LOW */
+			synaptics,irq-on-state = <0>;
+			synaptics,y-flip;
+			synaptics,x-flip;
+		};
+
+		nxu8010@44 {
+						compatible = "nxu8010";
+						reg = <0x44>;
+						vdd-supply = <&pm660l_l3>;
+		};
+	};
+};
+
+&qusb_phy0 {
+	qcom,qusb-phy-init-seq = <0xf8 0x80
+				0x80 0x84
+				0x83 0x88
+				0xc7 0x8c
+				0x30 0x08
+				0x79 0x0c
+				0x21 0x10
+				0x14 0x9c
+				0x9f 0x1c
+				0x00 0x18>;
+};

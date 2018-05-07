@@ -1,0 +1,268 @@
+#include "sdm660-internal-codec.dtsi"
+
+&int_codec {
+	qcom,model = "sdm660-snd-card-skush";
+
+	qcom,audio-routing =
+		"RX_BIAS", "INT_MCLK0",
+		"SPK_RX_BIAS", "INT_MCLK0",
+		"INT_LDO_H", "INT_MCLK0",
+		"MIC BIAS External", "Handset Mic",
+		"AMIC1", "MIC BIAS External",
+		"MIC BIAS External2", "Headset Mic",
+		"AMIC2", "MIC BIAS External2",
+		"MIC BIAS External", "Secondary Mic",
+		"AMIC3", "MIC BIAS External",
+		"SpkrLeft IN", "SPK1 OUT",
+		"PDM_IN_RX1", "PDM_OUT_RX1",
+		"PDM_IN_RX2", "PDM_OUT_RX2",
+		"PDM_IN_RX3", "PDM_OUT_RX3",
+		"ADC1_IN", "ADC1_OUT",
+		"ADC2_IN", "ADC2_OUT",
+		"ADC3_IN", "ADC3_OUT";
+
+	asoc-codec = <&stub_codec>, <&msm_digital_codec>,
+		<&pmic_analog_codec>, <&msm_sdw_codec>,
+		<&ext_disp_audio_codec>, <&max98927_codec>;
+	asoc-codec-names = "msm-stub-codec.1", "msm-dig-codec",
+		"analog-codec", "msm_sdw_codec",
+		"msm-ext-disp-audio-codec-rx", "max98927-codec";
+
+	qcom,msm-micbias1-ext-cap;
+	/delete-property/ qcom,cdc-dmic-gpios;
+
+	qcom,wsa-disable;
+	qcom,wsa-max-devs = <1>;
+	qcom,wsa-devs = <&wsa881x_213_en>;
+	qcom,wsa-aux-dev-prefix = "SpkrLeft";
+
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+	/* used to select audio or usb */
+	qcom,usbc-analog-en1_gpio = <&wcd_usbc_analog_en1_gpio>;
+	/* used to trigger detection */
+	qcom,usbc-analog-en2_n_gpio = <&wcd_usbc_analog_en2n_gpio>;
+};
+
+&wsa881x_213_en {
+	status = "disabled";
+};
+
+&wsa_spkr_en1 {
+	status = "disabled";
+};
+
+&cdc_sdw_gpios {
+	status = "disabled";
+};
+
+&wsa881x_211_en {
+	status = "disabled";
+};
+
+&wsa881x_212_en {
+	status = "disabled";
+};
+
+&wsa_spkr_en2 {
+	status = "disabled";
+};
+
+&wsa881x_214_en {
+	status = "disabled";
+};
+
+&cdc_pdm_gpios {
+	status = "okay";
+};
+
+&cdc_comp_gpios {
+	status = "okay";
+};
+
+&wcd_gnd_mic_swap_idle {
+	mux {
+		pins = "gpio80";
+	};
+	config {
+		pins = "gpio80";
+	};
+};
+
+&wcd_gnd_mic_swap_active {
+	mux {
+		pins = "gpio80";
+	};
+	config {
+		pins = "gpio80";
+	};
+};
+
+&pmic_analog_codec {
+	qcom,cdc-micbias-cfilt-mv = <2700000>;
+};
+
+&soc {
+	wcd_usbc_analog_en1_gpio: msm_cdc_pinctrl_usbc_audio_en1 {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&wcd_usbc_analog_en1_active>;
+		pinctrl-1 = <&wcd_usbc_analog_en1_idle>;
+	};
+
+	wcd_usbc_analog_en2n_gpio: msm_cdc_pinctrl_usbc_audio_en2 {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&wcd_usbc_analog_en2n_active>;
+		pinctrl-1 = <&wcd_usbc_analog_en2n_idle>;
+	};
+};
+
+&wcd_usbc_analog_en1_active {
+	mux {
+		pins = "gpio77";
+	};
+
+	config {
+		pins = "gpio77";
+	};
+};
+
+&wcd_usbc_analog_en1_idle {
+	mux {
+		pins = "gpio77";
+	};
+
+	config {
+		pins = "gpio77";
+	};
+};
+
+&wcd_usbc_analog_en2n_active {
+	mux {
+		pins = "gpio12";
+	};
+
+	config {
+		pins = "gpio12";
+	};
+};
+
+&wcd_usbc_analog_en2n_idle {
+	mux {
+		pins = "gpio12";
+	};
+
+	config {
+		pins = "gpio12";
+	};
+};
+
+&i2c_2 {
+	status = "okay";
+
+	max98927_codec: max98927@3a {
+		compatible = "maxim,max98927L";
+		status = "okay";
+		reg = <0x3a>;
+		mono_stereo_mode = <0>;
+		interleave_mode = <0>;
+		maxim,98927-reset-gpio = <&tlmm 43 0>;
+	};
+};
+
+&tlmm {
+
+	sec_mi2s {
+		sec_mi2s_sleep: sec_mi2s_sleep {
+			mux {
+				pins = "gpio24", "gpio25";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio24", "gpio25";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+				input-enable;
+			};
+		};
+		sec_mi2s_active: sec_mi2s_active {
+			mux {
+				pins = "gpio24", "gpio25";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio24", "gpio25";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+				output-high;
+			};
+		};
+	};
+
+	sec_mi2s_sd0 {
+		sec_mi2s_sd0_sleep: sec_mi2s_sd0_sleep {
+			mux {
+				pins = "gpio26";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio26";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+			};
+		};
+		sec_mi2s_sd0_active: sec_mi2s_sd0_active {
+			mux {
+				pins = "gpio26";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio26";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+			};
+		};
+	};
+
+	sec_mi2s_sd1 {
+		sec_mi2s_sd1_sleep: sec_mi2s_sd1_sleep {
+			mux {
+				pins = "gpio27";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio27";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+			};
+		};
+		sec_mi2s_sd1_active: sec_mi2s_sd1_active {
+			mux {
+				pins = "gpio27";
+				function = "sec_mi2s";
+			};
+
+			config {
+				pins = "gpio27";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+			};
+		};
+	};
+
+};
+
+&dai_mi2s1 {
+	qcom,msm-mi2s-rx-lines = <1>; /* SD0 line for playback */
+	qcom,msm-mi2s-tx-lines = <2>; /* SD1 line for recording */
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sec_mi2s_active &sec_mi2s_sd0_active &sec_mi2s_sd1_active>;
+	pinctrl-1 = <&sec_mi2s_sleep &sec_mi2s_sd0_sleep &sec_mi2s_sd1_sleep>;
+};
+

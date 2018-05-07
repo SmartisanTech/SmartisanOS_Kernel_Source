@@ -1,0 +1,71 @@
+
+qcom,smartisan_oscar_atl {
+	qcom, = <24>;
+	/* #2952031_Smartisan_OdinATL_3500mAh_averaged_MasterSlave_May17th2017*/
+	qcom,max-voltage-uv = <4402500>;
+	qcom,fastchg-current-ma = <3500>;
+	qcom,nom-batt-capacity-mah = <3500>;
+	qcom,batt-id-kohm = <10>;
+	qcom,battery-beta = <3435>;
+	qcom,battery-type = "smartisan_oscar_atl";
+	qcom,checksum = <0xBC5F>;
+	qcom,gui-version = "PM660GUI - 0.0.0.44";
+	qcom,fg-profile-data = [
+		 1F 1F 2D FC
+		 20 0A A6 06
+		 65 1D 7B EC
+		 00 12 75 14
+		 2C 19 A6 22
+		 DC 45 5A 52
+		 4C 00 00 00
+		 0D 00 00 00
+		 00 00 43 C5
+		 A9 CD 58 CA
+		 23 00 08 00
+		 58 E3 F5 EC
+		 A9 FD 0B F2
+		 87 FA 91 12
+		 BB FC AE 2B
+		 1C 06 09 20
+		 27 00 14 00
+		 DC 20 33 04
+		 84 0B 55 05
+		 22 1D 60 01
+		 E7 F5 AB FC
+		 21 19 CA 22
+		 A4 45 B2 52
+		 61 00 00 00
+		 0C 00 00 00
+		 00 00 26 CC
+		 20 C2 03 CA
+		 1C 00 00 00
+		 36 F2 F5 EC
+		 A5 F4 5F EA
+		 BA E4 AD 02
+		 16 07 A9 1A
+		 9C 33 CC FF
+		 07 10 00 00
+		 8D 0D 66 46
+		 1C 00 40 00
+		 47 01 0A FA
+		 FF 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+	];
+};

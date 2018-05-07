@@ -1,0 +1,25 @@
+/* Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/* rewrite msm-pm660.dtsi */
+
+&pm660_haptics {
+	/delete-property/ qcom,correct-lra-drive-freq;
+	qcom,vmax-mv = <2545>;	/* 1.8 Vrms AC (Sine Wave) */
+	qcom,ilim-ma = <80>;	/* 80 mArms */
+	qcom,wave-shape = "sine";
+	qcom,wave-play-rate-us = <4255>;	/* 1/235Hz */
+	qcom,wave-samples = [2c 2c 2c 2c 2c 2c 2c 2c];
+	qcom,wave-rep-cnt = <1>;
+	qcom,wave-samp-rep-cnt = <1>;
+	qcom,lra-auto-mode;
+};  

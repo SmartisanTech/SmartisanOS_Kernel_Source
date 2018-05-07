@@ -1,0 +1,140 @@
+&soc {
+	fpc1020 {
+		//status = "disable";
+		compatible = "fpc,fpc1020";
+		interrupt-parent = <&tlmm>;
+		interrupts = <72 0x0>;
+		fpc,gpio_rst    = <&tlmm 20 0x0>;
+		fpc,gpio_irq    = <&tlmm 72 0x0>;
+	/*	vcc_spi-supply  = <&pm8994_s4>;  */
+		vdd_io-supply   = <&pm660_l13>; 
+	/*	vdd_ana-supply  = <&pm8996_l18>; */
+		fpc,enable-on-boot;
+		/* fpc,enable-wakeup; */
+
+		pinctrl-names = "fpc1020_reset_reset",
+			"fpc1020_reset_active",
+			"fpc1020_irq_active";
+
+		pinctrl-0 = <&msm_gpio_20>;
+		pinctrl-1 = <&msm_gpio_20_output_high>;
+		pinctrl-2 = <&msm_gpio_72>;
+	};
+
+	goodix_fp {
+		//status = "disable";
+		compatible = "goodix,fingerprint";
+		spi-max-frequency = <4800000>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <72 0x0>;
+
+		goodix,gpio_reset    = <&tlmm 20 0>;
+		goodix,gpio_irq      = <&tlmm 72 0>;
+		goodix,gpio_pwr      = <&pm660l_gpios 6 0>;
+		vdd_io-supply   = <&pm660_l13>;
+
+		pinctrl-names = "goodixfp_reset_reset",
+			"goodixfp_reset_active",
+			"goodixfp_irq_active";
+
+		pinctrl-0 = <&goodix_reset_reset>;
+		pinctrl-1 = <&goodix_reset_active>;
+		pinctrl-2 = <&goodix_irq_active>;
+	};
+};
+
+&tlmm {
+	/* GPIO_21 : FP_RESET_N */
+	msm_gpio_20: msm_gpio_20 {
+		mux {
+			 pins = "gpio20";
+			 function = "gpio";
+		};
+
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable;
+			output-low;
+		};
+	};
+
+	/* GPIO_21 : FP_RESET_N, state device active*/
+	msm_gpio_20_output_high: msm_gpio_20_output_high {
+		mux {
+			pins = "gpio20";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable;
+			output-high;
+		};
+	};
+
+	/* GPIO_132 : FP_INT_N */
+	msm_gpio_72: msm_gpio_72 {
+		mux {
+			pins = "gpio72";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio72";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+
+	goodix_reset_reset: goodix_reset_reset{
+		mux {
+			pins = "gpio20";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+	goodix_reset_active: goodix_reset_active{
+		mux {
+			pins = "gpio20";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio20";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-high;
+		};
+	};
+
+	goodix_irq_active: goodix_irq_active {
+		mux {
+			pins = "gpio72";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio72";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+};
+
+&pm660l_gpios {
+	gpio@c500 { /* GPIO6 -fingerprint power enable*/
+		qcom,mode = <1>;                /* Output */
+		qcom,pull = <5>;                /* No Pull */
+		qcom,vin-sel = <0>;             /* VIN1 GPIO_LV */
+		qcom,src-sel = <0>;             /* GPIO */
+		qcom,invert = <0>;              /* Invert */
+		qcom,master-en = <1>;           /* Enable GPIO */
+		status = "ok";
+	};
+};

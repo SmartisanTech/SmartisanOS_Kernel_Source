@@ -1,0 +1,493 @@
+Qualcomm Technologies, Inc. OSM Bindings
+
+Operating State Manager (OSM) is a hardware engine used by some Qualcomm
+Technologies, Inc. (QTI) SoCs to manage frequency and voltage scaling
+in hardware. OSM is capable of controlling frequency and voltage requests
+for multiple clusters via the existence of multiple OSM domains.
+
+Properties:
+- compatible
+	Usage:      required
+	Value type: <string>
+	Definition: must be "qcom,cpu-clock-osm-msm8998-v1",
+		    "qcom,cpu-clock-osm-msm8998-v2",
+		    "qcom,clk-cpu-osm" or
+		    "qcom,clk-cpu-osm-sdm630".
+
+- reg
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Addresses and sizes for the memory of the OSM controller,
+		    cluster PLL management, and APCS common register regions.
+		    Optionally, the address of the efuse registers used to
+		    determine the pwrcl or perfcl speed-bins and/or the ACD
+		    register space to initialize prior to enabling OSM.
+
+- reg-names
+	Usage:      required
+	Value type: <stringlist>
+	Definition: Address names. Must be "osm", "pwrcl_pll", "perfcl_pll",
+		    "apcs_common", and "debug". Optionally, "pwrcl_efuse",
+		    "perfcl_efuse", "pwrcl_acd", or "perfcl_acd".
+		    Must be specified in the same order as the corresponding
+		    addresses are specified in the reg property.
+
+- vdd-pwrcl-supply
+	Usage:      required
+	Value type: <phandle>
+	Definition: phandle of the underlying regulator device that manages
+		    the voltage supply of the Power cluster.
+
+- vdd-perfcl-supply
+	Usage:      required
+	Value type: <phandle>
+	Definition: phandle of the underlying regulator device that manages
+		    the voltage supply of the Performance cluster.
+
+- interrupts
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: OSM interrupt specifier.
+
+- interrupt-names
+	Usage:      required
+	Value type: <stringlist>
+	Definition: Interrupt names. this list must match up 1-to-1 with the
+		    interrupts specified in the 'interrupts' property.
+		    "pwrcl-irq" and "perfcl-irq" must be specified.
+
+- qcom,pwrcl-speedbinX-v0
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the frequency in Hertz, frequency,
+		    PLL override data, ACC level, and virtual corner used
+		    by the OSM hardware for each supported DCVS setpoint
+		    of the Power cluster.
+
+- qcom,perfcl-speedbinX-v0
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the frequency in Hertz, frequency,
+		    PLL override data, ACC level and virtual corner used
+		    by the OSM hardware for each supported DCVS setpoint
+		    of the Performance cluster.
+
+- qcom,osm-no-tz
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates that there is no programming
+		    of the OSM hardware performed by the secure world.
+
+- qcom,osm-pll-setup
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates that the PLL setup sequence
+		    must be executed for each clock domain managed by the OSM
+		    controller.
+
+- qcom,up-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the DCVS up timer value in nanoseconds
+		    for each of the two clusters managed by the OSM controller.
+
+- qcom,down-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the DCVS down timer value in nanoseconds
+		    for each of the two clusters managed by the OSM controller.
+
+- qcom,pc-override-index
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the OSM performance index to be used
+		    when each cluster enters certain low power modes.
+
+- qcom,set-ret-inactive
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if domains in retention must
+		    be treated as inactive.
+
+- qcom,enable-llm-freq-vote
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if Limits hardware frequency
+		    votes must be honored by OSM.
+
+- qcom,llm-freq-up-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the LLM frequency up timer value in
+		    nanoseconds for each of the two clusters managed by the
+		    OSM controller.
+
+- qcom,llm-freq-down-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the LLM frequency down timer value in
+		    nanoseconds for each of the two clusters managed by the
+		    OSM controller.
+
+- qcom,enable-llm-volt-vote
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if Limits hardware voltage
+		    votes must be honored by OSM.
+
+- qcom,llm-volt-up-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the LLM voltage up timer value in
+		    nanoseconds for each of the two clusters managed by the
+		    OSM controller.
+
+- qcom,llm-volt-down-timer
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the LLM voltage down timer value in
+		    nanoseconds for each of the two clusters managed by the
+		    OSM controller.
+
+- qcom,cc-reads
+	Usage:      optional
+	Value type: <integer>
+	Definition: Defines the number of times the cycle counters must be
+		    read to determine the performance level of each clock
+		    domain.
+
+- qcom,l-val-base
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the L_VAL
+		    control register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apcs-itm-present
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the ITM
+		    control register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apcs-pll-user-ctl
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the PLL
+		    user control register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apcs-cfg-rcgr
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the RCGR
+		    configuration register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apcs-cmd-rcgr
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the RCGR
+		    command register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apm-threshold-voltage
+	Usage:      required
+	Value type: <u32>
+	Definition: Specifies the APM threshold voltage in microvolts.  If the
+		    VDD_APCC supply voltage is above or at this level, then the
+		    APM is switched to use VDD_APCC.  If VDD_APCC is below
+		    this level, then the APM is switched to use VDD_MX.
+
+- qcom,apm-mode-ctl
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the APM
+		    control register for each of the two clusters managed
+		    by the OSM controller.
+
+- qcom,apm-ctrl-status
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the register addresses of the APM
+		    controller status register for each of the two clusters
+		    managed by the OSM controller.
+
+- qcom,llm-sw-overr
+	Usage:      optional
+	Value type: <prop-encoded-array>
+	Definition: Array of tuples which defines the three non-zero LLM SW
+		    override values to write to the OSM controller for each
+		    of the two clusters. Each tuple must contain three elements.
+
+- qcom,acdtd-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the values to program to the ACD
+		    Tunable-Length Delay register for the power and performance
+		    clusters.
+
+- qcom,acdcr-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the values for the ACD control register
+		    for the power and performance clusters.
+
+- qcom,acdsscr-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the values for the ACD Soft Start Control
+		    register for the power and performance clusters.
+
+- qcom,acdextint0-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the initial values for the ACD
+		    external interface configuration register for the power
+		    and performance clusters.
+
+- qcom,acdextint1-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the final values for the ACD
+		    external interface configuration register for the power
+		    and performance clusters.
+
+- qcom,acdautoxfer-val
+	Usage:      required if pwrcl_acd or perfcl_acd registers are specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the values for the ACD auto transfer
+		    control register for the power and performance clusters.
+
+- qcom,pwrcl-apcs-mem-acc-cfg
+	Usage:      required if qcom,osm-no-tz is specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the addresses of the mem-acc
+		    configuration registers for the Power cluster.
+		    The array must contain exactly three elements.
+
+- qcom,perfcl-apcs-mem-acc-cfg
+	Usage:      required if qcom,osm-no-tz is specified
+	Value type: <prop-encoded-array>
+	Definition: Array which defines the addresses of the mem-acc
+		    configuration registers for the Performance cluster.
+		    The array must contain exactly three elements.
+
+- qcom,pwrcl-apcs-mem-acc-val
+	Usage:      required if qcom,osm-no-tz is specified
+	Value type: <prop-encoded-array>
+	Definition: List of integer tuples which define the mem-acc values
+		    for each performance mode of the Power cluster. Each tuple
+		    is of length 3 corresponding to the mem-acc values per
+		    performance mode with a total of 4 tuples corresponding
+		    to each supported performance mode.
+
+- qcom,pwrcl-apcs-mem-acc-threshold-voltage
+	Usage:      optional
+	Value type: <u32>
+	Definition: Specifies the highest MEM ACC threshold voltage in
+		    microvolts for the Power cluster.  This voltage is
+		    used to determine which MEM ACC setting is used for the
+		    highest frequencies.  If specified, the voltage must match
+		    the MEM ACC threshold voltage specified for the
+		    corresponding CPRh device.
+
+- qcom,perfcl-apcs-mem-acc-val
+	Usage:      required if qcom,osm-no-tz is specified
+	Value type: <prop-encoded-array>
+	Definition: List of integer tuples which define the mem-acc values
+		    for each performance mode of the Performance cluster.
+		    Each tuple is of length 3 corresponding to the mem-acc
+		    values per performance mode with a total of 4 tuples
+		    corresponding to each supported performance mode.
+
+- qcom,perfcl-apcs-mem-acc-threshold-voltage
+	Usage:      optional
+	Value type: <u32>
+	Definition: Specifies the highest MEM ACC threshold voltage in
+		    microvolts for the Performance cluster.  This voltage is
+		    used to determine which MEM ACC setting is used for the
+		    highest frequencies.  If specified, the voltage must match
+		    the MEM ACC threshold voltage specified for the
+		    corresponding CPRh device.
+
+- qcom,red-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the reduction FSM
+		    should be enabled.
+
+- qcom,boost-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the boost FSM should
+		    be enabled.
+
+- qcom,safe-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the safe FSM should
+		    be enabled.
+
+- qcom,ps-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the PS FSM should be
+		    enabled.
+
+- qcom,droop-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the droop FSM should
+		    be enabled.
+- qcom,wfx-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the WFX FSM should
+		    be enabled.
+
+- qcom,pc-fsm-en
+	Usage:      optional
+	Value type: <empty>
+	Definition: Boolean flag which indicates if the PC/RET FSM should
+		    be enabled.
+
+- clock-names
+	Usage:      required
+	Value type: <string>
+	Definition: Must be "aux_clk".
+
+- clocks
+	Usage:      required
+	Value type: <phandle>
+	Definition: Phandle to the aux clock device.
+
+Example:
+
+	clock_cpu: qcom,cpu-clock-8998@179c0000 {
+		compatible = "qcom,cpu-clock-osm-msm8998-v1";
+		reg = <0x179C0000 0x4000>,
+		      <0x17916000 0x1000>,
+		      <0x17816000 0x1000>,
+		      <0x179D1000 0x1000>,
+		      <0x1791101c 0x8>;
+		reg-names = "osm", "pwrcl_pll", "perfcl_pll",
+			    "apcs_common", "debug";
+
+		vdd-pwrcl-supply = <&apc0_pwrcl_vreg>;
+		vdd-perfcl-supply = <&apc1_perfcl_vreg>;
+
+		interrupts = <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
+			     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>;
+		interrupt-names = "pwrcl-irq", "perfcl-irq";
+
+		qcom,pwrcl-speedbin0-v0 =
+			< 300000000  0x0004000f 0x031e001e 0x1 1 >,
+			< 345600000  0x05040012 0x04200020 0x1 2 >,
+			< 422400000  0x05040016 0x04200020 0x1 3 >,
+			< 499200000  0x0504001a 0x05200020 0x1 4 >,
+			< 576000000  0x0504001e 0x06200020 0x1 5 >,
+			< 633600000  0x04040021 0x07200020 0x1 6 >,
+			< 710400000  0x04040025 0x07200020 0x1 7 >,
+			< 806400000  0x0404002a 0x08220022 0x2 8 >,
+			< 883200000  0x0404002e 0x09250025 0x2 9 >,
+			< 960000000  0x04040032 0x0a280028 0x2 10 >,
+			< 1036800000 0x04040036 0x0b2b002b 0x3 11 >,
+			< 1113600000 0x0404003a 0x0c2e002e 0x3 12 >,
+			< 1190400000 0x0404003e 0x0c320032 0x3 13 >,
+			< 1248000000 0x04040041 0x0d340034 0x3 14 >,
+			< 1324800000 0x04040045 0x0e370037 0x3 15 >,
+			< 1401600000 0x04040049 0x0f3a003a 0x3 16 >,
+			< 1478400000 0x0404004d 0x103e003e 0x3 17 >,
+			< 1574400000 0x04040052 0x10420042 0x4 18 >,
+			< 1651200000 0x04040056 0x11450045 0x4 19 >,
+			< 1728000000 0x0404005a 0x12480048 0x4 20>,
+			< 1804800000 0x0404005e 0x134b004b 0x4 21 >,
+			< 1881600000 0x04040062 0x144e004e 0x4 22 >;
+
+		qcom,perfcl-speedbin0-v0 =
+			< 300000000  0x0004000f 0x03200020 0x1 1 >,
+			< 345600000  0x05040012 0x04200020 0x1 2 >,
+			< 422400000  0x05040016 0x04200020 0x1 3 >,
+			< 480000000  0x05040019 0x05200020 0x1 4 >,
+			< 556800000  0x0504001d 0x06200020 0x1 5 >,
+			< 633600000  0x04040021 0x07200020 0x1 6 >,
+			< 710400000  0x04040025 0x07200020 0x1 7 >,
+			< 787200000  0x04040029 0x08210021 0x1 8 >,
+			< 844800000  0x0404002c 0x09240024 0x2 9 >,
+			< 902400000  0x0404002f 0x09260026 0x2 10 >,
+			< 979200000  0x04040033 0x0a290029 0x2 11 >,
+			< 1056000000 0x04040037 0x0b2c002c 0x2 12 >,
+			< 1171200000 0x0404003d 0x0c300030 0x3 13 >,
+			< 1248000000 0x04040041 0x0d340034 0x3 14 >,
+			< 1324800000 0x04040045 0x0e370037 0x3 15 >,
+			< 1401600000 0x04040049 0x0f3b003b 0x3 16 >,
+			< 1478400000 0x0404004d 0x0f3e003e 0x3 17 >,
+			< 1536000000 0x04040050 0x10400040 0x3 18 >,
+			< 1632000000 0x04040055 0x11440044 0x4 19 >,
+			< 1708800000 0x04040059 0x12480048 0x4 20 >,
+			< 1785600000 0x0404005d 0x134a004a 0x4 21 >,
+			< 1862400000 0x04040061 0x134e004e 0x4 22 >,
+			< 1939200000 0x04040065 0x14510051 0x4 23 >,
+			< 2016000000 0x04040069 0x15540054 0x4 24 >,
+			< 2092800000 0x0404006d 0x16570057 0x4 25 >;
+
+		qcom,osm-no-tz;
+		qcom,osm-pll-setup;
+
+		qcom,up-timer =
+			<1000 1000>;
+		qcom,down-timer =
+			<1000 1000>;
+		qcom,pc-override-index =
+			<0 0>;
+		qcom,set-ret-inactive;
+		qcom,enable-llm-freq-vote;
+		qcom,llm-freq-up-timer =
+			<1000 1000>;
+		qcom,llm-freq-down-timer =
+			<1000 1000>;
+		qcom,enable-llm-volt-vote;
+		qcom,llm-volt-up-timer =
+			<1000 1000>;
+		qcom,llm-volt-down-timer =
+			<1000 1000>;
+		qcom,cc-reads = <10>;
+
+		qcom,l-val-base =
+			<0x17916004 0x17816004>;
+		qcom,apcs-itm-present =
+			<0x179d143c 0x179d143c>;
+		qcom,apcs-pll-user-ctl =
+			<0x1791600c 0x1781600c>;
+		qcom,apcs-cfg-rcgr =
+			<0x17911054 0x17811054>;
+		qcom,apcs-cmd-rcgr =
+			<0x17911050 0x17811050>;
+		qcom,apm-mode-ctl =
+			<0x179d0004 0x179d0010>;
+		qcom,apm-ctrl-status =
+			<0x179d000c 0x179d0018>;
+
+		qcom,apm-threshold-voltage = <832000>;
+
+		qcom,pwrcl-apcs-mem-acc-cfg =
+			<0x179d1360 0x179d1364 0x179d1364>;
+		qcom,perfcl-apcs-mem-acc-cfg =
+			<0x179d1368 0x179d136C 0x179d1370>;
+		qcom,pwrcl-apcs-mem-acc-val =
+			<0x00000000 0x10000000 0x10000000>,
+			<0x00000000 0x10000000 0x10000000>,
+			<0x00000000 0x00000000 0x00000000>,
+			<0x00000000 0x00000001 0x00000001>;
+		qcom,perfcl-apcs-mem-acc-val =
+			<0x00000000 0x00000000 0x10000000>,
+			<0x00000000 0x00000000 0x10000000>,
+			<0x00000000 0x00000000 0x00000000>,
+			<0x00000000 0x00000000 0x00000001>;
+
+		clock-names = "aux_clk";
+		clocks = <&clock_gcc clk_gpll0_ao>;
+		#clock-cells = <1>;
+	};
+}
