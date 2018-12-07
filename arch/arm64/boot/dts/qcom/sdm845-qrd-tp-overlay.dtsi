@@ -1,0 +1,21 @@
+&qupv3_se14_i2c {
+	status = "ok";
+	focaltech@38 {
+		compatible = "focaltech,fts";
+		reg = <0x38>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <125 0x2>;
+		vcc_i2c-supply = <&pm8998_l14>;
+		/* pins used by touchscreen */
+		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+		pinctrl-0 = <&ts_int_active &ts_reset_active>;
+		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+		pinctrl-2 = <&ts_release>;
+		focaltech,froce_touch_irq-gpio = <&tlmm 31 0x0>;
+		focaltech,force_touch_reset-gpio = <&tlmm 32 0x0>;
+		focaltech,reset-gpio = <&tlmm 80 0x0>;
+		focaltech,irq-gpio = <&tlmm 125 0x2008>;
+		focaltech,max-touch-number = <10>;
+		focaltech,display-coords = <0 0 1080 1920>;
+	};
+};

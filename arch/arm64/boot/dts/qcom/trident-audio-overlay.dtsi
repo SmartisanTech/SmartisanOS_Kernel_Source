@@ -1,0 +1,381 @@
+/*
+ * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "sdm845-audio-overlay.dtsi"
+
+&pcie0 {
+	status = "disabled";
+};
+
+&pcie1 {
+	status = "disabled";
+};
+
+&snd_934x {
+	qcom,audio-routing =
+		"AIF4 VI", "MCLK",
+		"RX_BIAS", "MCLK",
+		"MADINPUT", "MCLK",
+		"AMIC1", "MIC BIAS1",
+		"MIC BIAS1", "Handset Mic",
+		"AMIC2", "MIC BIAS2",
+		"MIC BIAS2", "Headset Mic",
+		"AMIC3", "MIC BIAS1",
+		"MIC BIAS1", "Secondary Mic",
+		"AMIC4", "MIC BIAS4",
+		"MIC BIAS4", "Ultrasonic Mic",
+		"DMIC0", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic0",
+		"DMIC1", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic1",
+		"DMIC2", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic2",
+		"DMIC3", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic3",
+		"DMIC4", "MIC BIAS4",
+		"MIC BIAS4", "Digital Mic4",
+		"DMIC5", "MIC BIAS4",
+		"MIC BIAS4", "Digital Mic5";
+
+	asoc-codec = <&stub_codec>, <&ext_disp_audio_codec>, <&max98927r>, <&intelligo>;
+	asoc-codec-names = "msm-stub-codec.1", "msm-ext-disp-audio-codec-rx", "max98927_lr", "intelligo";
+
+	qcom,msm-mbhc-hs-mic-max-threshold-mv = <2600>;
+	qcom,msm-mbhc-hs-mic-min-threshold-mv = <50>;
+
+	/*
+	 * Support USB TypeC analog headset
+	 */
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+
+	/* used to swap gnd and mic */
+	qcom,usbc-analog-en2-gpio = <&tlmm 51 0>;
+	pinctrl-names = "default", "aud_active_dvt1", "aud_sleep_dvt1",
+			"aud_active_dvt2", "aud_sleep_dvt2";
+	/*
+	 * Default: uart(103) is high, US_EURO_CTL0(51) is low, and US_EURO_CTL1(88) is high
+	 * In this mode, the outputs and inputs of the switch chip FSA850 are both Hi-Z so
+	 * that serial can work well.
+	 */
+	pinctrl-0 = <&mic_switch_en_idle &wcd_usbc_analog_en2_idle &wcd_usbc_for_dp_active>;
+	/*
+	 * The following two state are used to switch between US and EU
+	 */
+	pinctrl-1 = <&select_uart_idle &mic_switch_en_active
+			&wcd_usbc_analog_en2_active &wcd_usbc_for_dp_active>;
+	pinctrl-2 = <&select_uart_idle &mic_switch_en_active
+			&wcd_usbc_analog_en2_idle &wcd_usbc_for_dp_idle>;
+	pinctrl-3 = <&select_uart_active &mic_switch_en_active
+			&wcd_usbc_analog_en2_active &wcd_usbc_for_dp_active>;
+	pinctrl-4 = <&select_uart_active &mic_switch_en_active
+			&wcd_usbc_analog_en2_idle &wcd_usbc_for_dp_idle>;
+
+	/* used to select audio or usb */
+	qcom,usbc-analog-en1-gpio = <&wcd_usbc_analog_en1_gpio>;
+	/* used to trigger detection */
+	qcom,usbc-analog-force_detect_gpio = <&wcd_usbc_analog_force_detect_gpio>;
+};
+
+&soc {
+	wcd_usbc_analog_force_detect_gpio: msm_cdc_pinctrl@32 {
+		compatible = "qcom,msm-cdc-pinctrl";
+		pinctrl-names = "aud_active", "aud_sleep";
+		pinctrl-0 = <&wcd_usbc_analog_force_detect_idle>;
+		pinctrl-1 = <&wcd_usbc_analog_force_detect_active>;
+	};
+};
+
+&wcd_usbc_analog_en1_gpio {
+	pinctrl-names = "aud_active", "aud_sleep";
+	pinctrl-0 = <&usb_switch_asel_idle>;
+	pinctrl-1 = <&usb_switch_asel_idle>;
+};
+
+&ext_5v_boost {
+	status = "disabled";
+};
+
+&pmi8998_gpios {
+	usb_switch_asel {
+		usb_switch_asel_idle: usb_switch_asel_idle {
+			pins = "gpio10";
+			function = "normal";
+			power-source = <0>;
+			output-low;
+		};
+		usb_switch_asel_active: usb_switch_asel_active {
+			pins = "gpio10";
+			function = "normal";
+			power-source = <0>;
+			output-high;
+		};
+	};
+};
+
+&pm8998_gpios {
+	mic_switch_en {
+		mic_switch_en_idle: mic_switch_en_idle {
+			pins = "gpio17";
+			function = "normal";
+			power-source = <0>;
+			output-low;
+		};
+		mic_switch_en_active: mic_switch_en_active {
+			pins = "gpio17";
+			function = "normal";
+			power-source = <0>;
+			output-high;
+		};
+	};
+};
+
+&tlmm {
+	wcd_usbc_analog_force_detect {
+		wcd_usbc_analog_force_detect_idle: wcd_usbc_analog_force_detect_idle {
+			mux {
+				pins = "gpio32";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio32";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		wcd_usbc_analog_force_detect_active: wcd_usbc_analog_force_detect_active {
+			mux {
+				pins = "gpio32";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio32";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+
+	wcd_usbc_for_dp {
+		wcd_usbc_for_dp_idle: wcd_usbc_for_dp_idle {
+			mux {
+				pins = "gpio88";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio88";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		wcd_usbc_for_dp_active: wcd_usbc_for_dp_active {
+			mux {
+				pins = "gpio88";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio88";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+
+	select_uart {
+		select_uart_idle: select_uart_idle {
+			mux {
+				pins = "gpio103";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio103";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		select_uart_active: select_uart_active {
+			mux {
+				pins = "gpio103";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio103";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+
+	ig_iovadd_enable {
+		ig_iovadd_enable_idle: ig_iovadd_enable_idle {
+			mux {
+				pins = "gpio69";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio69";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		ig_iovadd_enable_active: ig_iovadd_enable_active {
+			mux {
+				pins = "gpio69";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio69";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+};
+
+&wcd934x_cdc {
+	/*
+	 * Set micbias2 to 2.7v
+	 */
+	qcom,cdc-micbias2-mv = <2700>;
+};
+
+/* Yiteng Section Start */
+&qupv3_se12_i2c {
+	status = "okay";
+
+	intelligo: intelligo@5d {
+		compatible = "intelligo,debussy";
+		status = "okay";
+		reg = <0x5d>;
+		reset-gpio = <&tlmm 8 0>;
+		clocks = <&pm8998_div_clk2 0>;
+		clock-names = "div_clk2_19_2m";
+		i2c-pull-supply = <&pm8998_lvs2>;
+		dvdd-supply = <&pm8998_l26>;
+		avdd-supply = <&pm8998_l21>;
+		pinctrl-names = "power_up", "power_down", "mclk_enable", "mclk_disable";
+		pinctrl-0 = <&ig_iovadd_enable_active>;
+		pinctrl-1 = <&ig_iovadd_enable_idle>;
+		pinctrl-2 = <&mclk_clk_out_enable>;
+		pinctrl-3 = <&mclk_clk_out_disable>;
+	};
+
+	ig1600@5d {
+		compatible = "ig1600";
+		status = "disabled";
+		reg = <0x5d>;
+		ig1600,reset-gpio = <&tlmm 8 0>;
+	};
+};
+
+&pm8998_gpios {
+	mclk_clk_out {
+		mclk_clk_out_enable: mclk_clk_out_enable {
+			pins = "gpio14";
+			function = "func2";
+			bias-disable;
+			power-source = <0>;
+			output-low;
+			input-disable;
+		};
+
+		mclk_clk_out_disable: mclk_clk_out_disable {
+			pins = "gpio14";
+			function = "normal";
+			bias-disable;
+			power-source = <0>;
+			bias-high-impedance;
+		};
+	};
+};
+
+/* Yiteng use prim & tert mi2s*/
+&qupv3_se8_spi {
+	status = "disabled";
+};
+
+&dai_mi2s0 {
+	/* sd0 for playback */
+	qcom,msm-mi2s-rx-lines = <1>;
+	/* sd1 for record */
+	qcom,msm-mi2s-tx-lines = <2>;
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&pri_mi2s_sck_active &pri_mi2s_ws_active &pri_mi2s_sd0_active &pri_mi2s_sd1_active>;
+	pinctrl-1 = <&pri_mi2s_sck_sleep &pri_mi2s_ws_sleep &pri_mi2s_sd0_sleep &pri_mi2s_sd1_sleep>;
+};
+
+&dai_mi2s2 {
+	/* sd0 for playback */
+	qcom,msm-mi2s-rx-lines = <1>;
+	/* sd1 for record */
+	qcom,msm-mi2s-tx-lines = <2>;
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&tert_mi2s_active &tert_mi2s_sd0_active &tert_mi2s_sd1_active>;
+	pinctrl-1 = <&tert_mi2s_sleep &tert_mi2s_sd0_sleep &tert_mi2s_sd1_sleep>;
+};
+/* Yiteng Section End */
+
+/* MAX98927 SmartPA Section Start*/
+&qupv3_se12_i2c {
+	status = "okay";
+
+	/* max98927 smartpa device */
+	/* Used as speaker */
+	max98927r: spkamp@3a {
+		compatible = "maxim,max98927R";
+		status = "okay";
+		reg = <0x3a>;
+		mono_stereo_mode = <3>;
+		interleave_mode = <1>;
+		maxim,98927-reset-gpio = <&tlmm 25 0>;
+		i2c-pull-supply = <&pm8998_lvs2>;
+	};
+
+	/* Used as receiver */
+	max98927l: spkamp@39 {
+		compatible = "maxim,max98927L";
+		status = "okay";
+		reg = <0x39>;
+		mono_stereo_mode = <3>;
+		interleave_mode = <1>;
+		i2c-pull-supply = <&pm8998_lvs2>;
+		maxim,98927-reset-gpio = <&tlmm 7 0>;
+	};
+};
+
+/* SmartPA use quat mi2s*/
+&dai_mi2s3 {
+	/* sd0 for playback */
+	qcom,msm-mi2s-rx-lines = <1>;
+	/* sd1 for record */
+	qcom,msm-mi2s-tx-lines = <2>;
+
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&quat_mi2s_active &quat_mi2s_sd0_active &quat_mi2s_sd1_active>;
+	pinctrl-1 = <&quat_mi2s_sleep &quat_mi2s_sd0_sleep &quat_mi2s_sd1_sleep>;
+};
+/* MAX98927 SmartPA Section End */
+

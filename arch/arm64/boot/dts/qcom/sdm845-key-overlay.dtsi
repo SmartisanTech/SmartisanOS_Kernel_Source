@@ -1,0 +1,48 @@
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+
+		pinctrl-names = "default",
+			"tlmm_gpio_key_active","tlmm_gpio_key_suspend";
+		pinctrl-0 = <&key_vol_dn_default
+			     &gpio_key_active>;
+		pinctrl-1 = <&gpio_key_suspend>;
+
+		vol_dn {
+			label = "volume_down";
+			gpios = <&pm8998_gpios 6 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <114>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+
+		smart {
+			label = "smart";
+			gpios = <&tlmm 37 0x1>;
+			linux,input-type = <1>;
+			linux,code = <766>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+	};
+};
+
+&spmi_bus {
+	qcom,pm8998@0 {
+		qcom,power-on@800 {
+			qcom,pon_2 {
+				linux,code = <115>;
+			};
+		};
+	};
+};
+
+&soc {
+	qcom,qbt1000 {
+		status = "disabled";
+	};
+};

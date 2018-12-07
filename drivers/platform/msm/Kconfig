@@ -1,0 +1,209 @@
+menu "Qualcomm technologies inc. MSM specific device drivers"
+	depends on ARCH_QCOM
+
+config IPA
+	tristate "IPA support"
+	depends on SPS && NET
+	help
+	  This driver supports the Internet Packet Accelerator (IPA) core.
+	  IPA is a programmable protocol processor HW block.
+	  It is designed to support generic HW processing of UL/DL IP packets
+	  for various use cases independent of radio technology.
+	  The driver support client connection and configuration
+	  for the IPA core.
+	  Kernel and user-space processes can call the IPA driver
+	  to configure IPA core.
+
+config RMNET_IPA
+	tristate "IPA RMNET WWAN Network Device"
+	depends on IPA && MSM_QMI_INTERFACE
+	help
+	  This WWAN Network Driver implements network stack class device.
+	  It supports Embedded data transfer from A7 to Q6. Configures IPA HW
+	  for RmNet Data Driver and also exchange of QMI messages between
+	  A7 and Q6 IPA-driver.
+
+config GSI
+	bool "GSI support"
+	help
+	  This driver provides the transport needed to talk to the
+	  IPA core. It replaces the BAM transport used previously.
+
+	  The GSI connects to a peripheral component via uniform TLV
+	  interface, and allows it to interface with other peripherals
+	  and CPUs over various types of interfaces such as MHI, xDCI,
+	  xHCI, GPI, WDI, Ethernet, etc.
+
+config IPA3
+	tristate "IPA3 support"
+	depends on GSI && NET
+	help
+	  This driver supports the Internet Packet Accelerator (IPA3) core.
+	  IPA is a programmable protocol processor HW block.
+	  It is designed to support generic HW processing of UL/DL IP packets
+	  for various use cases independent of radio technology.
+	  The driver support client connection and configuration
+	  for the IPA core.
+	  Kernel and user-space processes can call the IPA driver
+	  to configure IPA core.
+
+config RMNET_IPA3
+	tristate "IPA3 RMNET WWAN Network Device"
+	depends on IPA3 && MSM_QMI_INTERFACE
+	help
+	  This WWAN Network Driver implements network stack class device.
+	  It supports Embedded data transfer from A7 to Q6. Configures IPA HW
+	  for RmNet Data Driver and also exchange of QMI messages between
+	  A7 and Q6 IPA-driver.
+
+config ECM_IPA
+	tristate "STD ECM LAN Driver support"
+	depends on IPA || IPA3
+	help
+	  Enables LAN between applications processor and a tethered
+	  host using the STD ECM protocol.
+	  This Network interface is aimed to allow data path go through
+	  IPA core while using STD ECM protocol.
+
+config RNDIS_IPA
+	tristate "RNDIS_IPA Network Interface Driver support"
+	depends on IPA || IPA3
+	help
+	  Enables LAN between applications processor and a tethered
+	  host using the RNDIS protocol.
+	  This Network interface is aimed to allow data path go through
+	  IPA core while using RNDIS protocol.
+
+config IPA_UT
+	tristate "IPA Unit-Test Framework and Test Suites"
+	depends on IPA3 && DEBUG_FS
+	help
+	  This Module implements IPA in-kernel test framework.
+	  The framework supports defining and running tests, grouped
+	  into suites according to the sub-unit of the IPA being tested.
+	  The user interface to run and control the tests is debugfs file
+	  system.
+
+config SPS
+	bool "SPS support"
+	select GENERIC_ALLOCATOR
+	help
+	  The SPS (Smart Peripheral Switch) is a DMA engine.
+	  It can move data in the following modes:
+		1. Peripheral-to-Peripheral.
+		2. Peripheral-to-Memory.
+		3. Memory-to-Memory.
+
+config SPS_SUPPORT_BAMDMA
+	bool "SPS support BAM DMA"
+	depends on SPS
+	default n
+	help
+	  The BAM-DMA is used for Memory-to-Memory transfers.
+	  The main use cases is RPC between processors.
+	  The BAM-DMA hardware has 2 registers sets:
+		1. A BAM HW like all the peripherals.
+		2. A DMA channel configuration (i.e. channel priority).
+
+config SPS_SUPPORT_NDP_BAM
+	bool "SPS support NDP BAM"
+	depends on SPS
+	default n
+	help
+	  No-Data-Path BAM is used to improve BAM performance.
+
+config EP_PCIE
+	bool "PCIe Endpoint mode support"
+	select GENERIC_ALLOCATOR
+	help
+	  PCIe controller is in endpoint mode.
+	  It supports the APIs to clients as a service layer, and allows
+	  clients to enable/disable PCIe link, configure the address
+	  mapping for the access to host memory, trigger wake interrupt
+	  on host side to wake up host, and trigger MSI to host side.
+
+config EP_PCIE_HW
+	bool "PCIe Endpoint HW driver"
+	depends on EP_PCIE
+	help
+	  PCIe endpoint HW specific implementation.
+	  It supports:
+		1. link training with Root Complex.
+		2. Address mapping.
+		3. Sideband signaling.
+		4. Power management.
+
+config QPNP_COINCELL
+	tristate "QPNP coincell charger support"
+	depends on SPMI
+	help
+	  This driver supports the QPNP coincell peripheral found inside of
+	  Qualcomm Technologies, Inc. QPNP PMIC devices.  The coincell charger
+	  provides a means to charge a coincell battery or backup capacitor
+	  which is used to maintain PMIC register state when the main battery is
+	  removed from the mobile device.
+
+config QPNP_REVID
+	tristate "QPNP Revision ID Peripheral"
+	depends on SPMI
+	help
+	  Say 'y' here to include support for the Qualcomm Technologies, Inc.
+	  QPNP REVID peripheral. REVID prints out the PMIC type and revision
+	  numbers in the kernel log along with the PMIC option status. The PMIC
+	  type is mapped to a QTI chip part number and logged as well.
+
+
+config MSM_MHI_DEV
+        tristate "Modem Device Interface Driver"
+	depends on EP_PCIE && IPA
+        help
+          This kernel module is used to interact with PCIe Root complex
+          supporting MHI protocol. MHI is a data transmission protocol
+          involving communication between a host and a device over shared
+          memory. MHI interacts with the IPA for supporting transfers
+	  on the HW accelerated channels between Host and device.
+
+config USB_BAM
+	bool "USB BAM Driver"
+	depends on SPS && USB_GADGET
+	help
+	  Enabling this option adds USB BAM Driver.
+	  USB BAM driver was added to supports SPS Peripheral-to-Peripheral
+	  transfers between the USB and other peripheral.
+
+config MSM_11AD
+	tristate "Platform driver for 11ad chip"
+	depends on PCI
+	depends on PCI_MSM
+	default n
+	---help---
+	  This module adds required platform support for wireless adapter based on
+	  Qualcomm Technologies, Inc. 11ad chip, integrated into MSM platform
+
+	  If you choose to build it as a module, it will be called
+	  msm_11ad_proxy.
+
+config SEEMP_CORE
+	tristate "SEEMP Core"
+	help
+	  This option enables QTI Snapdragron Smart Protection to detect
+	  anomalies in various activities. It records task activities in
+	  a log and rates the actions according to whether a typical user would
+	  use the tools.
+
+config QCOM_GENI_SE
+	tristate "QCOM GENI Serial Engine Driver"
+	help
+	  This module is used to interact with GENI based Serial Engines on
+	  Qualcomm Technologies, Inc. Universal Peripheral(QUPv3). This
+	  module is used to configure and read the configuration from the
+	  Serial Engines.
+
+config MSM_EXT_DISPLAY
+	bool "MSM External Display Driver"
+	help
+	  Enabling this option adds MSM External Display Driver.
+	  External Display driver was added to support the communication
+	  between external display driver and its counterparts.
+
+endmenu

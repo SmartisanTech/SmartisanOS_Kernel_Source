@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+&pmi8998_fg {
+	qcom,fg-cutoff-voltage = <3400>;
+	qcom,fg-chg-term-current = <150>;
+	qcom,fg-sys-term-current = <(-180)>;
+	qcom,fg-jeita-thresholds = <0 15 45 60>;
+	qcom,hold-soc-while-full;
+	qcom,battery-thermal-coefficients = [a1 50 ff];
+	qcom,fg-recharge-voltage = <4350>;
+	qcom,fg-force-load-profile;
+	qcom,fg-bmd-en-delay-ms = <300>; /* reference QRD */
+};
+
+&pmi8998_charger {
+	qcom,fcc-max-ua = <3500000>;
+	qcom,usb-icl-ua = <3000000>;
+	qcom,fv-max-uv = <4410000>;
+	qcom,float-option = <2>; /* treat as sdp */
+	qcom,sw-jeita-enable;
+	qcom,thermal-mitigation
+		= <3500000 3500000 3500000 3400000 3300000 2000000 1500000 0>;
+	qcom,thermal-mitigation-panel-on
+		= <3500000 3000000 2500000 2000000 1500000 1000000 500000 0>;
+		/* temprature: 39-38  41-39  42-41  43-42  45-43  47-45  70-47 */
+};
+

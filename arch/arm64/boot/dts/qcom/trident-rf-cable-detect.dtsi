@@ -1,0 +1,22 @@
+&soc {
+       rf_cable {
+               compatible = "rf_cable, plug_detection";
+               rf_cable,int-gpio = <&tlmm 128 0>;
+               pinctrl-names = "default";
+               pinctrl-0 = <&rf_cable_int_default>;
+       };
+};
+
+&tlmm {
+	rf_cable_int_default: rf_cable_int_default {
+		mux {
+			pins = "gpio128";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio128";
+			drive-strength = <2>;
+			bias-disable = <0>; /* no pull */
+		};
+	 };
+};

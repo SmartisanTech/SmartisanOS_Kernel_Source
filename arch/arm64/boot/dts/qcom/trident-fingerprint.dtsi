@@ -1,0 +1,168 @@
+&soc {
+	fpc1020 {
+		//status = "disable";
+		compatible = "fpc,fpc1020";
+		interrupt-parent = <&tlmm>;
+		interrupts = <121 0x0>;
+		fpc,gpio_rst    = <&tlmm 24 0x0>;
+		fpc,gpio_irq    = <&tlmm 121 0x0>;
+	/*	vcc_spi-supply  = <&pm8994_s4>;  */
+		vdd_io-supply   = <&pm8998_s4>;
+	/*	vdd_ana-supply  = <&pm8996_l18>; */
+		fpc,enable-on-boot;
+		/* fpc,enable-wakeup; */
+
+		pinctrl-names = "fpc1020_reset_reset",
+			"fpc1020_reset_active",
+			"fpc1020_irq_active";
+
+		pinctrl-0 = <&msm_gpio_24>;
+		pinctrl-1 = <&msm_gpio_24_output_high>;
+		pinctrl-2 = <&msm_gpio_121>;
+	};
+
+	goodix_fp {
+		//status = "disable";
+		compatible = "goodix,fingerprint";
+		spi-max-frequency = <4800000>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <121 0x0>;
+
+		goodix,gpio_reset    = <&tlmm 24 0>;
+		goodix,gpio_irq      = <&tlmm 121 0>;
+		goodix_pwr2-supply = <&pm8998_l28>;
+		vdd_io-supply   = <&pm8998_s4>;
+
+		pinctrl-names = "goodixfp_reset_reset",
+			"goodixfp_reset_active",
+			"goodixfp_irq_active";
+
+		pinctrl-0 = <&goodix_reset_reset>;
+		pinctrl-1 = <&goodix_reset_active>;
+		pinctrl-2 = <&goodix_irq_active>;
+	};
+	nvt_uio {
+		//status = "disable";
+		compatible = "nvt_uio";
+		interrupt-parent = <&tlmm>;
+		interrupts = <121 0x0>;
+
+		qcom,use-pinctrl;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&nvt_reset_pin_disable_active>;
+		pinctrl-1 = <&nvt_reset_pin_disable_suspend>;
+
+		nvt_uio,irq_gpio = <&tlmm 121 0x0>;
+		nvt_uio,rst_gpio = <&tlmm 24 0x0>;
+		nvt_v3-supply = <&pm8998_l28>;
+	};
+};
+
+&tlmm {
+	/* GPIO_24 : FP_RESET_N */
+	msm_gpio_24: msm_gpio_24 {
+		mux {
+			 pins = "gpio24";
+			 function = "gpio";
+		};
+
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+			bias-disable;
+			output-low;
+		};
+	};
+
+	/* GPIO_24 : FP_RESET_N, state device active*/
+	msm_gpio_24_output_high: msm_gpio_24_output_high {
+		mux {
+			pins = "gpio24";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+			bias-disable;
+			output-high;
+		};
+	};
+
+	/* GPIO_121 : FP_INT_N */
+	msm_gpio_121: msm_gpio_121 {
+		mux {
+			pins = "gpio121";
+			function = "gpio";
+		};
+
+		config {
+			pins = "gpio121";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+
+	goodix_reset_reset: goodix_reset_reset{
+		mux {
+			pins = "gpio24";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+	goodix_reset_active: goodix_reset_active{
+		mux {
+			pins = "gpio24";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-high;
+		};
+	};
+
+	goodix_irq_active: goodix_irq_active {
+		mux {
+			pins = "gpio121";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio121";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+    nvt_reset_pin_disable_active: active {
+		mux {
+			pins = "gpio24";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+		    bias-disable;
+		    output-high;
+		};
+    };
+    nvt_reset_pin_disable_suspend: suspend {
+		mux {
+			pins = "gpio24";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio24";
+			drive-strength = <2>;
+		    bias-disable;
+		    output-low;
+		};
+    };
+};
+

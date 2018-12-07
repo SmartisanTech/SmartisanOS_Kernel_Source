@@ -1,0 +1,24 @@
+&qupv3_se14_i2c {
+	status = "ok";
+
+	synaptics_tcm@4b {
+		compatible = "synaptics,tcm-i2c";
+		reg = <0x4b>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <125 0x2008>;
+		synaptics,irq-gpio = <&tlmm 125 0x2008>; /* IRQF_ONESHOT | IRQF_TRIGGER_LOW */
+		synaptics,irq-on-state = <0>;
+		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","gpio4_5_set";
+		pinctrl-0 = <&ts_int_active>;
+		pinctrl-1 = <&ts_int_suspend>;
+		pinctrl-2 = <&gpio4_5_set>;
+		synaptics,reset-delay-ms = <200>;
+		synaptics,ubl-i2c-addr = <0x2c>;
+	};
+
+	nxu8010@44 {
+		compatible = "nxu8010";
+		reg = <0x44>;
+		vdd-supply = <&pm8998_l19>;
+	};
+};

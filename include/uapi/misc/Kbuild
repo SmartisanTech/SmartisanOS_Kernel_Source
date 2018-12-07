@@ -1,0 +1,3 @@
+# misc Header export list
+header-y += cxl.h
+header-y += nxu8010.h

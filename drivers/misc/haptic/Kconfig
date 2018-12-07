@@ -1,0 +1,5 @@
+config ISA1200_HAPTICS
+	tristate "IMAGIS ISA1200"
+	default n
+	help
+	  Say Y to enable haptic driver ISA1200.

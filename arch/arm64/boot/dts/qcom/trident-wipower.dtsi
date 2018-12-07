@@ -1,0 +1,22 @@
+/*
+ *
+ * wireless power charger IC p922x dtsi.
+ *
+ */
+
+&qupv3_se10_i2c {
+    status = "ok";
+    p9220_charger@61 {
+        compatible = "p9220_charger";
+        reg = <0x61>;
+               p9220_irq = <&tlmm 52 0x00>;
+               interrupt-parent = <&tlmm>;
+               interrupts = <52 0>;
+               interrupt-names = "p9220_irq";
+    };
+};
+
+
+&pmi8998_charger {
+   	       qcom,dc-icl-ua = <1100000>;
+};

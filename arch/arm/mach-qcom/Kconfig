@@ -1,0 +1,79 @@
+if ARCH_QCOM
+menu "QCOM SoC Type"
+
+config ARCH_MSM8X60
+	bool "Enable support for MSM8X60"
+	select ARCH_SUPPORTS_BIG_ENDIAN
+	select ARM_AMBA
+	select QCOM_SCM if SMP
+	select CLKSRC_QCOM
+	select CLKSRC_OF
+	select COMMON_CLK
+
+config ARCH_MSM8960
+	bool "Enable support for MSM8960"
+	select CLKSRC_QCOM
+	select ARCH_SUPPORTS_BIG_ENDIAN
+	select ARM_AMBA
+	select QCOM_SCM if SMP
+	select CLKSRC_OF
+	select COMMON_CLK
+
+
+config ARCH_MSM8974
+	bool "Enable support for MSM8974"
+	select HAVE_ARM_ARCH_TIMER
+	select ARCH_SUPPORTS_BIG_ENDIAN
+	select ARM_AMBA
+	select QCOM_SCM if SMP
+	select CLKSRC_OF
+	select COMMON_CLK
+
+config ARCH_MDM9615
+	bool "Enable support for MDM9615"
+	select CLKSRC_QCOM
+	select ARCH_SUPPORTS_BIG_ENDIAN
+	select ARM_AMBA
+	select QCOM_SCM if SMP
+	select CLKSRC_OF
+	select COMMON_CLK
+
+config ARCH_SDXPOORWILLS
+	bool "Enable support for SDXPOORWILLS"
+	select CPU_V7
+	select HAVE_ARM_ARCH_TIMER
+	select MSM_CORTEX_A7
+	select PINCTRL
+	select QCOM_SCM if SMP
+	select MSM_JTAG_MM if CORESIGHT_ETM
+	select PM_DEVFREQ
+	select COMMON_CLK
+	select COMMON_CLK_QCOM
+	select QCOM_GDSC
+
+config ARCH_MSM8953
+	bool "Enable support for MSM8953"
+	select CPU_V7
+	select HAVE_ARM_ARCH_TIMER
+	select PINCTRL
+	select QCOM_SCM if SMP
+	select PM_DEVFREQ
+	select CLKDEV_LOOKUP
+	select HAVE_CLK
+	select HAVE_CLK_PREPARE
+	select COMMON_CLK_MSM
+
+config ARCH_SDM450
+	bool "Enable support for SDM450"
+	select CPU_V7
+	select HAVE_ARM_ARCH_TIMER
+	select PINCTRL
+	select QCOM_SCM if SMP
+	select PM_DEVFREQ
+	select CLKDEV_LOOKUP
+	select HAVE_CLK
+	select HAVE_CLK_PREPARE
+	select COMMON_CLK_MSM
+
+endmenu
+endif

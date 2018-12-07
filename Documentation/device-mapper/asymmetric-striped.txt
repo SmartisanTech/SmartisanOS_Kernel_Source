@@ -1,0 +1,85 @@
+dm-asymmetric-stripe
+=========
+
+Device-Mapper's "asm-striped" target is used to create a striped (i.e. RAID-0)
+device across one or more underlying devices. Data is written in "chunks",
+with consecutive chunks rotating among the underlying devices. This can
+potentially provide improved I/O throughput by utilizing several physical
+devices in parallel. However, in order to gain maximum I/O performance
+between slow and fast device, there is a ratio to set up the chunk size
+among these device.
+
+Parameters: <num devs> <chunk size> <ratio> [<dev path> <offset>]+
+<num devs>: Number of underlying devices.
+<chunk size>: Size of each chunk of data. Must be at least as
+large as the system's PAGE_SIZE.
+<ratio>: The proportion of per io size, it is the times as much
+as 1 chunk size
+<dev path>: Full pathname to the underlying block-device, or a
+"major:minor" device-number.
+<offset>: Starting sector within the device.
+
+One or more underlying devices can be specified. The striped device
+size must be a multiple of the chunk size multiplied by the number of
+underlying devices. However, there is a ratio that can be set, e.g.: 2:3
+means the first one striped device optimal width size is 2 times as
+much as 1 chunk size, the second striped device is 3.
+
+
+Example scripts
+===============
+
+[[
+#!/usr/bin/perl -w
+# Create a striped device across any number of underlying devices. The device
+# will be called "stripe_dev" and have a chunk-size of 128k.
+
+my $chunk_size = 128 * 2;
+my $ratio = "2:3";
+my $dev_name = "stripe_dev";
+my $num_devs = @ARGV;
+my @devs = @ARGV;
+
+if ($num_devs < 2) {
+die("Specify at least two devices\n");
+}
+
+
+$stripe_average_size = 1073741824
+$stripe_dev_size = $stripe_average_size * 5;
+
+$table = "0 $stripe_dev_size asm-striped $num_devs $chunk_size $ratio";
+for ($i = 0; $i < $num_devs; $i++) {
+$table .= " $devs[$i] 0";
+}
+
+`echo $table | dmsetup create $dev_name`;
+]]
+
+
+Why asymmetric striped
+=======================
+Considering one case:
+There are 2 storage device or flash devices: A and B, their sequential
+read performance are 220M/s and 315M/s respectively, so their sequential
+read speed could be approximately equal to 2:3, if we use stripe type
+to combine these two devices, their layout could be showed below:
+--------------------------------------------------------
+|    A1    |    A2    |    B1    |    B2    |    B3    |
+--------------------------------------------------------
+
+If we select asymmetric stripe type, their layout could be illustrated
+follow:
+--------------------------------------------------------
+|         A1          |               B1               |
+--------------------------------------------------------
+
+The former has 5 stripe devices and each stripe device has also equal
+chunk size, e.g.: 256secs. If there is a data block which size is 1280secs,
+so transfer the data to this stripe device will be split into 5 ios which io
+size is 256secs. But if we use the asymmetric stripe device, it only has two
+stripe devices and each one has be setting in optimal chunk size, e.g.: ratio
+is 2:3, the first one optimal chunk size is 512secs, the second is 768secs.
+And same 1280secs data block just only be split into two ios, this can be
+achieved perfect io performance.
+

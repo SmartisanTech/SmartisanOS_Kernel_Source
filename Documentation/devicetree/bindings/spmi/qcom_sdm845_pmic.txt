@@ -1,0 +1,60 @@
+SDM845 PMICs registers read/write interface
+
+There are three PMICs of PM845,PM8005 and PMI8998 in the SDM845 Platform.In the
+Qualcomm,there are the offered interfaces for the registers read/write.Firstly,
+follow me to understand the related content of PMICs.
+
+1.How to distinguish the PMICs in the Qualcomm?
+The PMIC device consists of two slave IDs,which are known as the USID(unique slave IDs).
+For example:
+USID 0 and 1 are reserved for the primary core PMIC(PM8998/PM845)
+USID 2 and 3 are reserved for the slave interface PMIC(PMI8998)
+USID 4 and 5 are reserved for the slave core PMIC(PM8005)
+
+2.How to read/write the registers in the PMICs by ADB?
+For example:
+1).PM8998/PM845
+registers write
+The following example is a register write 0xc240.
+/d/regmap/spmi0-00# echo 0xc240 > address
+/d/regmap/spmi0-00# echo 0x80 > data
+/d/regmap/spmi0-00# cat data
+
+registers read
+The following example is a register read of 20 registers starting with 0x14000.
+/d/regmap/spmi0-01# echo 20 > count
+/d/regmap/spmi0-01# echo 0x4000 > address
+/d/regmap/spmi0-01# cat data
+
+2).PMI8998
+registers write
+The following example is a register write 0xc240.
+/d/regmap/spmi0-02# echo 0xc240 > address
+/d/regmap/spmi0-02# echo 0x80 > data
+/d/regmap/spmi0-02# cat data
+
+registers read
+The following example is a register read of 20 registers starting with 0x1B600.
+/d/regmap/spmi0-03# echo 20 > count
+/d/regmap/spmi0-03# echo 0xB600 > address
+/d/regmap/spmi0-03# cat data
+
+3).PM8005
+registers write
+The following example is a register write 0xc240.
+/d/regmap/spmi0-04# echo 0xc240 > address
+/d/regmap/spmi0-04# echo 0x80 > data
+/d/regmap/spmi0-04# cat data
+
+registers read
+The following example is a register read of 20 registers starting with 0x11400.
+/d/regmap/spmi0-05# echo 20 > count
+/d/regmap/spmi0-05# echo 0x1400 > address
+/d/regmap/spmi0-05# cat data
+
+
+3.The PMIC Arbiter debug bus is present starting at arbiter version 5.It has read and
+write access to all PMIC peripherals regardless of ownership configurations.It cannot
+be used on production devices because it disabled by an eFuse.
+
+If you want to use it,you can do it by the sys interface /d/regmap/spmi1-xx.
