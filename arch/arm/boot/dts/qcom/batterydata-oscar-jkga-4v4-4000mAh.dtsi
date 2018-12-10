@@ -1,0 +1,51 @@
+
+qcom,oscar_jkga_4000mah {
+	/* #3271331_Ontim_DC102cos_4000mAh_averaged_MasterSlave_Jan10th2018*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,nom-batt-capacity-mah = <4000>;
+	qcom,batt-id-kohm = <50>;
+	qcom,cool-fastchg-current-comp = <900>;
+	qcom,thermal-coefficients = [C2 86 BB 50 CF 37];
+	qcom,battery-beta = <3435>;
+	qcom,battery-type = "oscar_jkga_4000mah";
+	qcom,chg-rslow-comp-c1 = <4337391>;
+	qcom,chg-rslow-comp-c2 = <7794215>;
+	qcom,chg-rs-to-rslow = <1180736>;
+	qcom,chg-rslow-comp-thr = <0xB8>;
+	qcom,checksum = <0x98F8>;
+	qcom,gui-version = "PMI8950GUI - 2.0.0.16";
+	qcom,fg-profile-data = [
+		 9D 83 87 6F 
+		 E3 78 CC 65 
+		 37 83 27 78 
+		 20 85 F9 81 
+		 E7 81 10 A0 
+		 E7 BF 40 D1 
+		 66 10 D1 83 
+		 CB 76 1C 7B 
+		 3D 6F 2E 83 
+		 59 7A 6D 8C 
+		 D1 88 20 82 
+		 EB 9B 7D C4 
+		 0D D3 64 0D 
+		 9F 0F FD 58 
+		 14 70 EE FC 
+		 D9 2F 5B 3F 
+		 FE 3A 00 00 
+		 9F 4C 6C 41 
+		 3F 31 00 00 
+		 00 00 00 00 
+		 00 00 00 00 
+		 6F 71 7B 6B 
+		 4E 6E 12 89 
+		 67 7D 25 73 
+		 07 6D 1C 78 
+		 A8 76 03 70 
+		 36 6C 8C A2 
+		 30 20 61 36 
+		 5F A0 71 0C 
+		 28 00 FF 36 
+		 F0 11 30 03 
+		 00 00 00 0C 
+	];
+};

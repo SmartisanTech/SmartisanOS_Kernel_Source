@@ -1,0 +1,10 @@
+if X86
+source "drivers/platform/x86/Kconfig"
+endif
+source "drivers/platform/goldfish/Kconfig"
+
+source "drivers/platform/chrome/Kconfig"
+
+if ARCH_MSM
+source "drivers/platform/msm/Kconfig"
+endif

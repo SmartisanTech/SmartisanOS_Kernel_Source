@@ -1,0 +1,51 @@
+
+qcom,oscar_atl_3900mah {
+	/* #3209260_Ontim_DC102nvt_4000mAh_averaged_MasterSlave_Dec8th2017*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,nom-batt-capacity-mah = <3900>;
+	qcom,batt-id-kohm = <9>;
+	qcom,cool-fastchg-current-comp = <700>;
+	qcom,thermal-coefficients = [C2 86 BB 50 CF 37];
+	qcom,battery-beta = <3435>;
+	qcom,battery-type = "oscar_atl_3900mAh";
+	qcom,chg-rslow-comp-c1 = <3761995>;
+	qcom,chg-rslow-comp-c2 = <6912978>;
+	qcom,chg-rs-to-rslow = <1039950>;
+	qcom,chg-rslow-comp-thr = <0xBA>;
+	qcom,checksum = <0x486E>;
+	qcom,gui-version = "PMI8950GUI - 2.0.0.16";
+	qcom,fg-profile-data = [
+		 AF 83 54 75 
+		 4D 7A ED 6D 
+		 38 83 12 78 
+		 FB 84 CE 81 
+		 F9 81 B8 9B 
+		 80 BF FC D0 
+		 6A 10 E8 83 
+		 81 7C 94 80 
+		 D6 75 34 83 
+		 C1 79 DE 87 
+		 4E 88 24 82 
+		 A7 9B 32 C4 
+		 5C D2 69 0E 
+		 99 0F F9 58 
+		 14 70 EE FC 
+		 5C 45 56 44 
+		 EB 48 00 00 
+		 BE 4C CA 3B 
+		 C6 3A 00 00 
+		 00 00 00 00 
+		 00 00 00 00 
+		 71 70 56 6B 
+		 13 69 60 88 
+		 A5 75 07 6A 
+		 24 5F 06 7A 
+		 23 74 CA 63 
+		 E6 6F BC A1 
+		 1A 3F 61 33 
+		 5D A0 71 0C 
+		 28 00 FF 36 
+		 F0 11 30 03 
+		 00 00 00 0C 
+	];
+};

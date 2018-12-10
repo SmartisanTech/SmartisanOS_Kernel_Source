@@ -1,0 +1,14 @@
+&soc {
+
+    betterlife_fp {
+        compatible = "betterlife,fingerprint";
+        spi-max-frequency = <8000000>;
+        interrupt-parent = <&tlmm>;
+        interrupts = <48 0x0>;
+        betterlife,gpio_reset    = <&tlmm 140 0>;
+        betterlife,gpio_irq      = <&tlmm 48 0>;
+        betterlife,gpio_pwr	     = <&tlmm 20 0>;
+        status = "ok";
+    };
+};
+

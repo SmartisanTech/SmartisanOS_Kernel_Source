@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "apq8053.dtsi"
+#include "msm-pmi8950.dtsi"
+#include "msm8953-mtp.dtsi"
+#include "msm8953-pmi8950.dtsi"
+#include "msm8953-camera-sensor-mtp.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. APQ8053 + PMI8950 IOT MTP";
+	compatible = "qcom,apq8053-mtp", "qcom,apq8053", "qcom,mtp";
+	qcom,board-id= <8 2>;
+};
+
+&mdss_dsi {
+	hw-config = "dual_dsi";
+};
+
+&mdss_dsi1 {
+	status = "ok";
+	qcom,bridge-index = <0>;
+};
+
+&dsi_adv7533_1080p {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+};
+
+&pm8953_gpios {
+	/* GPIO 5 (ADV7533 DSI2HDMI) */
+	gpio@c400 {
+		status = "ok";
+		qcom,mode = <1>;
+		qcom,vin-sel = <0>;
+		qcom,src-sel = <0>;
+		qcom,master-en = <1>;
+		qcom,out-strength = <2>;
+	};
+
+};
+
+/{
+	mtp_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "batterydata-itech-3000mah.dtsi"
+		#include "batterydata-ascent-3450mAh.dtsi"
+	};
+};
+
+&pmi8950_fg {
+	qcom,battery-data = <&mtp_batterydata>;
+};
+
+&pmi8950_charger {
+	qcom,battery-data = <&mtp_batterydata>;
+	qcom,chg-led-sw-controls;
+	qcom,chg-led-support;
+	qcom,external-typec;
+	qcom,typec-psy-name = "typec";
+};

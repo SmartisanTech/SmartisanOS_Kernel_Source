@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8953.dtsi"
+#include "msm-pmi8950.dtsi"
+#include "msm8953-mtp.dtsi"
+#include "msm8953-pmi8950.dtsi"
+#include "msm8953-camera-sensor-mtp.dtsi"
+#include "msm8953-goodix-oscar.dtsi"
+#include "msm8953-betterlife-oscar.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8953 + PMI8950 MTP";
+	compatible = "qcom,msm8953-mtp", "qcom,msm8953", "qcom,mtp";
+	qcom,board-id= <8 0>;
+	qcom,pmic-id = <0x010016 0x010011 0x0 0x0>;
+};
+
+/{
+	mtp_batterydata: qcom,battery-data {
+		// ontim:houzn modify
+		qcom,batt-id-range-pct = <50>;
+		#include "batterydata-oscar-atl-4v4-3900mah.dtsi"	// first supply
+		#include "batterydata-oscar-jkga-4v4-4000mAh.dtsi"	// second supply
+	};
+};
+
+&pmi8950_fg {
+	qcom,battery-data = <&mtp_batterydata>;
+};
+
+&pmi8950_charger {
+	qcom,battery-data = <&mtp_batterydata>;
+	qcom,chg-led-sw-controls;
+	qcom,chg-led-support;
+	// ontim:houzn disable typec on pmic as hw
+	//qcom,external-typec;
+	//qcom,typec-psy-name = "typec";
+};

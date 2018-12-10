@@ -1,0 +1,5 @@
+config GOODIX_FINGERPRINT
+	tristate "Goodix fingerprint drvier support"
+	depends on FINGERPRINT
+	help
+	  Say Y here to enable goodix fingerprint driver support!

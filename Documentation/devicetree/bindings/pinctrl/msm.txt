@@ -1,0 +1,25 @@
+MSM Pinctrl Bindings
+
+Required properties:
+- compatible: "qcom,msm8996-pinctrl"
+	      "qcom,mdm9640-pinctrl"
+	      "qcom,mdm9607-pinctrl"
+	      "qcom,msm8917-pinctrl"
+	       "qcom,mdmcalifornium-pinctrl"
+	      "qcom,msm8952-pinctrl"
+	      "qcom,msm8953-pinctrl"
+	      "qcom,msm8937-pinctrl"
+	      "qcom,msmcobalt-pinctrl"
+	      "qcom,msm8909-pinctrl"
+
+- reg: Should be the base address and length of the TLMM block.
+- interrupts: Should be the parent IRQ of the TLMM block.
+- interrupt-controller: Marks the device node as an interrupt controller.
+- #interrupt-cells: Should be two.
+- gpio-controller: Marks the device node as a GPIO controller.
+- #gpio-cells : Should be two.
+                The first cell is the gpio pin number and the
+                second cell is used for optional parameters.
+
+Optional properties:
+- qcom,tlmm-emmc-boot-select : Should be the bit-field position to set.

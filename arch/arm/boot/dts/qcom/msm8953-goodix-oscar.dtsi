@@ -1,0 +1,108 @@
+&soc {
+	goodix_fp {
+	compatible = "goodix,fingerprint";
+	spi-max-frequency = <1000000>;
+	input-device-name = "gf3206";
+	interrupt-parent = <&tlmm>;
+	interrupts = <48 0x0>;
+
+	goodix,gpio_reset    = <&tlmm 140 0>;
+	goodix,gpio_irq      = <&tlmm 48 0>;
+//	goodix,gpio_pwr	     = <&tlmm 20 0>;
+
+	clock-names = "iface_clk", "core_clk";
+	clocks = <&clock_gcc clk_gcc_blsp2_ahb_clk>,
+	<&clock_gcc clk_gcc_blsp2_qup3_spi_apps_clk>;
+
+	pinctrl-names = "goodixfp_spi_active",
+			"goodixfp_reset_reset",
+			"goodixfp_reset_active",
+			"goodixfp_irq_active";
+//			"goodixfp_pwr_reset",
+//                        "goodixfp_pwr_active";
+
+	pinctrl-0 = <&goodix_spi_active>;
+	pinctrl-1 = <&goodix_reset_reset>;
+	pinctrl-2 = <&goodix_reset_active>;
+	pinctrl-3 = <&goodix_irq_active>;
+//	pinctrl-4 = <&goodix_pwr_reset>;
+//        pinctrl-5 = <&goodix_pwr_active>;
+	};
+};
+
+&tlmm {
+	goodix_spi_active: goodix_spi_active{
+		mux {
+			pins = "gpio135", "gpio136", "gpio137", "gpio138";
+			function = "blsp_spi7";
+		};
+		config {
+			pins = "gpio135", "gpio136", "gpio137", "gpio138";
+			drive-strength = <2>;
+			bias-disable = <0>;
+		};
+	};
+	goodix_reset_reset: goodix_reset_reset{
+		mux {
+			pins = "gpio140";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio140";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+	goodix_reset_active: goodix_reset_active{
+		mux {
+			pins = "gpio140";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio140";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-high;
+		};
+	};
+
+	goodix_irq_active: goodix_irq_active {
+		mux {
+			pins = "gpio48";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio48";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+
+/*	goodix_pwr_reset: goodix_pwr_reset{
+                mux {
+                        pins = "gpio20";
+                        function = "gpio";
+                };
+                config {
+                        pins = "gpio20";
+                        drive-strength = <2>;
+                        bias-disable = <0>;
+                        output-low;
+                };
+        };
+        goodix_pwr_active: goodix_pwr_active{
+                mux {
+                        pins = "gpio20";
+                        function = "gpio";
+                };
+                config {
+                        pins = "gpio20";
+                        drive-strength = <2>;
+                        bias-disable = <0>;
+                        output-high;
+                };
+        };
+*/
+};

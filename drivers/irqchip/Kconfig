@@ -1,0 +1,184 @@
+config IRQCHIP
+	def_bool y
+	depends on OF_IRQ
+
+config ARM_GIC
+	bool
+	select IRQ_DOMAIN
+	select IRQ_DOMAIN_HIERARCHY
+	select MULTI_IRQ_HANDLER
+	select MSM_SHOW_RESUME_IRQ
+
+config ARM_GIC_V2M
+	bool
+	depends on ARM_GIC
+	depends on PCI && PCI_MSI
+	select PCI_MSI_IRQ_DOMAIN
+
+config GIC_NON_BANKED
+	bool
+
+config ARM_GIC_V3
+	bool
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+	select IRQ_DOMAIN_HIERARCHY
+
+config ARM_GIC_PANIC_HANDLER
+	bool "GIC Panic Handler"
+	depends on ARM_GIC_V3 || ARM_GIC
+	help
+	  Save GIC distributor registers to RAM buffer on kernel panic.
+	  gic-v3 will have an additional buffer for router registers.
+	  Mainly for debugging purposes.
+
+	  For production kernels, you should say 'N' here.
+
+config ARM_GIC_V3_ITS
+	bool
+	select PCI_MSI_IRQ_DOMAIN
+
+config ARM_GIC_V3_ACL
+	bool "GICv3 Access control"
+	depends on ARM_GIC_V3
+	help
+	  Access to GIC ITS address space is controlled by EL2.
+	  Kernel has no permission to access ITS
+
+config ARM_GIC_V3_NO_ACCESS_CONTROL
+	bool "GICv3 No Access Control Configuration"
+	depends on ARM_GIC_V3
+	help
+	  On some SOCs with the access control configurations it is
+	  not allowed to access certain set of the GIC registers
+	  from non-secure world. Provide a common flag to protect
+	  those functionalities and compile them out for such
+	  configurations, so that specific registers are not touched.
+
+	  For production kernels, you should say 'N' here.
+
+config ARM_NVIC
+	bool
+	select IRQ_DOMAIN
+	select GENERIC_IRQ_CHIP
+
+config ARM_VIC
+	bool
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+
+config ARM_VIC_NR
+	int
+	default 4 if ARCH_S5PV210
+	default 2
+	depends on ARM_VIC
+	help
+	  The maximum number of VICs available in the system, for
+	  power management.
+
+config ATMEL_AIC_IRQ
+	bool
+	select GENERIC_IRQ_CHIP
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+
+config ATMEL_AIC5_IRQ
+	bool
+	select GENERIC_IRQ_CHIP
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+
+config BRCMSTB_L2_IRQ
+	bool
+	depends on ARM
+	select GENERIC_IRQ_CHIP
+	select IRQ_DOMAIN
+
+config MSM_SHOW_RESUME_IRQ
+	bool "Enable logging of interrupts that could have caused resume"
+	depends on ARM_GIC
+	default n
+	help
+	  This option logs wake up interrupts that have triggered just before
+	  the resume loop unrolls. It helps to debug to know any unnecessary
+	  wake up interrupts that causes system to come out of low power modes.
+	  Say Y if you want to debug why the system resumed.
+
+config DW_APB_ICTL
+	bool
+	select IRQ_DOMAIN
+
+config IMGPDC_IRQ
+	bool
+	select GENERIC_IRQ_CHIP
+	select IRQ_DOMAIN
+
+config CLPS711X_IRQCHIP
+	bool
+	depends on ARCH_CLPS711X
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+	default y
+
+config OR1K_PIC
+	bool
+	select IRQ_DOMAIN
+
+config OMAP_IRQCHIP
+	bool
+	select GENERIC_IRQ_CHIP
+	select IRQ_DOMAIN
+
+config ORION_IRQCHIP
+	bool
+	select IRQ_DOMAIN
+	select MULTI_IRQ_HANDLER
+
+config RENESAS_INTC_IRQPIN
+	bool
+	select IRQ_DOMAIN
+
+config RENESAS_IRQC
+	bool
+	select IRQ_DOMAIN
+
+config TB10X_IRQC
+	bool
+	select IRQ_DOMAIN
+	select GENERIC_IRQ_CHIP
+
+config VERSATILE_FPGA_IRQ
+	bool
+	select IRQ_DOMAIN
+
+config VERSATILE_FPGA_IRQ_NR
+       int
+       default 4
+       depends on VERSATILE_FPGA_IRQ
+
+config XTENSA_MX
+	bool
+	select IRQ_DOMAIN
+
+config IRQ_CROSSBAR
+	bool
+	help
+	  Support for a CROSSBAR ip that precedes the main interrupt controller.
+	  The primary irqchip invokes the crossbar's callback which inturn allocates
+	  a free irq and configures the IP. Thus the peripheral interrupts are
+	  routed to one of the free irqchip interrupt lines.
+
+config KEYSTONE_IRQ
+	tristate "Keystone 2 IRQ controller IP"
+	depends on ARCH_KEYSTONE
+	help
+		Support for Texas Instruments Keystone 2 IRQ controller IP which
+		is part of the Keystone 2 IPC mechanism
+
+config MSM_IRQ
+	bool
+	select IRQ_DOMAIN
+

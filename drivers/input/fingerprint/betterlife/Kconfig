@@ -1,0 +1,5 @@
+config BETTERLIFE_FINGERPRINT
+	tristate "blestech tee driver support"
+	help
+	  Say Y here if you want to support blestech tee  etc...
+

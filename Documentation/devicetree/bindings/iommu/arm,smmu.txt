@@ -1,0 +1,162 @@
+* ARM System MMU Architecture Implementation
+
+ARM SoCs may contain an implementation of the ARM System Memory
+Management Unit Architecture, which can be used to provide 1 or 2 stages
+of address translation to bus masters external to the CPU.
+
+The SMMU may also raise interrupts in response to various fault
+conditions.
+
+** System MMU required properties:
+
+- compatible    : Should be one of:
+
+                        "arm,smmu-v1"
+                        "arm,smmu-v2"
+                        "arm,mmu-400"
+                        "arm,mmu-401"
+                        "arm,mmu-500"
+                        "qcom,smmu-v2"
+
+                  depending on the particular implementation and/or the
+                  version of the architecture implemented.
+
+- reg           : Base address and size of the SMMU.
+
+- #global-interrupts : The number of global interrupts exposed by the
+                       device.
+
+- interrupts    : Interrupt list, with the first #global-irqs entries
+                  corresponding to the global interrupts and any
+                  following entries corresponding to context interrupts,
+                  specified in order of their indexing by the SMMU.
+
+                  For SMMUv2 implementations, there must be exactly one
+                  interrupt per context bank. In the case of a single,
+                  combined interrupt, it must be listed multiple times.
+
+- mmu-masters   : A list of phandles to device nodes representing bus
+                  masters for which the SMMU can provide a translation
+                  and their corresponding StreamIDs (see example below).
+                  Each device node linked from this list must have a
+                  "#stream-id-cells" property, indicating the number of
+                  StreamIDs associated with it.
+
+** System MMU optional properties:
+
+- calxeda,smmu-secure-config-access : Enable proper handling of buggy
+                  implementations that always use secure access to
+                  SMMU configuration registers. In this case non-secure
+                  aliases of secure registers have to be used during
+                  SMMU configuration.
+
+- qcom,smmu-invalidate-on-map : Enable proper handling of buggy
+                  implementations that require a TLB invalidate
+                  operation to occur at map time.
+
+- qcom,halt-and-tlb-on-atos : Enable proper handling of buffy
+                  implementations that require a halt and TLB invalidate
+                  before performing ATOS operations.
+
+- qcom,register-save : Enable register saving awareness.  This causes the
+                  driver to assume that configuration registers will retain
+                  their values across gdsc power gating.
+
+- qcom,skip-init : Disable resetting configuration for all context banks
+                  during device reset.  This is useful for targets where
+                  some context banks are dedicated to other execution
+                  environments outside of Linux and those other EEs are
+                  programming their own stream match tables, SCTLR, etc.
+                  Without setting this option we will trample on their
+                  configuration.
+
+- qcom,errata-ctx-fault-hang : Enable workaround for a context fault hang
+                  hardware errata.
+
+- qcom,fatal-asf : Enable BUG_ON for address size faults.  Some hardware
+                  requires special fixups to recover from address size
+                  faults.  Rather than applying the fixups just BUG since
+                  address size faults are due to a fundamental programming
+                  error from which we don't care about recovering anyways.
+
+- qcom,tz-device-id : A string indicating the device ID for this SMMU known
+                  to TZ.  See msm_tz_smmu.c for a full list of mappings.
+
+- qcom,errata-tz-atos : Enable workaround for an ATOS hardware errata on
+                  Thulium v1.  You *must* also set qcom,tz-device-id for
+                  this to work.
+
+- qcom,no-smr-check : Usually when an SMMU probes we do a sanity check on
+                  the SMR registers to make sure they can fully support all
+                  of the mask bits.  This check can cause problems for use
+                  cases where the SMMU is already in use when the SMMU
+                  probes.  For example, for continuous splash screen
+                  support, the stream matching table is programmed before
+                  control is even turned over to Linux.
+
+- qcom,dynamic  : Allow dynamic domains to be attached. This is only
+		  useful if the upstream hardware is capable of switching
+		  between multiple domains within a single context bank.
+
+- qcom,enable-smmu-halt : Before SMMU is powered down, SMMU needs to be in
+		  idle state prior to power collapse. When 'halt' is received by
+		  SMMU, it ensures that no new requests enters and all
+		  outstanding requests are completed and generates an
+		  acknowledgment for halt request. So add an option to register
+		  a call back notifier on regulators in whcih SMMU can be halted
+		  or resumed when regulator is powered down/up.
+
+- qcom,enable-static-cb : Enables option to use pre-defined static context bank
+		  allocation programmed by TZ. Global register including SMR and
+		  S2CR registers are configured by TZ before kernel comes up and
+		  this programming is not altered throughout the life of system.
+		  We would be reading through these registers at run time to
+		  identify CB allocated for a particular sid. SID masking isn't
+		  supported as we are directly comparing client SID with ID bits
+		  of SMR registers.
+
+- clocks        : List of clocks to be used during SMMU register access. See
+                  Documentation/devicetree/bindings/clock/clock-bindings.txt
+                  for information about the format. For each clock specified
+                  here, there must be a corresponding entery in clock-names
+                  (see below).
+
+- clock-names   : List of clock names corresponding to the clocks specified in
+                  the "clocks" property (above). See
+                  Documentation/devicetree/bindings/clock/clock-bindings.txt
+                  for more info.
+
+- vdd-supply    : Phandle of the regulator that should be powered on during
+                  SMMU register access.
+
+- attach-impl-defs : global registers to program at device attach
+                  time. This should be a list of 2-tuples of the format:
+                  <offset reg_value>.
+
+- qcom,bus-master-id : The master ID of the bus, if a bus vote is needed.
+                       See include/dt-bindings/msm/msm-bus-ids.h.
+
+Example:
+
+        smmu {
+                compatible = "arm,smmu-v1";
+                reg = <0xba5e0000 0x10000>;
+                #global-interrupts = <2>;
+                interrupts = <0 32 4>,
+                             <0 33 4>,
+                             <0 34 4>, /* This is the first context interrupt */
+                             <0 35 4>,
+                             <0 36 4>,
+                             <0 37 4>;
+
+                /*
+                 * Two DMA controllers, the first with two StreamIDs (0xd01d
+                 * and 0xd01e) and the second with only one (0xd11c).
+                 */
+                mmu-masters = <&dma0 0xd01d 0xd01e>,
+                              <&dma1 0xd11c>;
+
+                attach-impl-defs = <0x124 0x3>,
+                    <0x128 0xa5>,
+                    <0x12c 0x1>;
+        };
