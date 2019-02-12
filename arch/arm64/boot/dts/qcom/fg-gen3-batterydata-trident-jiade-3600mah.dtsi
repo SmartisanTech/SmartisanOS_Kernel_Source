@@ -1,0 +1,78 @@
+
+qcom,dc103jiade_3600mah {
+	qcom, = <24>;
+	/* #3312404_Smartisan_DC103jd_3600mAh_averaged_MasterSlave_Feb20th2018*/
+	qcom,max-voltage-uv = <4410000>;
+	qcom,nom-batt-capacity-mah = <3600>;
+	qcom,fastchg-current-ma = <3500>;
+	qcom,jeita-fcc-ranges = <0   150  1000000
+				151  450  3500000
+				451  600  1700000>;
+	qcom,jeita-fv-ranges = <0   150  4410000
+				151 450  4410000
+				451 600  4100000>;
+	qcom,batt-id-kohm = <100>;
+	qcom,battery-beta = <3435>;
+	qcom,fg-cc-cv-threshold-mv = <4390>;
+	qcom,battery-type = "dc103jiade_3600mah";
+	qcom,checksum = <0x6F9C>;
+	qcom,gui-version = "PMI8998GUI - 2.0.0.58";
+	qcom,fg-profile-data = [
+		 D7 1E 8B 06
+		 55 03 B2 F4
+		 E3 1C C1 FB
+		 DF 0D 77 0A
+		 C9 17 D4 23
+		 63 44 55 5A
+		 70 00 00 00
+		 10 00 00 00
+		 00 00 57 AD
+		 72 C4 9D BA
+		 29 00 08 00
+		 0D E2 C6 E4
+		 54 05 91 FB
+		 77 15 A9 F4
+		 95 DB BB 2B
+		 2A 06 09 20
+		 27 00 14 00
+		 26 20 37 05
+		 A4 0A 7D FC
+		 DC 1C A2 02
+		 B0 0C 7C 0B
+		 8D 18 BC 23
+		 0A 44 E7 5A
+		 74 00 00 00
+		 0E 00 00 00
+		 00 00 F6 D5
+		 58 CA 48 C2
+		 1C 00 00 00
+		 34 EA C6 E4
+		 66 06 DE F3
+		 87 E4 82 03
+		 4B 02 89 23
+		 C8 33 CC FF
+		 07 10 00 00
+		 1F 0E 66 46
+		 1C 00 40 00
+		 6B 01 0A FA
+		 FF 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+		 00 00 00 00
+	];
+};

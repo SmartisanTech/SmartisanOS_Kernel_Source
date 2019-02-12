@@ -1,0 +1,92 @@
+Qualcomm Technologies, Inc. FastRPC Driver
+
+The MSM FastRPC driver implements an IPC (Inter-Processor Communication)
+mechanism that allows for clients to transparently make remote method
+invocations across DSP and APPS boundaries. This enables developers
+to offload tasks to the DSP and free up the application processor for
+other tasks.
+
+Required properties:
+- compatible :	Must be one of "qcom,msm-fastrpc-adsp" or
+		"qcom,msm-fastrpc-compute"
+
+Optional properties:
+- qcom,fastrpc-glink:	Flag to use glink instead of smd for IPC
+- qcom,rpc-latency-us:	FastRPC QoS latency vote
+- qcom,adsp-remoteheap-vmid:  FastRPC remote heap VMID list
+- qcom,fastrpc-adsp-audio-pdr:  Flag to enable ADSP Audio PDR
+- qcom,fastrpc-adsp-sensors-pdr: Flag to enable Sensors PDR
+
+Optional subnodes:
+- qcom,msm_fastrpc_compute_cb :	Child nodes representing the compute context
+				banks
+Subnode Required properties:
+- compatible :		Must be "qcom,msm-fastrpc-compute-cb"
+- label:		Label describing the channel this context bank belongs to
+- iommus : 		A list of phandle and IOMMU specifier pairs that describe the
+			IOMMU master interfaces of the device
+
+Subnode Optional properties:
+- shared-cb : 		Present if context bank need to be shared
+
+
+Example:
+	qcom,msm_fastrpc {
+		compatible = "qcom,msm-fastrpc-adsp";
+		qcom,fastrpc-glink;
+		qcom,rpc-latency-us = <2343>;
+		qcom,adsp-remoteheap-vmid = <22 37>;
+		qcom,fastrpc-adsp-sensors-pdr;
+
+		qcom,msm_fastrpc_compute_cb_1 {
+			compatible = "qcom,msm-fastrpc-compute-cb";
+			label = "adsprpc-smd";
+			iommus = <&lpass_q6_smmu 8>,
+		};
+		qcom,msm_fastrpc_compute_cb_2 {
+			compatible = "qcom,msm-fastrpc-compute-cb";
+			label = "adsprpc-smd";
+			iommus = <&lpass_q6_smmu 9>,
+			shared-cb;
+		};
+	};
+
+Legacy SMMU v1/v2:
+
+Required properties:
+- compatible : Must be "qcom,msm-fastrpc-legacy-compute"
+
+Required subnode:
+- qcom,msm_fastrpc_compute_cb : Child nodes representing the compute context
+                                banks
+
+Required subnode properties:
+- compatible : Must be "qcom,msm-fastrpc-legacy-compute-cb"
+- label	     : Label describing the channel this context bank belongs to
+- iommus     : A list of phandle and IOMMU specifier pairs that describe the
+			IOMMU master interfaces of the device
+- sids       : A list of SID associated with the context bank
+
+Example:
+	qcom,msm_fastrpc {
+		compatible = "qcom,msm-fastrpc-legacy-compute";
+		qcom,msm_fastrpc_compute_cb {
+			compatible = "qcom,msm-fastrpc-legacy-compute-cb";
+			label = "adsprpc-smd";
+			iommus = <&apps_iommu 0x2408 0x7>;
+			sids = <0x8 0x9 0xa 0xb 0xc 0xd 0xe 0xf>;
+		};
+	};
+Remote Heap:
+
+Required properties:
+- compatible : Must be "qcom,msm-adsprpc-mem-region"
+- memory-region : CMA region which is owned by this device
+- restrict-access : Blocking vote for hyp_assign_phys function call
+
+Example:
+       qcom,adsprpc-mem {
+               compatible = "qcom,msm-adsprpc-mem-region";
+               memory-region = <&adsp_mem>;
+               restrict-access;
+       };

@@ -1,0 +1,318 @@
+#include "sdm670-audio-overlay.dtsi"
+
+&tavil_snd {
+	status = "disabled";
+};
+
+&pmic_analog_codec {
+	qcom,cdc-micbias-cfilt-mv = <2700000>;
+};
+
+&int_codec {
+	qcom,wsa-disable;
+	/delete-property/ qcom,wsa-max-devs;
+	/delete-property/ qcom,wsa-devs;
+	/delete-property/ qcom,wsa-aux-dev-prefix;
+
+	asoc-codec = <&stub_codec>, <&msm_digital_codec>,
+		     <&pmic_analog_codec>, <&ext_disp_audio_codec>,
+		     <&cs35l41>;
+	asoc-codec-names = "msm-stub-codec.1", "msm-dig-codec",
+			   "analog-codec", "msm-ext-disp-audio-codec-rx",
+			   "CS35L41";
+
+	qcom,msm-micbias1-ext-cap;
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+
+	/* used to trigger headset detection */
+	qcom,usbc-analog-en1-gpio = <&wcd_usbc_analog_en1_gpio>;
+
+	/* used to swap gnd & mic */
+	qcom,usbc-analog-en2-gpio = <&tlmm 50 0>;
+	pinctrl-names = "aud_active", "aud_sleep";
+	pinctrl-0 = <&select_uart_idle &wcd_usbc_analog_en2_active>;
+	pinctrl-1 = <&select_uart_idle &wcd_usbc_analog_en2_idle>;
+};
+
+&msm_sdw_codec {
+	status = "disabled";
+};
+
+&wcd_usbc_analog_en2_active {
+	mux {
+		pins = "gpio50";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio50";
+		drive-strength = <2>;
+		bias-disable;
+		output-high;
+	};
+};
+
+&wcd_usbc_analog_en2_idle {
+	mux {
+		pins = "gpio50";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio50";
+		drive-strength = <2>;
+		bias-pull-down;
+		output-low;
+	};
+};
+
+&tlmm {
+	select_uart {
+		select_uart_idle: select_uart_idle {
+			mux {
+				pins = "gpio2";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio2";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		select_uart_active: select_uart_active {
+			mux {
+				pins = "gpio2";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio2";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+
+	usb_switch_asel {
+		usb_switch_asel_idle: usb_switch_asel_idle {
+			mux {
+				pins = "gpio28";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio28";
+				drive-strength = <2>;
+				bias-pull-down;
+				output-low;
+			};
+		};
+
+		usb_switch_asel_active: usb_switch_asel_active {
+			mux {
+				pins = "gpio28";
+				function = "gpio";
+			};
+			config {
+				pins = "gpio28";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+	};
+
+	cs35l41_int_default:cs35l41_int_default{
+		mux {
+			pins = "gpio78";
+			function = "gpio";
+		};
+		config{
+			pins = "gpio78";
+			bias-pull-up;
+			drive-strength = <8>;
+			input-enable;
+		};
+	};
+
+};
+
+&wcd_usbc_analog_en1_gpio {
+	pinctrl-names = "default", "aud_active", "aud_sleep";
+	pinctrl-0 = <&mic_switch_en_idle &usb_switch_asel_idle>;
+	pinctrl-1 = <&mic_switch_en_active &wcd_usbc_analog_en1_idle &usb_switch_asel_active>;
+	pinctrl-2 = <&mic_switch_en_idle &wcd_usbc_analog_en1_active &usb_switch_asel_idle>;
+};
+
+&pm660l_gpios {
+	mic_switch_en {
+		mic_switch_en_idle: mic_switch_en_idle {
+			pins = "gpio2";
+			function = "normal";
+			power-source = <0>;
+			output-low;
+		};
+		mic_switch_en_active: mic_switch_en_active {
+			pins = "gpio2";
+			function = "normal";
+			power-source = <0>;
+			output-high;
+		};
+	};
+};
+
+&qupv3_se7_spi {
+
+	status = "okay";
+	cs35l41: cs35l41@0 {
+		compatible = "cirrus,cs35l41";
+		spi-max-frequency = <9600000>;
+		reg = <0>;
+		interrupt-parent = <&tlmm>;
+		reset-gpio = <&tlmm 24 0x01>;
+		interrupts = <78 8>;
+		pinctrl-names = "cs35l41_irq_default";
+		pinctrl-0 = <&cs35l41_int_default>;
+		cirrus,boost-peak-milliamp = <4500>;
+		cirrus,boost-ind-nanohenry = <1000>;
+		cirrus,boost-cap-microfarad = <15>;
+		cirrus,gpio-config2 {
+		cirrus,gpio-src-select = <0x4>;
+		cirrus,gpio-output-enable;
+		};
+	};
+};
+
+&tlmm {
+	pri_mi2s_sck {
+		pri_mi2s_sck_sleep: pri_mi2s_sck_sleep {
+			mux {
+				pins = "gpio65";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio65";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+				input-enable;
+			};
+		};
+
+		pri_mi2s_sck_active: pri_mi2s_sck_active {
+			mux {
+				pins = "gpio65";
+				function = "pri_mi2s";
+			};
+
+			config {
+				pins = "gpio65";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+				output-high;
+			};
+		};
+	};
+
+	pri_mi2s_ws {
+		pri_mi2s_ws_sleep: pri_mi2s_ws_sleep {
+			mux {
+				pins = "gpio66";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio66";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+				input-enable;
+			};
+		};
+
+		pri_mi2s_ws_active: pri_mi2s_ws_active {
+			mux {
+				pins = "gpio66";
+				function = "pri_mi2s_ws";
+			};
+
+			config {
+				pins = "gpio66";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+				output-high;
+			};
+		};
+	};
+
+	pri_mi2s_sd0 {
+		pri_mi2s_sd0_sleep: pri_mi2s_sd0_sleep {
+			mux {
+				pins = "gpio67";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio67";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+				input-enable;
+			};
+		};
+
+		pri_mi2s_sd0_active: pri_mi2s_sd0_active {
+			mux {
+				pins = "gpio67";
+				function = "pri_mi2s";
+			};
+
+			config {
+				pins = "gpio67";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+			};
+		};
+	};
+
+	pri_mi2s_sd1 {
+		pri_mi2s_sd1_sleep: pri_mi2s_sd1_sleep {
+			mux {
+				pins = "gpio68";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio68";
+				drive-strength = <2>;   /* 2 mA */
+				bias-pull-down;         /* PULL DOWN */
+				input-enable;
+			};
+		};
+
+		pri_mi2s_sd1_active: pri_mi2s_sd1_active {
+			mux {
+				pins = "gpio68";
+				function = "pri_mi2s";
+			};
+
+			config {
+				pins = "gpio68";
+				drive-strength = <8>;   /* 8 mA */
+				bias-disable;           /* NO PULL */
+			};
+		};
+	};
+};
+
+&dai_mi2s0 {
+	compatible = "qcom,msm-dai-q6-mi2s";
+	qcom,msm-dai-q6-mi2s-dev-id = <0>;
+	/* sd0 playback */
+	qcom,msm-mi2s-rx-lines = <1>;
+	/* sd1 capture */
+	qcom,msm-mi2s-tx-lines = <2>;
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&pri_mi2s_sck_active &pri_mi2s_ws_active &pri_mi2s_sd0_active &pri_mi2s_sd1_active>;
+	pinctrl-1 = <&pri_mi2s_sck_sleep &pri_mi2s_ws_sleep &pri_mi2s_sd0_sleep &pri_mi2s_sd1_sleep>;
+};
+

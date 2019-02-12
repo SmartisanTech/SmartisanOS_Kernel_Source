@@ -1,0 +1,77 @@
+Qualcomm Technologies, Inc. OSM Bindings
+
+Operating State Manager (OSM) is a hardware engine used by some Qualcomm
+Technologies, Inc. (QTI) SoCs to manage frequency and voltage scaling
+in hardware. OSM is capable of controlling frequency and voltage requests
+for multiple clusters via the existence of multiple OSM domains.
+
+Properties:
+- compatible
+	Usage:      required
+	Value type: <string>
+	Definition: must be "qcom,clk-cpu-osm", "qcom,clk-cpu-osm-v2" or
+		    "qcom,clk-cpu-osm-sdm670".
+
+- reg
+	Usage:      required
+	Value type: <prop-encoded-array>
+	Definition: Addresses and sizes for the memory of the OSM controller.
+
+- reg-names
+	Usage:      required
+	Value type: <stringlist>
+	Definition: Address names. Must be "osm_l3_base", "osm_pwrcl_base",
+		    "osm_perfcl_base".
+		    Must be specified in the same order as the corresponding
+		    addresses are specified in the reg property.
+
+- qcom,mx-turbo-freq
+	Usage:      optional
+	Value type: <array>
+	Definition: List of frequencies for the 3 clock domains (following the
+		    order of L3, power, and performance clusters) that denote
+		    the lowest rate that requires a TURBO vote on the MX rail.
+
+- vdd_l3_mx_ao-supply
+	Usage:      required if qcom,mx-turbo-freq is specified
+	Value type: <phandle>
+	Definition: Phandle to the MX active-only regulator device.
+
+- vdd_pwrcl_mx_ao-supply
+	Usage:      required if qcom,mx-turbo-freq is specified
+	Value type: <phandle>
+	Definition: Phandle to the MX active-only regulator device.
+
+- l3-devs
+	Usage: optional
+	Value type: <phandle>
+	Definition: List of phandles to devices that the OPP tables with the L3
+		    frequency and voltage mappings are loaded for.
+
+- clock-names
+	Usage:      required
+	Value type: <string>
+	Definition: Must be "aux_clk".
+
+- clocks
+	Usage:      required
+	Value type: <phandle>
+	Definition: Phandle to the aux clock device.
+
+Example:
+	clock_cpucc: qcom,cpucc@0x17d41000 {
+		compatible = "qcom,clk-cpu-osm";
+		reg = <0x17d41000 0x1400>,
+			<0x17d43000 0x1400>,
+			<0x17d45800 0x1400>;
+		reg-names = "osm_l3_base", "osm_pwrcl_base", "osm_perfcl_base";
+		vdd_l3_mx_ao-supply = <&pm8998_s6_level_ao>;
+		vdd_pwrcl_mx_ao-supply = <&pm8998_s6_level_ao>;
+
+		qcom,mx-turbo-freq = <1478400000 1689600000 3300000001>;
+		l3-devs = <&l3_cpu0 &l3_cpu4 &l3_cdsp>;
+
+		clock-names = "xo_ao";
+		clocks = <&clock_rpmh RPMH_CXO_CLK_A>;
+		#clock-cells = <1>;
+	};

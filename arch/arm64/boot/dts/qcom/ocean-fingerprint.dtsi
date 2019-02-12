@@ -1,0 +1,102 @@
+&soc {
+	goodix_fp {
+		//status = "disable";
+		compatible = "goodix,fingerprint";
+		spi-max-frequency = <4800000>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <121 0x0>;
+
+		goodix,gpio_reset    = <&tlmm 134 0>;
+		goodix,gpio_irq      = <&tlmm 121 0>;
+		goodix,gpio_pwr      = <&tlmm 12 0>;
+		goodix_pwr2-supply   = <&pm660_l13>;
+
+		pinctrl-names = "goodixfp_reset_reset",
+			"goodixfp_reset_active",
+			"goodixfp_irq_active";
+
+		pinctrl-0 = <&goodix_reset_reset>;
+		pinctrl-1 = <&goodix_reset_active>;
+		pinctrl-2 = <&goodix_irq_active>;
+	};
+	nvt_uio {
+		//status = "disable";
+		compatible = "nvt_uio";
+		interrupt-parent = <&tlmm>;
+		interrupts = <121 0x0>;
+
+		qcom,use-pinctrl;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&nvt_reset_pin_disable_active>;
+		pinctrl-1 = <&nvt_reset_pin_disable_suspend>;
+
+		nvt_uio,irq_gpio = <&tlmm 121 0x0>;
+		nvt_uio,rst_gpio = <&tlmm 134 0x0>;
+		nvt_uio,v3_gpio  = <&tlmm 12 0>;
+	};
+};
+
+&tlmm {
+	goodix_reset_reset: goodix_reset_reset{
+		mux {
+			pins = "gpio134";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio134";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+	goodix_reset_active: goodix_reset_active {
+		mux {
+			pins = "gpio134";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio134";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			output-high;
+		};
+	};
+
+	goodix_irq_active: goodix_irq_active {
+		mux {
+			pins = "gpio121";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio121";
+			drive-strength = <2>;
+			bias-disable = <0>;
+			input-enable;
+		};
+	};
+    nvt_reset_pin_disable_active: active {
+		mux {
+			pins = "gpio134";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio134";
+			drive-strength = <2>;
+		    bias-disable;
+		    output-high;
+		};
+    };
+    nvt_reset_pin_disable_suspend: suspend {
+		mux {
+			pins = "gpio134";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio134";
+			drive-strength = <2>;
+		    bias-disable;
+		    output-low;
+		};
+    };
+};
+

@@ -1,0 +1,496 @@
+/* Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include "sdm670-pmic-overlay.dtsi"
+#include "sdm670-sde-display.dtsi"
+//#include "sdm670-camera-sensor-mtp.dtsi"
+#include "ocean-camera-sensor.dtsi"
+#include "smb1355.dtsi"
+#include "ocean-fingerprint.dtsi"
+
+&ufsphy_mem {
+	compatible = "qcom,ufs-phy-qmp-v3";
+
+	vdda-phy-supply = <&pm660l_l1>; /* 0.88v */
+	vdda-pll-supply = <&pm660_l1>; /* 1.2v */
+	vdda-phy-max-microamp = <62900>;
+	vdda-pll-max-microamp = <18300>;
+
+	status = "ok";
+};
+
+&ufshc_mem {
+	vdd-hba-supply = <&ufs_phy_gdsc>;
+	vdd-hba-fixed-regulator;
+	vcc-supply = <&pm660l_l5>;
+	vcc-voltage-level = <2960000 2960000>;
+	vcc-max-microamp = <600000>;
+	vccq2-max-microamp = <600000>;
+	vccq2_gpios = <&tlmm 8 0x1>;
+
+	qcom,vddp-ref-clk-supply = <&pm660_l1>;
+	qcom,vddp-ref-clk-max-microamp = <100>;
+
+	status = "ok";
+};
+
+/* not used in our project.
+&pm660l_switch1 {
+	pinctrl-names = "led_enable", "led_disable";
+	pinctrl-0 = <&flash_led3_front_en>;
+	pinctrl-1 = <&flash_led3_front_dis>;
+};
+*/
+
+&qupv3_se9_2uart {
+	status = "disabled";
+};
+
+&qupv3_se12_2uart {
+	status = "ok";
+};
+
+&qupv3_se8_spi {
+	status = "disabled";
+};
+
+&qupv3_se3_i2c {
+	status = "ok";
+	nq@28 {
+		compatible = "qcom,nq-nci";
+		reg = <0x28>;
+		qcom,nq-irq = <&tlmm 44 0x00>;
+		qcom,nq-ven = <&tlmm 12 0x00>;
+		qcom,nq-firm = <&tlmm 43 0x00>;
+		qcom,nq-clkreq = <&pm660_gpios 4 0x00>;
+		qcom,nq-esepwr = <&tlmm 116 0x00>;
+		interrupt-parent = <&tlmm>;
+		qcom,clk-src = "BBCLK3";
+		interrupts = <44 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active
+			     &nfc_enable_active
+			     &nfc_clk_default>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend>;
+		clocks = <&clock_rpmh RPMH_LN_BB_CLK3>;
+		clock-names = "ref_clk";
+	};
+};
+
+&qupv3_se10_i2c {
+	status = "ok";
+};
+
+&qupv3_se6_4uart {
+	status = "ok";
+};
+
+&sdhc_1 {
+	vdd-supply = <&pm660l_l4>;
+	qcom,vdd-voltage-level = <2960000 2960000>;
+	qcom,vdd-current-level = <0 570000>;
+
+	vdd-io-supply = <&pm660_l8>;
+	qcom,vdd-io-always-on;
+	qcom,vdd-io-lpm-sup;
+	qcom,vdd-io-voltage-level = <1800000 1800000>;
+	qcom,vdd-io-current-level = <0 325000>;
+
+	pinctrl-names = "active", "sleep";
+	pinctrl-0 = <&sdc1_clk_on  &sdc1_cmd_on &sdc1_data_on &sdc1_rclk_on>;
+	pinctrl-1 = <&sdc1_clk_off &sdc1_cmd_off &sdc1_data_off &sdc1_rclk_off>;
+
+	status = "ok";
+};
+
+&sdhc_2 {
+	vdd-supply = <&pm660l_l5>;
+	qcom,vdd-voltage-level = <2960000 2960000>;
+	qcom,vdd-current-level = <0 800000>;
+
+	vdd-io-supply = <&pm660l_l2>;
+	qcom,vdd-io-voltage-level = <1800000 2960000>;
+	qcom,vdd-io-current-level = <0 22000>;
+
+	pinctrl-names = "active", "sleep";
+	pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
+	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
+
+	cd-gpios = <&tlmm 96 0x1>;
+
+	status = "ok";
+};
+
+&vendor {
+	mtp_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "fg-gen3-batterydata-trident-atl-3600mah.dtsi"
+		#include "fg-gen3-batterydata-trident-jiade-3600mah.dtsi"
+	};
+};
+
+&pm660_fg {
+	qcom,battery-data = <&mtp_batterydata>;
+};
+
+&tlmm {
+	smb_int_default: smb_int_default {
+		mux {
+			pins = "gpio54";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio54";
+			drive-strength = <2>;
+			bias-pull-up;
+			input-enable;
+		};
+	};
+};
+
+&smb1355_0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&smb_int_default
+			&smb_shutdown_default>;
+	interrupt-parent = <&tlmm>;
+	interrupts = <54 IRQ_TYPE_LEVEL_LOW>;
+	smb1355_charger_0: qcom,smb1355-charger@1000 {
+		io-channels = <&pm660_rradc 2>,
+				<&pm660_rradc 12>;
+		io-channel-names = "charger_temp",
+				"charger_temp_max";
+		status ="ok";
+	};
+};
+
+&smb1355_1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&smb_int_default
+			&smb_shutdown_default>;
+	interrupt-parent = <&tlmm>;
+	interrupts = <54 IRQ_TYPE_LEVEL_LOW>;
+	smb1355_charger_1: qcom,smb1355-charger@1000 {
+		io-channels = <&pm660_rradc 2>,
+				<&pm660_rradc 12>;
+		io-channel-names = "charger_temp",
+				"charger_temp_max";
+		status ="ok";
+	};
+};
+
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&key_smart_default
+/*
+			     &key_cam_focus_default
+*/
+			     &key_vol_dn_default>;
+
+		smart {
+			label = "smart";
+			gpios = <&tlmm 91 0x1>;
+			linux,input-type = <1>;
+			linux,code = <766>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+
+/*
+		cam_focus {
+			label = "cam_focus";
+			gpios = <&tlmm 92 0>;
+			linux,input-type = <1>;
+			linux,code = <528>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+*/
+
+		vol_dn {
+			label = "volume_dn";
+			gpios = <&pm660l_gpios 7 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <114>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+	};
+};
+
+&dsi_dual_nt35597_truly_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "dual_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_nt35597_truly_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "dual_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+
+&dsi_nt35597_truly_dsc_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "single_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_nt35597_truly_dsc_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "single_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+
+&dsi_sim_vid {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_sim_vid {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_sim_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_sim_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_sim_dsc_375_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_sim_dsc_375_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_nt35597_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "dual_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_dual_nt35597_cmd {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,mdss-dsi-mode-sel-gpio-state = "dual_port";
+	qcom,panel-mode-gpio = <&tlmm 76 0>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+
+&dsi_rm67195_amoled_fhd_cmd {
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_labibb_amoled>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+
+&dsi_nt35695b_truly_fhd_video {
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+};
+
+&dsi_nt35695b_truly_fhd_cmd {
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <4095>;
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+/*
+&dsi_dual_nt35597_truly_video_display {
+	qcom,dsi-display-active;
+};
+*/
+&dsi_rm6928_1080_cmd {
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply_labibb_amoled>;
+	qcom,platform-reset-gpio = <&tlmm 75 0>;
+	qcom,platform-te-gpio = <&tlmm 10 0>;
+};
+
+/* #0244392 bsp madan@smartisan.com add to reduce 400ms power on time begin */
+&dsi_rm69298_amoled_fhd_cmd_display {
+	qcom,dsi-display-active;
+};
+/* #0244392 bsp madan@smartisan.com add to reduce 400ms power on time end */
+
+&pm660l_wled {
+	status = "okay";
+	qcom,led-strings-list = [01 02];
+};
+
+&mdss_mdp {
+	#cooling-cells = <2>;
+};
+
+&qupv3_se9_i2c {
+	status = "ok";
+	focaltech@38{
+		compatible = "focaltech,fts";
+		reg = <0x38>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <125 0x02>;
+		focaltech,reset-gpio = <&tlmm 99 0x01>;
+		focaltech,irq-gpio = <&tlmm 125 0x02>;
+		focaltech,pwr-gpio = <&tlmm 0 0>;
+		tp,state1-gpio = <&tlmm 21 0x02>;
+		tp,state2-gpio = <&tlmm 25 0x02>;
+		focaltech,max-touch-number = <10>;
+		focaltech,display-coords =  <0 0 1079 2159>;
+
+		pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+		pinctrl-0 = <&ts_int_active &ts_reset_active>;
+		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+		pinctrl-2 = <&ts_release>;
+
+		focaltech,have-key;
+		focaltech,key-number = <3>;
+		focaltech,keys = <580 172 158>;
+		focaltech,key-y-coord = <2500>;
+		focaltech,key-x-coords = <825 900 975>;
+	};
+/* #0244395 madan@smartisan.com add to support goodix touch ic begin */
+	goodix_ts@14 {
+		compatible = "goodix,gt1x";
+		reg = <0x14>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <125 0x02>;
+		goodix,reset-gpio = <&tlmm 99 0x01>;
+		goodix,irq-gpio = <&tlmm 125 0x02>;
+		goodix,pwr-gpio = <&tlmm 0 0>;
+		goodix,default-config0 = [
+			48 38 04 70 08 0A 3D 15 00 00
+			01 0D 50 3C 33 01 00 00 00 01
+			3C 8C 96 B9 0A 08 09 11 28 78
+			32 00 00 41 00 00 00 00 00 00
+			00 00 00 00 00 00 87 28 1F 5A
+			5C 96 08 38 6D 38 DD 03 24 00
+			02 3C 82 C0 99 55 32 01 04 A6
+			45 95 4E 89 57 80 60 79 69 74
+			00 00 00 68 70 60 00 F0 70 50
+			AA A0 07 23 23 00 00 0F 0F 04
+			0E 88 88 88 08 00 55 00 00 00
+			00 00 00 00 00 00 00 00 00 00
+			00 00 00 20 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 3C 37
+			1E 1D 1C 1B 1A 19 18 17 16 15
+			14 13 12 11 10 0F 0E 0D 0C 0B
+			0A 09 08 07 06 02 04 03 05 01
+			1F FF 18 0A 0D 0E 0F 0C 03 0B
+			08 07 09 06 04 05 01 FF FF FF
+			FF FF FF FF FF FF 00 00 00 FF
+			3C 50 00 80 00 00 00 00 00 00
+			00 00 00 00 00 00 7D 00 50 00
+			00 00 13 1E 6D 01 00 00 00 0A
+			00 01 00 D0 07 50 39 52 01
+		];
+		goodix,glove-config0 = [
+			48 38 04 70 08 0A 7D 15 01 00
+			01 0F 3C 2D 33 01 00 00 00 01
+			3C 8C 99 B9 0A 08 00 02 28 78
+			32 00 00 41 00 00 00 9B 00 00
+			00 00 00 00 00 00 87 28 1F 64
+			66 DF 07 38 6D 38 DE 03 24 00
+			02 41 78 C0 94 08 32 01 04 A5
+			4A 96 53 8A 5C 7F 65 79 6E 74
+			00 00 00 68 70 60 00 F0 25 10
+			EE E0 07 23 23 00 00 0F 0F 04
+			0E 88 88 88 08 00 50 00 00 00
+			00 00 00 00 00 00 1E 05 00 00
+			19 C8 96 BC 02 4B 32 4B 00 00
+			00 00 00 00 00 00 00 00 3C 37
+			1E 1D 1C 1B 1A 19 18 17 16 15
+			14 13 12 11 10 0F 0E 0D 0C 0B
+			0A 09 08 07 06 02 04 03 05 01
+			1F FF 18 0A 0D 0E 0F 0C 03 0B
+			08 07 09 06 04 05 01 FF FF FF
+			FF FF FF FF FF FF 00 00 00 FF
+			3C 64 DE 9A 22 22 22 22 22 22
+			22 22 00 00 00 00 7D 00 50 00
+			00 00 13 1E 6D 01 00 00 00 0A
+			00 01 00 D0 07 50 A0 13 01
+		];
+		/* if you have disable CONFIG_GTP_INT_SEL_SYNC,
+		 * please add properties below.
+		 * You should config goodix_int_pull_up node in
+		 * the pinctrl dtsi file */
+		pinctrl-names = "default";
+		pinctrl-0 = <&ts_int_active>;
+
+	};
+/* #0244395 madan@smartisan.com add to support goodix touch ic end  */
+	nif_nifp1000@3e {
+		compatible = "nif,ni_force";
+		reg = <0x3e>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <73 0x02>;
+		nif,irq-gpio = <&tlmm 73 0x0>;
+	};
+};
+
+&thermal_zones {
+	xo-therm-step {
+		status = "disabled";
+	};
+};
