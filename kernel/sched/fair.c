@@ -5805,7 +5805,7 @@ static int sched_group_energy(struct energy_env *eenv)
 	u64 total_energy = 0;
 	struct cpumask visit_cpus;
 	struct sched_group *sg;
-	int cpu_count;
+
 
 	WARN_ON(!eenv->sg_top->sge);
 
@@ -5820,7 +5820,7 @@ static int sched_group_energy(struct energy_env *eenv)
 	 * be present which are not in the visit_cpus mask.
 	 * Guard this with cpu_count.
 	 */
-	cpu_count = cpumask_weight(&visit_cpus);
+
 
 	while (!cpumask_empty(&visit_cpus)) {
 		struct sched_group *sg_shared_cap = NULL;
@@ -5897,7 +5897,7 @@ static int sched_group_energy(struct energy_env *eenv)
 					idle_idx,
 					sg->sge->cap_states[eenv->cap_idx].cap);
 
-				if (!sd->child) {
+				if (!sd->child) 
 					/*
 					 * cpu_count here is the number of
 					 * cpus we expect to visit in this
@@ -5910,11 +5910,10 @@ static int sched_group_energy(struct energy_env *eenv)
 					 * without restarting so we will bail
 					 * out and use prev_cpu this time.
 					 */
-					if (!cpu_count)
-						return -EINVAL;
+
 					cpumask_xor(&visit_cpus, &visit_cpus, sched_group_cpus(sg));
 					cpu_count--;
-				}
+
 
 				if (cpumask_equal(sched_group_cpus(sg), sched_group_cpus(eenv->sg_top)))
 					goto next_cpu;
@@ -6639,7 +6638,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
 	 * Due to large variance we need a large fuzz factor; hackbench in
 	 * particularly is sensitive here.
 	 */
-	if (sched_feat(SIS_AVG_CPU) && (avg_idle / 512) < avg_cost)
+	if ((avg_idle / 512) < avg_cost)
 		return -1;
 
 	time = local_clock();
@@ -6852,38 +6851,38 @@ is_packing_eligible(struct task_struct *p, unsigned long task_util,
 	return cpu_cap_idx_pack == cpu_cap_idx_spread;
 }
 
-#define SCHED_SELECT_PREV_CPU_NSEC	2000000
-#define SCHED_FORCE_CPU_SELECTION_NSEC	20000000
 
-static inline bool
-bias_to_prev_cpu(struct task_struct *p, struct cpumask *rtg_target)
-{
-	int prev_cpu = task_cpu(p);
-#ifdef CONFIG_SCHED_WALT
-	u64 ms = p->ravg.mark_start;
-#else
-	u64 ms = sched_clock();
-#endif
 
-	if (cpu_isolated(prev_cpu) || !idle_cpu(prev_cpu))
-		return false;
 
-	if (!ms)
-		return false;
 
-	if (ms - p->last_cpu_selected_ts >= SCHED_SELECT_PREV_CPU_NSEC) {
-		p->last_cpu_selected_ts = ms;
-		return false;
-	}
 
-	if (ms - p->last_sleep_ts >= SCHED_SELECT_PREV_CPU_NSEC)
-		return false;
 
-	if (rtg_target && !cpumask_test_cpu(prev_cpu, rtg_target))
-		return false;
 
-	return true;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 unsigned int sched_smp_overlap_capacity = SCHED_CAPACITY_SCALE;
 
@@ -6945,8 +6944,6 @@ static int energy_aware_wake_cpu(struct task_struct *p, int target, int sync)
 		return cpu;
 	}
 
-	if (bias_to_prev_cpu(p, rtg_target))
-		return prev_cpu;
 
 	task_util_boosted = boosted_task_util(p);
 	if (sysctl_sched_is_big_little) {
@@ -9871,18 +9868,7 @@ no_move:
 		if (need_active_balance(&env)) {
 			raw_spin_lock_irqsave(&busiest->lock, flags);
 
-			/*
-			 * The CPUs are marked as reserved if tasks
-			 * are pushed/pulled from other CPUs. In that case,
-			 * bail out from the load balancer.
-			 */
-			if (is_reserved(this_cpu) ||
-			    is_reserved(cpu_of(busiest))) {
-				raw_spin_unlock_irqrestore(&busiest->lock,
-							   flags);
-				*continue_balancing = 0;
-				goto out;
-			}
+
 
 			/* don't kick the active_load_balance_cpu_stop,
 			 * if the curr task on busiest cpu can't be
