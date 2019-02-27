@@ -295,9 +295,9 @@ CONFIG_KEYBOARD_GPIO=y
 # CONFIG_INPUT_MOUSE is not set
 CONFIG_INPUT_TOUCHSCREEN=y
 CONFIG_TOUCHSCREEN_FTS=y
-+#0244395 madan@smartisan.com add to support goodix touch ic begin.
-+CONFIG_TOUCHSCREEN_GOODIX_GT1X=y
-+#0244395 madan@smartisan.com add to support goodix touch ic end.
+#0244395 madan@smartisan.com add to support goodix touch ic begin.
+CONFIG_TOUCHSCREEN_GOODIX_GT1X=y
+#0244395 madan@smartisan.com add to support goodix touch ic end.
 CONFIG_INPUT_MISC=y
 #CONFIG_INPUT_HBTP_INPUT=y
 CONFIG_INPUT_QPNP_POWER_ON=y
