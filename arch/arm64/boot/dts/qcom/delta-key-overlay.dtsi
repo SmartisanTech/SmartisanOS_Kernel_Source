@@ -1,0 +1,97 @@
+/*
+ * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+
+&soc {
+	gpio_keys {
+		pinctrl-1 = <&key_home_default>;
+
+		vol_up {
+			label = "volume_down";
+			linux,code = <KEY_VOLUMEDOWN>;
+		};
+
+		smart {
+			label = "smart";
+			gpios = <&pm8150_gpios 1 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_SMART>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+			linux,can-disable;
+		};
+	};
+};
+
+&spmi_bus {
+	qcom,pm8150@0 {
+		qcom,power-on@800 {
+			qcom,pon_2 {
+				linux,code = <KEY_VOLUMEUP>;
+			};
+		};
+	};
+};
+
+
+&pm8150b_pwm{
+	compatible = "qcom,pwm-lpg";
+		reg = <0xb100 0x200>, <0xb000 0x100>;
+	reg-names = "lpg-base", "lut-base";
+	#pwm-cells = <2>;
+	qcom,num-lpg-channels = <2>;
+	qcom,lut-patterns = <2 5 9 13 19 25 32 40 47 56 64 72 81 88 96 103 109 115 119 123 126 127 128 128
+	                            127 126 123 119 115 109 103 96 88 81 72 64 56 47 40 32 25 19 13 9 5 2 1>;
+	lpg1 {
+		qcom,lpg-chan-id = <1>;
+		qcom,ramp-step-ms = <80>;
+		qcom,ramp-pause-hi-count = <1>;
+		qcom,ramp-pause-lo-count = <15>;
+		qcom,ramp-low-index = <0>;
+		qcom,ramp-high-index = <46>;
+		qcom,ramp-from-low-to-high;
+		qcom,ramp-pattern-repeat;
+	};
+	lpg2 {
+		qcom,lpg-chan-id = <2>;
+		qcom,ramp-step-ms = <80>;
+		qcom,ramp-pause-hi-count = <1>;
+		qcom,ramp-pause-lo-count = <15>;
+		qcom,ramp-low-index = <0>;
+		qcom,ramp-high-index = <46>;
+		qcom,ramp-from-low-to-high;
+		qcom,ramp-pattern-repeat;
+	};
+
+
+};
+
+&pm8150b_hr_led{
+
+ hr_led1 {
+		 linux,default-trigger = "timer";
+	};
+ hr_led2 {
+	  linux,default-trigger = "timer";
+	};
+ };
+
+
+&pm8150l_rgb_led{
+    /delete-node/ green;
+    /delete-node/ blue;
+  };
+
+
+
+

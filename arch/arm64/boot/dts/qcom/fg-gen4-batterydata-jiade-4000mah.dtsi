@@ -1,0 +1,146 @@
+
+qcom,delta_jiade_4000mah_averaged_masterslave_jul18th2019 {
+	qcom,profile-revision = <24>;
+	/* #4073788_Delta_AlaskaJiade_4000mAh_averaged_MasterSlave_Jul18th2019*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,fg-cc-cv-threshold-mv = <4390>;
+	qcom,fastchg-current-ma = <3900>;
+	qcom,jeita-fcc-ranges = <5  15   600000
+				16  100  800000
+				101 110  1000000
+				111 200  1200000
+				201 210  2000000
+				211 450  3900000
+				451 550  2000000>;
+	qcom,jeita-fv-ranges = <0   150  4400000
+				151 450  4400000
+				451 600  4100000>;
+	qcom,step-chg-ranges = <3600000  4400000  3900000>;
+	/* COLD = 0 DegC, HOT = 55 DegC */
+	qcom,jeita-hard-thresholds = <0x5830 0x1810>;
+	/* COOL = 20 DegC, WARM = 45 DegC */
+	qcom,jeita-soft-thresholds = <0x3e75 0x2025>;
+	/* COOL hys = 23 DegC, WARM hys = 42 DegC */
+	qcom,jeita-soft-hys-thresholds = <0x3a60 0x23d2>;
+	qcom,jeita-soft-fcc-ua = <1200000 2000000>;
+	qcom,jeita-soft-fv-uv = <4400000 4100000>;
+	qcom,ocv-based-step-chg;
+	qcom,nom-batt-capacity-mah = <4000>;
+	qcom,batt-id-kohm = <100>;
+	qcom,battery-beta = <4250>;
+	qcom,therm-room-temp = <100000>;
+	qcom,battery-type = "DT108_jiade_4000mah";
+	qcom,therm-coefficients = <0x2318 0xd0c 0xdaf7 0xc556 0x848d>;
+	qcom,therm-center-offset = <0x70>;
+	qcom,therm-pull-up = <100>;
+	qcom,rslow-normal-coeffs = <0x26 0x03 0xf9 0x12>;
+	qcom,rslow-low-coeffs = <0xbe 0x0d 0xad 0x03>;
+	qcom,checksum = <0x44D3>;
+	qcom,gui-version = "PM855GUI - 1.0.0.13";
+	qcom,fg-profile-data = [
+		 09 00 48 00
+		 B3 DC FC E2
+		 BB DC 00 00
+		 4E BD 30 8A
+		 FD 87 DE A5
+		 98 86 AC 80
+		 1B 00 26 03
+		 F9 12 F7 05
+		 5E 01 CE 07
+		 32 00 19 F2
+		 41 ED CB E5
+		 13 0A B7 E5
+		 AF C5 99 13
+		 C1 00 F1 B3
+		 60 00 45 00
+		 40 00 3F 00
+		 38 00 32 00
+		 33 00 3C 00
+		 40 00 40 00
+		 3F 00 60 00
+		 25 00 35 00
+		 3F 00 36 00
+		 31 00 6E 00
+		 4F 64 41 00
+		 37 00 33 00
+		 60 F0 47 00
+		 4F 00 5F 10
+		 4F 10 45 00
+		 84 28 63 48
+		 53 60 49 0C
+		 48 00 D8 F0
+		 61 1F EE 05
+		 F7 EB 26 04
+		 8A 1C 4C 0B
+		 9B 0D 9C 22
+		 C5 17 7E 4A
+		 CD 5C D5 02
+		 65 0E 6C 1E
+		 82 EC 4D 02
+		 C9 CD D7 1C
+		 58 02 CB 0C
+		 CC 0B 47 18
+		 ED 23 E8 45
+		 12 5B 5E 10
+		 F1 1D 57 ED
+		 95 C9 A0 C2
+		 D3 1C E9 C9
+		 CA 05 B2 BA
+		 20 18 A5 8B
+		 76 84 5B A2
+		 5F A8 09 80
+		 22 F2 CA 0C
+		 B9 05 BF 03
+		 00 F8 F3 DC
+		 9F E3 F4 07
+		 82 DA D0 9D
+		 9A 18 13 F8
+		 A2 CA 27 02
+		 87 06 43 01
+		 CE 07 32 00
+		 B5 02 3A 02
+		 CC 05 25 02
+		 82 04 7E 04
+		 3B 02 23 02
+		 2E 04 4A 00
+		 39 00 3F 00
+		 44 64 48 00
+		 48 F8 49 00
+		 4A E0 47 00
+		 4C 00 53 10
+		 41 10 39 00
+		 46 28 4B 48
+		 59 60 6C 0D
+		 46 00 5A F8
+		 52 00 53 F0
+		 4A 00 46 08
+		 42 10 4D 18
+		 4E 00 62 28
+		 75 50 4A 68
+		 5B 08 55 00
+		 4D 00 36 00
+		 D8 F0 F9 1E
+		 FD 05 30 0A
+		 74 0C F4 1C
+		 F8 22 F0 45
+		 3B 5A 8D 18
+		 21 02 7C 05
+		 0E 02 61 0F
+		 3F 0A 18 1F
+		 E9 04 67 03
+		 89 04 5B 1C
+		 58 02 23 04
+		 46 02 F9 17
+		 3E 03 14 05
+		 A8 03 54 00
+		 C6 1E CF 06
+		 EB 02 6D 05
+		 D3 1C 80 02
+		 CF 04 98 03
+		 96 18 8C 03
+		 5C 04 94 02
+		 65 00 5F 01
+		 C0 00 FA 00
+		 B0 0F 00 00
+	];
+};

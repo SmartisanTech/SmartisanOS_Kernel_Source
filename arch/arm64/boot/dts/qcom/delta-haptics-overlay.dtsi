@@ -1,0 +1,91 @@
+/*
+ * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+
+&pm8150b_gpios {
+	haptics_boost {
+		haptics_boost_default: haptics_boost_default {
+			pins = "gpio5";
+			function = "normal";
+			output-enable;
+			input-disable;
+			bias-disable;
+			qcom,drive-strength = <3>; /* high */
+			power-source = <1>; /* 1.8V */
+		};
+	};
+};
+
+&vendor {
+	haptics_boost_vreg: haptics_boost_vreg {
+		compatible = "regulator-fixed";
+		regulator-name = "haptics_boost";
+		gpio = <&pm8150b_gpios 5 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-enable-ramp-delay = <1000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&haptics_boost_default>;
+		status = "ok";
+	};
+};
+
+&pm8150b_haptics {
+	vdd-supply = <&haptics_boost_vreg>;
+	qcom,vmax-mv = <2828>; /* 2.0Vrms = 2.828Vmax (Sine)*/
+	qcom,play-rate-us = <4854>; /* 206Hz (F0); Modify from 205Hz(4878) to 206Hz(4854). */
+	wf_0 {
+		/* CLICK */
+		qcom,wf-pattern = [68 a8 02 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <1>;
+		/delete-property/ qcom,wf-brake-pattern;
+	};
+	wf_1 {
+		/* DOUBLE CLICK */
+		qcom,wf-pattern = [68 a8 02 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <2>;
+		qcom,wf-s-repeat-count = <1>;
+	};
+	wf_2 {
+		/* TICK */
+		qcom,wf-pattern = [34 92 02 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <1>;
+	};
+	wf_3 {
+		/* THUD */
+		qcom,wf-pattern = [6b 6b 6b 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <1>;
+	};
+	wf_4 {
+		/* POP */
+		qcom,wf-pattern = [6a 6a ea 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <1>;
+	};
+	wf_5 {
+		/* HEAVY CLICK */
+		qcom,wf-pattern = [6b 6b 6b 02 02 02 02 02];
+		qcom,wf-play-rate-us = <4854>; /* 206Hz */
+		qcom,wf-repeat-count = <1>;
+		qcom,wf-s-repeat-count = <1>;
+		/delete-property/ qcom,wf-brake-pattern;
+	};
+};

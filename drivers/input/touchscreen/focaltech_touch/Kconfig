@@ -1,0 +1,26 @@
+#
+# Focaltech Touchscreen driver configuration
+#
+
+config TOUCHSCREEN_FTS
+	bool "Focaltech Touchscreen"
+	default n
+	help
+	  Say Y here if you have Focaltech touch panel.
+	  If unsure, say N.
+
+config TOUCHSCREEN_FTS_LOG
+	bool "Focaltech Touchscreen Log"
+	depends on TOUCHSCREEN_FTS
+	default n
+	help
+	  Say Y here if you need FTS debug log.
+	  If unsure, say N.
+
+config TOUCHSCREEN_FTS_FOD
+	bool "Focaltech Touchscreen FOD"
+	depends on TOUCHSCREEN_FTS
+	default n
+	help
+	  Say Y here if you need FOD feature.
+	  If unsure, say N.

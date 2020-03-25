@@ -1,0 +1,51 @@
+config QTI_PDC
+        bool "QTI PDC"
+        depends on ARCH_QCOM
+	select IRQ_DOMAIN
+	select IRQ_DOMAIN_HIERARCHY
+        help
+          QTI Power Domain Controller driver to manage and configure wakeup
+          IRQs
+
+config QTI_PDC_SM8150
+        bool "QTI PDC SM8150"
+        select QTI_PDC
+        default y if ARCH_SM8150
+        help
+          QTI Power Domain Controller for SM8150
+
+config QTI_PDC_SM6150
+        bool "QTI PDC SM6150"
+        select QTI_PDC
+        default y if ARCH_SM6150
+        help
+          QTI Power Domain Controller for SM6150
+
+config QTI_PDC_SDMMAGPIE
+        bool "QTI PDC SDMMAGPIE"
+        select QTI_PDC
+        default y if ARCH_SDMMAGPIE
+        help
+          QTI Power Domain Controller for SDMMAGPIE
+	  This is used for managing and configuring
+	  the wakeup interrupts. Enable it when
+	  ARCH_SDMMAGPIE is selected.
+
+config QTI_PDC_SDXPRAIRIE
+        bool "QTI PDC SDXPRAIRIE"
+        select QTI_PDC
+        default y if ARCH_SDXPRAIRIE
+        help
+          QTI Power Domain Controller for SDXPRAIRIE
+	  This is used for managing and configuring
+	  the wakeup interrupts. Enable it when
+	  ARCH_SDXPRAIRIE is selected.
+
+config QTI_MPM
+	bool "QTI MPM"
+	depends on ARCH_QCOM
+	select IRQ_DOMAIN
+	select IRQ_DOMAIN_HIERARCHY
+	help
+	  QTI MSM Power Manager driver to manage and configure wakeup
+	  IRQs.

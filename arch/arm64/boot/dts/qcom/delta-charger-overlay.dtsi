@@ -1,0 +1,30 @@
+&pm8150b_fg {
+	/delete-property/ qcom,five-pin-battery;
+	qcom,battery-data = <&mtp_batterydata>;
+	qcom,fg-sys-term-current = <(-200)>;
+	qcom,fg-cutoff-voltage = <3400>;
+	qcom,fg-cutoff-current = <200>;
+	qcom,fg-empty-voltage = <3100>;
+	qcom,fg-batt-temp-delta = <6>;
+	qcom,fg-force-load-profile;
+};
+
+&pm8150b_charger {
+	/delete-property/ qcom,auto-recharge-soc;
+	qcom,disable-suspend-on-collapse;
+	qcom,sec-charger-config = <2>;
+	qcom,usb-icl-ua = <2800000>;
+	qcom,fcc-max-ua = <3900000>;
+	qcom,fv-max-uv = <4400000>;
+	qcom,otg-cl-ua = <2000000>;
+	qcom,auto-recharge-vbat-mv = <4300>;
+	qcom,chg-term-src = <1>;
+	qcom,chg-term-current-ma = <(-200)>;
+	qcom,chg-term-base-current-ma = <(-150)>;
+	qcom,battery-data = <&mtp_batterydata>;
+	qcom,float-option = <1>;
+				/*  <35.2   36.2    37.2    38.2    39.2    40.2   41.2    42.2     43.2  70.2 */
+				/*          34.8    35.8    36.8    37.8    38.8   39.8    40.8     41.8  50.8 */
+	qcom,thermal-mitigation = <3900000 3500000 3200000 3000000 2500000 2000000 2000000 1500000 1500000 0>;
+	qcom,thermal-mitigation-panel-on = <3900000 3900000 3900000 3000000 2500000 2000000 1500000 1000000 500000 0>;
+};

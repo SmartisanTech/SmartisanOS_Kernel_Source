@@ -1,0 +1,37 @@
+# Qualcomm IPC Router configuration
+#
+
+config QRTR
+	tristate "Qualcomm IPC Router support"
+	depends on ARCH_QCOM || COMPILE_TEST
+	---help---
+	  Say Y if you intend to use Qualcomm IPC router protocol.  The
+	  protocol is used to communicate with services provided by other
+	  hardware blocks in the system.
+
+	  In order to do service lookups, a userspace daemon is required to
+	  maintain a service listing.
+
+if QRTR
+
+config QRTR_SMD
+	tristate "SMD IPC Router channels"
+	depends on RPMSG || (COMPILE_TEST && RPMSG=n)
+	---help---
+	  Say Y here to support SMD based ipcrouter channels.  SMD is the
+	  most common transport for IPC Router.
+
+config QRTR_MHI
+	tristate "MHI IPC Router channels"
+	depends on MHI_BUS || (COMPILE_TEST && MHI_BUS=n)
+	---help---
+	  Say Y here to support MHI based ipcrouter channels.  MHI is the
+	  transport used for external modem connections for IPC Router.
+
+config QRTR_FIFO
+	tristate "FIFO IPC Router channels"
+	---help---
+	Say Y here to support FIFO based ipcrouter channels. FIFO Transport
+	Layer enables IPC Router communication between two virtual machines.
+
+endif # QRTR

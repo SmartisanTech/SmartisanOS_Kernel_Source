@@ -1,0 +1,24 @@
+&soc {
+       rf_cable {
+               compatible = "rf_cable, plug_detection";
+               grfc15-gpio = <&tlmm 81 0>;
+               rf_cable,int-gpio = <&tlmm 66 0>;
+               pinctrl-names = "default";
+               pinctrl-0 = <&rf_cable_int_default>;
+       };
+};
+
+&tlmm {
+	rf_cable_int_default: rf_cable_int_default {
+		mux {
+			pins = "gpio66";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio66";
+			drive-strength = <2>;
+			bias-disable = <0>; /* no pull */
+		};
+	 };
+};
+

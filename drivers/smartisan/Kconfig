@@ -1,0 +1,14 @@
+config HW_INFO
+	tristate "For vendor hw info"
+	default y
+	---help---
+	  This define for vendor hw info 
+	  default Y.
+
+config FACTORY_SUPPORT 
+	tristate "For factory version support"
+	default n
+	---help---
+	  This define for factory support 
+	  if factory version, Y.
+	  

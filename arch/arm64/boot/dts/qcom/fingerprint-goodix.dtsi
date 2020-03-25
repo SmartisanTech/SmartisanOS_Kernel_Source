@@ -1,0 +1,62 @@
+&soc {
+    goodix_fp {
+        compatible = "goodix,fingerprint";
+        spi-max-frequency = <4800000>;
+        interrupt-parent = <&tlmm>;
+        interrupts = <118 0x0>;
+
+        goodix,gpio_reset    = <&tlmm 59 0>;
+        goodix,gpio_irq      = <&tlmm 118 0>;
+        goodix_pwr-supply    = <&L7C>;
+        goodix_vddio-supply    = <&L8C>;
+
+        pinctrl-names = "goodixfp_reset_reset",
+            "goodixfp_reset_active",
+            "goodixfp_irq_active";
+
+        pinctrl-0 = <&goodix_reset_reset>;
+        pinctrl-1 = <&goodix_reset_active>;
+        pinctrl-2 = <&goodix_irq_active>;
+    };
+};
+
+&tlmm {
+    goodix_reset_reset: goodix_reset_reset{
+        mux {
+            pins = "gpio59";
+            function = "gpio";
+        };
+        config {
+            pins = "gpio59";
+            drive-strength = <2>;
+            bias-disable = <0>;
+            output-low;
+        };
+    };
+    goodix_reset_active: goodix_reset_active {
+        mux {
+            pins = "gpio59";
+            function = "gpio";
+        };
+        config {
+            pins = "gpio59";
+            drive-strength = <2>;
+            bias-disable = <0>;
+            output-high;
+        };
+    };
+
+    goodix_irq_active: goodix_irq_active {
+        mux {
+            pins = "gpio118";
+            function = "gpio";
+        };
+        config {
+            pins = "gpio118";
+            drive-strength = <2>;
+            bias-disable = <0>;
+            input-enable;
+        };
+    };
+};
+
